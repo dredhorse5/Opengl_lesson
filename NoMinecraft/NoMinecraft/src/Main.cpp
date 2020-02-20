@@ -1,26 +1,34 @@
 
+
 #include <Math.h>
 #include <stdio.h>
 #include <glut.h>
 
+float View = 45; // угол обзора
 int WindW, WindH;
 int i;
 int alpha;
 int rotate_y = 0;
 int rotate_x = 0;
-float cube_size = 0.5;
+float cube_size = 0.1;
 float translate_z = 0;
 float translate_x = 0;
-int quantity_cube_x = 5;
-int quantity_cube_y = 5;
+int quantity_cube_x = 1;
+int quantity_cube_y = 1;
 
 void processNormalKeys(unsigned char key, int x, int y)
 {
-    if (key == 'w') translate_z += 0.05;
-    if (key == 's') translate_z -= 0.05;
+    if (key == 'w') translate_z += 0.01;
+    if (key == 's') translate_z -= 0.01;
 
     if (key == 'a') translate_x += 0.05;
     if (key == 'd') translate_x -= 0.05;
+    
+    if (key == '-')View += 5;
+    if (key == '+')View -= 5;
+
+    if (View > 90) View = 90;
+    if (View < 15) View = 15;
 
 
 }
@@ -51,16 +59,22 @@ void specialKeys(int key, int x, int y) {
 
 }
 
-void Reshape(int width, int height) // Reshape function
+void Reshape(int w, int h) // Reshape function
 {
-    glViewport(0, 0, width, height);
+    // предотвращение деления на ноль
+    if (h == 0)
+        h = 1;
+    float ratio = w * 1.0 / h;
+    // используем матрицу проекции
     glMatrixMode(GL_PROJECTION);
+    // обнуляем матрицу
     glLoadIdentity();
-    gluOrtho2D(-1, 1, -1, 1);
+    // установить параметры вьюпорта
+    glViewport(0, 0, w, h);
+    // установить корректную перспективу
+    gluPerspective(View, ratio, 0.1f, 100.0f);
+    // вернуться к матрице проекции
     glMatrixMode(GL_MODELVIEW);
-
-    WindW = width;
-    WindH = height;
 }
 
 void Draw(void) // Window redraw function
@@ -182,4 +196,4 @@ int main(int argc, char* argv[])
     glutMainLoop();
 
     return 0;
-}
+}//*/
