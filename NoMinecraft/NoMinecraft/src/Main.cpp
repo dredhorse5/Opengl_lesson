@@ -1,5 +1,4 @@
 
-//#include <GLFW/glfw3.h>
 #include <Math.h>
 #include <stdio.h>
 #include <glut.h>
@@ -12,8 +11,8 @@ int rotate_x = 0;
 float cube_size = 0.05;
 float translate_z = 0;
 float translate_x = 0;
-int quantity_cube_x = 50;
-int quantity_cube_y = 50;
+int quantity_cube_x = 100;
+int quantity_cube_y = 100;
 
 void processNormalKeys(unsigned char key, int x, int y)
 {
