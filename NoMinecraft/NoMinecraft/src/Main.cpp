@@ -8,11 +8,11 @@ int i;
 int alpha;
 int rotate_y = 0;
 int rotate_x = 0;
-float cube_size = 0.05;
+float cube_size = 0.5;
 float translate_z = 0;
 float translate_x = 0;
-int quantity_cube_x = 100;
-int quantity_cube_y = 100;
+int quantity_cube_x = 5;
+int quantity_cube_y = 5;
 
 void processNormalKeys(unsigned char key, int x, int y)
 {
@@ -152,7 +152,6 @@ void Visibility(int state) // Visibility function
     if (state == GLUT_NOT_VISIBLE) printf("Window not visible!\n");
     if (state == GLUT_VISIBLE) printf("Window visible!\n");
 }
-
 void timf(int value) // Timer function
 {
     glutPostRedisplay();  // Redraw windows
