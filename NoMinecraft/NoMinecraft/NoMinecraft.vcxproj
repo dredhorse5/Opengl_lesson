@@ -90,10 +90,11 @@
       <AdditionalIncludeDirectories>D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EmbedManagedResourceFile>glut32.lib;%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
