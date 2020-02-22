@@ -11,10 +11,12 @@ float PlayerX = 0.0, PlayerY = 0.0, PlayerZ = 0.0; // координаты камеры
 float lx = 0.0f, lz = -1.0f; // координаты вектора направления движения камеры
 float angle = 0.0; // угол поворота камеры
 float View = 45; // угол обзора
+double FPS = 60; // FPS 60
 float distance_between_cubs =  2;
 float angleY = 0.0f;
 float deltaAngle = 0.0f;
 float deltaMove = 0.0;
+
 
 void computePos(float deltaMove)
 {
@@ -164,15 +166,10 @@ void Draw() // Window redraw function
     glFinish();
     glutSwapBuffers();
 }
-void Visibility(int state) // Visibility function
-{
-    if (state == GLUT_NOT_VISIBLE) printf("Window not visible!\n");
-    if (state == GLUT_VISIBLE) printf("Window visible!\n");
-}
 void timf(int value) // Timer function
 {
     glutPostRedisplay();  // Redraw windows
-    glutTimerFunc(40, timf, 0); // Setup next timer
+    glutTimerFunc(1000/FPS, timf, 0); // Setup next timer
 }
 
 
@@ -189,17 +186,21 @@ int main(int argc, char* argv[])
 
     glutDisplayFunc(Draw);    // Set up redisplay function 
     glutReshapeFunc(Reshape); // Set up reshape function
-    glutIdleFunc(Draw);
     glutSpecialFunc(SpecialKey);
 
-    glutIgnoreKeyRepeat(1);
-    glutSpecialUpFunc(releaseKey);
+    // нажимаем на стрелочки( не отспуская )- срабатывает первая функция, которая устанавливает ненулевую скорость
+    // и передает ее другой функции, которая считает перемещение. при отпускании клавиши срабатывает вторая функция
+    // и устанваливает значение скорости 0, что приводит к прекращению движения.
+    // это сделано для того, чтобы камера перемещалась с постоянной скоростью, а не рывками
+    glutKeyboardFunc(processNormalKeys); // срабатывает когда клавиша нажалась
+    glutSpecialUpFunc(releaseKey); // срабатывает когда клавиша отжалась
 
-    glutTimerFunc(1, timf, 0); // Set up timer for 40ms, about 25 fps
-    glutVisibilityFunc(Visibility); // Set up visibility funtion
+    glutTimerFunc(1000/FPS, timf, 0); // ограничение fps
     //glClearColor(0, 128, 255, 100); // цвет фона
-    //glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
-    glutKeyboardFunc(processNormalKeys);
+    //glutSetKeyRepeat(GLUT_KEY_REPEAT_ON); // хз зачем, ничего не меняет
+    //glutIgnoreKeyRepeat(0); хз зачем, при быстрой смене направления движения при кооф 1 не двигает камеру :/ 
+    //glutIdleFunc(Draw); // какая-то херня, которая увердохера загружает видюху. как будто игнорит ограничение fps
+    
 
 
     glutMainLoop();
