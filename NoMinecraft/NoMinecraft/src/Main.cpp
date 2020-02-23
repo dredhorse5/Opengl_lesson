@@ -17,49 +17,25 @@ float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния ме
 float distange_between_cubs = 8; //настоящее растояние между кубами
 float angleY = 0.0f;
 float deltaAngle = 0.0f;
-float deltaMove = 0.0;
+float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
+float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 
 
 
-void SpecialKeyUP(int key, int x, int y) {
-
-    switch (key) {
-    case GLUT_KEY_LEFT:
-    case GLUT_KEY_RIGHT:
-        deltaAngle = 0.0f;
-        break;
-    case GLUT_KEY_UP:
-    case GLUT_KEY_DOWN:
-        deltaMove = 0;
-        break;
-    }
-}
-void SpecialKeyDOWN(int key, int x, int y)
-{
-    switch (key) {
-    case GLUT_KEY_LEFT:
-        deltaAngle = -0.01f;
-        break;
-    case GLUT_KEY_RIGHT:
-        deltaAngle = 0.01f;
-        break;
-    case GLUT_KEY_UP:
-        deltaMove = 0.5f;
-        break;
-    case GLUT_KEY_DOWN:
-        deltaMove = -0.5f;
-        break;
-    }
-    //glutPostRedisplay();
-}
+//void SpecialKeyUP(int key, int x, int y) {
+//void SpecialKeyDOWN(int key, int x, int y)
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
     int fraction = 0.1f;
     switch (key) {
-        case '-':     distance_between_cubs_key = -0.05; break;
-        case '+':     distance_between_cubs_key = 0.05; break;
-        case 'w':     PlayerY_key = 0.1; break;
-        case 's':     PlayerY_key = -0.1; break;
+        case '-':   distance_between_cubs_key = -0.05; break;
+        case '+':   distance_between_cubs_key = 0.05; break;
+
+        case 'w':   deltaMoveFront = 0.5f; break;
+        case 's':   deltaMoveFront = -0.5f; break;
+        case 'a':   deltaMoveSide  = 0.5; break;
+        case 'd':   deltaMoveSide  = -0.5; break;
+
     }
 
 }
@@ -70,7 +46,10 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
             distance_between_cubs_key = 0.0; break;
         case 'w':
         case 's':
-            PlayerY_key = 0.0; break;
+            deltaMoveFront = 0.0; break;
+        case 'a':
+        case 'd':
+            deltaMoveSide = 0.0; break;
 
     }
 }
@@ -141,10 +120,15 @@ void Reshape(int w, int h) // Reshape function
 }
 void Draw() // Window redraw function
 {
-    if (deltaMove)
+    if (deltaMoveFront)
     {
-        PlayerX += deltaMove * lx * 0.1f;
-        PlayerZ += deltaMove * lz * 0.1f;
+        PlayerX += deltaMoveFront * lx * 0.1f;
+        PlayerZ += deltaMoveFront * lz * 0.1f;
+    }
+    if (deltaMoveSide)
+    {
+        PlayerX += deltaMoveSide * lz * 0.1f;
+        PlayerZ += deltaMoveSide * lx * 0.1f;
     }
     if (deltaAngle) 
     {
@@ -158,9 +142,9 @@ void Draw() // Window redraw function
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(PlayerX,          PlayerY,        PlayerZ,
-              PlayerX + lx,     PlayerY+angleY,        PlayerZ + lz, 
-              0.0f,             1.0f,           0.0f            );
+    gluLookAt(PlayerX,                  PlayerY,                    PlayerZ,
+              float(PlayerX + lx),      float(PlayerY+angleY),      float(PlayerZ + lz), 
+              0.0f,                     1.0f,                       0.0f                    );
 
 
     for (int i = -4; i < 4; i++) // рисуем кубы сеткой 8х8
@@ -205,8 +189,8 @@ int main(int argc, char* argv[])
     // и передает ее другой функции, которая считает перемещение. при отпускании клавиши срабатывает вторая функция
     // и устанваливает значение скорости 0, что приводит к прекращению движения.
     // это сделано для того, чтобы камера перемещалась с постоянной скоростью, а не рывками
-    glutSpecialFunc(SpecialKeyDOWN);// срабатывает когда клавиша нажалась
-    glutSpecialUpFunc(SpecialKeyUP); // срабатывает когда клавиша отжалась
+    //glutSpecialFunc(SpecialKeyDOWN);// срабатывает когда клавиша нажалась
+    //glutSpecialUpFunc(SpecialKeyUP); // срабатывает когда клавиша отжалась
     
     glutTimerFunc(1000/FPS, timf, 0); // ограничение fps
     
