@@ -31,8 +31,8 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         case '-':   distance_between_cubs_key = -0.05; break;
         case '+':   distance_between_cubs_key = 0.05; break;
 
-        case 'w':   deltaMoveFront = 0.5f; break;
-        case 's':   deltaMoveFront = -0.5f; break;
+        case 'w':   deltaMoveFront =  0.5f; break; 
+        case 's':   deltaMoveFront = -0.5f; break; 
         case 'a':   deltaMoveSide  = 0.5; break;
         case 'd':   deltaMoveSide  = -0.5; break;
 
@@ -179,20 +179,22 @@ int main(int argc, char* argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("cubes");
     glEnable(GL_DEPTH_TEST);
+    glutTimerFunc(1000 / FPS, timf, 0); // ограничение fps
 
-    glutDisplayFunc(Draw);    // Set up redisplay function 
-    glutReshapeFunc(Reshape); // Set up reshape function
+    glutDisplayFunc(Draw);    // основная функция рисования
+    glutReshapeFunc(Reshape); // функция изменения окна
     
-    glutKeyboardFunc(processNormalKeysDOWN);
-    glutKeyboardUpFunc(processNormalKeysUP);
     // нажимаем на стрелочки( не отспуская )- срабатывает первая функция, которая устанавливает ненулевую скорость
     // и передает ее другой функции, которая считает перемещение. при отпускании клавиши срабатывает вторая функция
     // и устанваливает значение скорости 0, что приводит к прекращению движения.
     // это сделано для того, чтобы камера перемещалась с постоянной скоростью, а не рывками
-    //glutSpecialFunc(SpecialKeyDOWN);// срабатывает когда клавиша нажалась
-    //glutSpecialUpFunc(SpecialKeyUP); // срабатывает когда клавиша отжалась
+    glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
+    glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
     
-    glutTimerFunc(1000/FPS, timf, 0); // ограничение fps
+    //glutSpecialFunc(SpecialKeyDOWN);
+    //glutSpecialUpFunc(SpecialKeyUP);
+    
+    
     
                                       
     //glClearColor(0, 128, 255, 100); // цвет фона
