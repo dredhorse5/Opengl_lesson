@@ -8,22 +8,20 @@ int WindW = 1280, WindH = 720; // Размер окна
 int quantity_cube_x = 5; // колличество кубиков по оси x
 int quantity_cube_y = 5; // колличество кубиков по оси z
 float PlayerX = 0.0, PlayerY = 0.0, PlayerZ = 0.0; // координаты камеры
+float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
 float lx = 0.0f, lz = -1.0f; // координаты вектора направления движения камеры
 float angle = 0.0; // угол поворота камеры
 float View = 45; // угол обзора
 double FPS = 60; // FPS 60
-float distance_between_cubs =  2;
+float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
+float distange_between_cubs = 8; //настоящее растояние между кубами
 float angleY = 0.0f;
 float deltaAngle = 0.0f;
 float deltaMove = 0.0;
 
 
-void computePos(float deltaMove)
-{
-    PlayerX += deltaMove * lx * 0.1f;
-    PlayerZ += deltaMove * lz * 0.1f;
-}
-void releaseKey(int key, int x, int y) {
+
+void SpecialKeyUP(int key, int x, int y) {
 
     switch (key) {
     case GLUT_KEY_LEFT:
@@ -36,12 +34,47 @@ void releaseKey(int key, int x, int y) {
         break;
     }
 }
-void computeDir(float deltaAngle)
+void SpecialKeyDOWN(int key, int x, int y)
 {
-    angle += deltaAngle;
-    lx = sin(angle);
-    lz = -cos(angle);
+    switch (key) {
+    case GLUT_KEY_LEFT:
+        deltaAngle = -0.01f;
+        break;
+    case GLUT_KEY_RIGHT:
+        deltaAngle = 0.01f;
+        break;
+    case GLUT_KEY_UP:
+        deltaMove = 0.5f;
+        break;
+    case GLUT_KEY_DOWN:
+        deltaMove = -0.5f;
+        break;
+    }
+    //glutPostRedisplay();
 }
+void processNormalKeysDOWN(unsigned char key, int x, int y)
+{
+    int fraction = 0.1f;
+    switch (key) {
+        case '-':     distance_between_cubs_key = -0.05; break;
+        case '+':     distance_between_cubs_key = 0.05; break;
+        case 'w':     PlayerY_key = 0.1; break;
+        case 's':     PlayerY_key = -0.1; break;
+    }
+
+}
+void processNormalKeysUP(unsigned char key, int x, int y) {
+    switch (key) {
+        case '+':
+        case '-':
+            distance_between_cubs_key = 0.0; break;
+        case 'w':
+        case 's':
+            PlayerY_key = 0.0; break;
+
+    }
+}
+
 void draw_cube()
 {
     glBegin(GL_POLYGON);
@@ -96,37 +129,7 @@ void draw_cube()
     glVertex3f(-cube_size, cube_size, -cube_size);
     glVertex3f(-cube_size, -cube_size, -cube_size);
     glEnd();
-}
-void SpecialKey(int key, int x, int y)
-{
-    switch (key) {
-        case GLUT_KEY_LEFT:
-            deltaAngle = -0.01f;
-            break;
-        case GLUT_KEY_RIGHT:
-            deltaAngle = 0.01f;
-            break;
-        case GLUT_KEY_UP:
-            deltaMove = 0.5f;
-            break;
-        case GLUT_KEY_DOWN:
-            deltaMove = -0.5f;
-            break;
-    }
-    //glutPostRedisplay();
-}
-void processNormalKeys(unsigned char key, int x, int y)
-{   
-    int fraction = 0.1f;
-    if (key == '-')     distance_between_cubs -= 0.05;
-    if (key == '+')     distance_between_cubs += 0.05;
-    
-    if (key == 'w')     PlayerY += 0.1;
-    if (key == 's')     PlayerY -= 0.1;
-
-    if (key == 'r') angleY += 0.1;
-    if (key == 'f') angleY -= 0.1;
-}
+} 
 void Reshape(int w, int h) // Reshape function
 {
     float ratio = w * 1.0 / h;
@@ -139,15 +142,24 @@ void Reshape(int w, int h) // Reshape function
 void Draw() // Window redraw function
 {
     if (deltaMove)
-        computePos(deltaMove);
-    if (deltaAngle)
-        computeDir(deltaAngle);
+    {
+        PlayerX += deltaMove * lx * 0.1f;
+        PlayerZ += deltaMove * lz * 0.1f;
+    }
+    if (deltaAngle) 
+    {
+        angle += deltaAngle;
+        lx = sin(angle);
+        lz = -cos(angle);
+    }
+    if (distance_between_cubs_key) distange_between_cubs += distance_between_cubs_key;
+    if (PlayerY_key) PlayerY += PlayerY_key;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
     gluLookAt(PlayerX,          PlayerY,        PlayerZ,
-              PlayerX + lx,     PlayerY+angleY,        PlayerZ + lz,
+              PlayerX + lx,     PlayerY+angleY,        PlayerZ + lz, 
               0.0f,             1.0f,           0.0f            );
 
 
@@ -156,7 +168,7 @@ void Draw() // Window redraw function
         for (int j = -4; j < 4; j++)
         {
             glPushMatrix();
-            glTranslatef(i * distance_between_cubs, -2, j * distance_between_cubs);
+            glTranslatef(i * distange_between_cubs, -2, j * distange_between_cubs);
             draw_cube();
             glPopMatrix();
         }
@@ -186,16 +198,19 @@ int main(int argc, char* argv[])
 
     glutDisplayFunc(Draw);    // Set up redisplay function 
     glutReshapeFunc(Reshape); // Set up reshape function
-    glutSpecialFunc(SpecialKey);
-
+    
+    glutKeyboardFunc(processNormalKeysDOWN);
+    glutKeyboardUpFunc(processNormalKeysUP);
     // нажимаем на стрелочки( не отспуская )- срабатывает первая функция, которая устанавливает ненулевую скорость
     // и передает ее другой функции, которая считает перемещение. при отпускании клавиши срабатывает вторая функция
     // и устанваливает значение скорости 0, что приводит к прекращению движения.
     // это сделано для того, чтобы камера перемещалась с постоянной скоростью, а не рывками
-    glutKeyboardFunc(processNormalKeys); // срабатывает когда клавиша нажалась
-    glutSpecialUpFunc(releaseKey); // срабатывает когда клавиша отжалась
-
+    glutSpecialFunc(SpecialKeyDOWN);// срабатывает когда клавиша нажалась
+    glutSpecialUpFunc(SpecialKeyUP); // срабатывает когда клавиша отжалась
+    
     glutTimerFunc(1000/FPS, timf, 0); // ограничение fps
+    
+                                      
     //glClearColor(0, 128, 255, 100); // цвет фона
     //glutSetKeyRepeat(GLUT_KEY_REPEAT_ON); // хз зачем, ничего не меняет
     //glutIgnoreKeyRepeat(0); хз зачем, при быстрой смене направления движения при кооф 1 не двигает камеру :/ 
