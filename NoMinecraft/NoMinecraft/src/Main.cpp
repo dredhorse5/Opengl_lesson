@@ -10,7 +10,7 @@ int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 0.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
-float lx = 0.0f, lz = -1.0f; // координаты вектора направления движения камеры
+float lx = 0.0f, lz = 0.0f; // координаты вектора направления движения камеры
 float angleX = 0.0f, angleY = 0.0f; // угол поворота камеры
 float View = 45; // угол обзора
 double FPS = 60; // FPS 60
@@ -22,7 +22,6 @@ float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
 int xOrigin = 0;
 float angle = 0.0f;
-float warped = true;
 bool d = true;
 float pi = 3.1415926535;
 
@@ -81,18 +80,22 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
 //    }
 //}
 void mouseMove(int x, int y) {
-    if (d) {
-        SetCursorPos(WindW / 2, WindH / 2);
-        d = false;
-    }
-    deltaAngle = (x - xOrigin) * pi*0.001;
+    POINT mousexy;
+    GetCursorPos(&mousexy);
+    //if (d) {
+    //    SetCursorPos(WindW / 2, WindH / 2);
+    //   d = false;
+    //}
+
+    deltaAngle = (x - xOrigin) * 0.001;
     xOrigin = x;
     angle  += deltaAngle;
-
-    // update camera's direction
     lx = sin(angle);
     lz = -cos(angle);
-    warped = false;
+    angle += deltaAngle;
+    SetCursorPos(WindW / 2, WindH / 2);
+    
+    
    
 
 }
@@ -144,7 +147,7 @@ void draw_cube()
 
     // Красная сторона — передняя
     glBegin(GL_POLYGON);
-    glColor3f(cube_size, 1.0, cube_size);
+    glColor3f(0.9, 0.1, 0.9);
     glVertex3f(cube_size, -cube_size, -cube_size);
     glVertex3f(cube_size, cube_size, -cube_size);
     glVertex3f(-cube_size, cube_size, -cube_size);
