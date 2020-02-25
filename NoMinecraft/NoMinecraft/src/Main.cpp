@@ -2,26 +2,38 @@
 #include <Windows.h>
 #include <Math.h>
 #include <stdio.h>
+#include <string>
 #include <glut.h>
 float cube_size = 1.0; // размер кубов
-int WindW = 1280, WindH = 720; // –азмер окна
-int quantity_cube_x = 5; // колличество кубиков по оси x
-int quantity_cube_y = 5; // колличество кубиков по оси z
-float PlayerX = 0.0, PlayerY = 0.0, PlayerZ = 0.0; // координаты камеры
+const int WindW = 1280, WindH = 720; // –азмер окна
+int quantity_cube_x = 40; // колличество кубиков по оси x
+int quantity_cube_z = 40; // колличество кубиков по оси z
+float PlayerX = 0.0f, PlayerY = 0.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
 float lx = 0.0f, lz = -1.0f; // координаты вектора направлени€ движени€ камеры
-float angle = 0.0; // угол поворота камеры
+float angleX = 0.0f, angleY = 0.0f; // угол поворота камеры
 float View = 45; // угол обзора
 double FPS = 60; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости рассто€ни€ между кубами
-float distange_between_cubs = 8; //насто€щее расто€ние между кубами
-float angleY = 0.0f;
-float deltaAngle = 0.0f;
+float distange_between_cubs = 3; //насто€щее расто€ние между кубами;
+float deltaAngle = 0.0f;    // ключ к изменению угла
 float deltaMoveFront = 0.0; // ключ к изменению пермещени€ вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещени€ вбок
+float deltaMove = 0;
+int xOrigin = 0;
+float angle = 0.0f;
+float warped = true;
+bool d = true;
+float pi = 3.1415926535;
 
 
-
+void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
+    glColor3f(r, g, b);
+    glRasterPos3f(x, y, z);
+    for (int i = 0; i < string.length(); i++) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
+    }
+}
 //void SpecialKeyUP(int key, int x, int y) {
 //void SpecialKeyDOWN(int key, int x, int y)
 void processNormalKeysDOWN(unsigned char key, int x, int y)
@@ -33,7 +45,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
 
         case 'w':   deltaMoveFront =  0.5f; break; 
         case 's':   deltaMoveFront = -0.5f; break; 
-        case 'a':   deltaMoveSide  = 0.5; break;
+        case 'a':   deltaMoveSide  =  0.5; break;
         case 'd':   deltaMoveSide  = -0.5; break;
 
     }
@@ -49,11 +61,41 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
             deltaMoveFront = 0.0; break;
         case 'a':
         case 'd':
-            deltaMoveSide = 0.0; break;
+            deltaMoveSide = 0.0;  break;
 
     }
 }
+//void mouseButton(int button, int state, int x, int y) {
+//
+//    // только при начале движени€, если нажата лева€ кнопка
+//    if (button == GLUT_LEFT_BUTTON) {
+//
+//        // когда кнопка отпущена
+//        if (state == GLUT_UP) {
+//            angle += deltaAngle;
+//            xOrigin = -1;
+//        }
+//        else {// state = GLUT_DOWN
+//            xOrigin = x;
+//        }
+//    }
+//}
+void mouseMove(int x, int y) {
+    if (d) {
+        SetCursorPos(WindW / 2, WindH / 2);
+        d = false;
+    }
+    deltaAngle = (x - xOrigin) * pi*0.001;
+    xOrigin = x;
+    angle  += deltaAngle;
 
+    // update camera's direction
+    lx = sin(angle);
+    lz = -cos(angle);
+    warped = false;
+   
+
+}
 void draw_cube()
 {
     glBegin(GL_POLYGON);
@@ -118,6 +160,11 @@ void Reshape(int w, int h) // Reshape function
     gluPerspective(View, ratio, 0.1f, 100.0f);
     glMatrixMode(GL_MODELVIEW);
 }
+void drawDebug() {
+
+    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(angle));
+    
+}
 void Draw() // Window redraw function
 {
     if (deltaMoveFront)
@@ -127,14 +174,8 @@ void Draw() // Window redraw function
     }
     if (deltaMoveSide)
     {
-        PlayerX += deltaMoveSide * lz * 0.1f;
-        PlayerZ += deltaMoveSide * lx * 0.1f;
-    }
-    if (deltaAngle) 
-    {
-        angle += deltaAngle;
-        lx = sin(angle);
-        lz = -cos(angle);
+        PlayerX += deltaMoveSide *  lz * 0.1f;
+        PlayerZ += deltaMoveSide * (-lx) * 0.1f;
     }
     if (distance_between_cubs_key) distange_between_cubs += distance_between_cubs_key;
     if (PlayerY_key) PlayerY += PlayerY_key;
@@ -142,14 +183,13 @@ void Draw() // Window redraw function
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(PlayerX,                  PlayerY,                    PlayerZ,
-              float(PlayerX + lx),      float(PlayerY+angleY),      float(PlayerZ + lz), 
-              0.0f,                     1.0f,                       0.0f                    );
+    gluLookAt(PlayerX,              PlayerY,        PlayerZ,
+              PlayerX + lx,         PlayerY,        PlayerZ + lz, 
+              0.0f,                 1.0f,           0.0f                    );
 
-
-    for (int i = -4; i < 4; i++) // рисуем кубы сеткой 8х8
+    for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой 8х8
     {
-        for (int j = -4; j < 4; j++)
+        for (int j = -quantity_cube_z/2; j < quantity_cube_z/2; j++)
         {
             glPushMatrix();
             glTranslatef(i * distange_between_cubs, -2, j * distange_between_cubs);
@@ -157,6 +197,8 @@ void Draw() // Window redraw function
             glPopMatrix();
         }
     }
+
+    drawDebug();
 
     glPopMatrix();
     glFinish();
@@ -178,12 +220,13 @@ int main(int argc, char* argv[])
     glutInitWindowSize(WindW, WindH);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("cubes");
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST /*and GL_CULL_FACE*/);
     glutTimerFunc(1000 / FPS, timf, 0); // ограничение fps
 
     glutDisplayFunc(Draw);    // основна€ функци€ рисовани€
     glutReshapeFunc(Reshape); // функци€ изменени€ окна
-    
+    // glutMouseFunc(mouseButton);
+    glutPassiveMotionFunc(mouseMove);
     // нажимаем на стрелочки( не отспуска€ )- срабатывает перва€ функци€, котора€ устанавливает ненулевую скорость
     // и передает ее другой функции, котора€ считает перемещение. при отпускании клавиши срабатывает втора€ функци€
     // и устанваливает значение скорости 0, что приводит к прекращению движени€.
