@@ -13,15 +13,13 @@ float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
 float lx = 0.0f, lz = -1.0f, ly = 0.0f; // координаты вектора направления движения камеры
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 float View = 45; // угол обзора
-double FPS = 60; // FPS 60
+double FPS = 120; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
 float distange_between_cubs = 3; //настоящее растояние между кубами;
-float deltaangleX = 0.0f;    // ключ к изменению угла
 float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
-bool huina = false;
 
 
 void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
@@ -31,19 +29,28 @@ void drawText(float x, float y, float z, float r, float g, float b, std::string 
         glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
     }
 }
-//void SpecialKeyUP(int key, int x, int y) {
+void drawDebug() {
+
+    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(PlayerY));
+
+}
+//void SpecialKeyUP(int key, int x, int y)
 //void SpecialKeyDOWN(int key, int x, int y)
+
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
-    int fraction = 0.1f;
     switch (key) {
         case '-':   distance_between_cubs_key = -0.05; break;
         case '+':   distance_between_cubs_key = 0.05; break;
 
         case 'w':   deltaMoveFront =  0.5f; break; 
         case 's':   deltaMoveFront = -0.5f; break; 
-        case 'a':   deltaMoveSide  =  0.5; break;
-        case 'd':   deltaMoveSide  = -0.5; break;
+        case 'a':   deltaMoveSide  =  0.2; break;
+        case 'd':   deltaMoveSide  = -0.2; break;
+        case 32 :   PlayerY_key    =  0.1; break;
+        case 'c':   PlayerY_key    = -0.1; break;
+        
+        case 27:    exit(0);
 
     }
 
@@ -59,6 +66,8 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
         case 'a':
         case 'd':
             deltaMoveSide = 0.0;  break;
+        case 32 :   PlayerY_key = 0; break;
+        case 'c':   PlayerY_key = 0; break;
 
     }
 }
@@ -151,11 +160,6 @@ void Reshape(int w, int h) // Reshape function
     gluPerspective(View, ratio, 0.1f, 100.0f);
     glMatrixMode(GL_MODELVIEW);
 }
-void drawDebug() {
-
-    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(deltaangleX));
-    
-}
 void Draw() // Window redraw function
 {
     if (deltaMoveFront)
@@ -163,10 +167,6 @@ void Draw() // Window redraw function
         PlayerX += deltaMoveFront * lx * 0.1f;
         PlayerZ += deltaMoveFront * lz * 0.1f;
     }
-
-
-
-    
     if (deltaMoveSide)
     {
         PlayerX += deltaMoveSide *  lz * 0.1f;
@@ -178,9 +178,9 @@ void Draw() // Window redraw function
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(PlayerX,              PlayerY,        PlayerZ,
-              PlayerX + lx,         PlayerY + ly,        PlayerZ + lz, 
-              0.0f,                 1.0f,           0.0f                    );
+    gluLookAt(PlayerX,              PlayerY,            PlayerZ,
+              PlayerX + lx,         PlayerY + ly,       PlayerZ + lz, 
+              0.0f,                 1.0f,               0.0f                    );
 
     for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой 8х8
     {
