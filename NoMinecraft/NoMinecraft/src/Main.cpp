@@ -10,20 +10,18 @@ int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 0.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
-float lx = 0.0f, lz = 0.0f; // координаты вектора направления движения камеры
-float angleX = 0.0f, angleY = 0.0f; // угол поворота камеры
+float lx = 0.0f, lz = -1.0f, ly = 0.0f; // координаты вектора направления движения камеры
+float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 float View = 45; // угол обзора
 double FPS = 60; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
 float distange_between_cubs = 3; //настоящее растояние между кубами;
-float deltaAngle = 0.0f;    // ключ к изменению угла
+float deltaangleX = 0.0f;    // ключ к изменению угла
 float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
-int xOrigin = 0;
-float angle = 0.0f;
-bool d = true;
-float pi = 3.1415926535;
+int mouseXOld = 1, mouseYOld = 1;
+bool huina = false;
 
 
 void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
@@ -64,39 +62,29 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
 
     }
 }
-//void mouseButton(int button, int state, int x, int y) {
-//
-//    // только при начале движения, если нажата левая кнопка
-//    if (button == GLUT_LEFT_BUTTON) {
-//
-//        // когда кнопка отпущена
-//        if (state == GLUT_UP) {
-//            angle += deltaAngle;
-//            xOrigin = -1;
-//        }
-//        else {// state = GLUT_DOWN
-//            xOrigin = x;
-//        }
-//    }
-//}
-void mouseMove(int x, int y) {
-    POINT mousexy;
-    GetCursorPos(&mousexy);
-    //if (d) {
-    //    SetCursorPos(WindW / 2, WindH / 2);
-    //   d = false;
-    //}
+void mouseMove(int x, int y) 
+{
+    if ( mouseXOld != 0 or mouseYOld != 0) {
+        angleX -= mouseXOld * 0.001f;
+        angleY -= mouseYOld * 0.001f;
 
-    deltaAngle = (x - xOrigin) * 0.001;
-    xOrigin = x;
-    angle  += deltaAngle;
-    lx = sin(angle);
-    lz = -cos(angle);
-    angle += deltaAngle;
-    SetCursorPos(WindW / 2, WindH / 2);
-    
-    
-   
+        if (angleY > 3.14 /2) angleY = 3.14/2 ;
+        if (angleY < -3.14 / 2) angleY = -3.14 / 2;
+
+        mouseXOld = 0; mouseYOld = 0;
+
+        // update camera's direction
+        lx = sin(angleX);
+        lz = -cos(angleX);
+        ly = -tan(angleY);
+        
+    } else {
+        
+        mouseXOld = (WindW / 2) - x;
+        mouseYOld = (WindH / 2) - y;
+        glutWarpPointer((WindW / 2), (WindH / 2));
+    }
+    //glutPostRedisplay();
 
 }
 void draw_cube()
@@ -165,7 +153,7 @@ void Reshape(int w, int h) // Reshape function
 }
 void drawDebug() {
 
-    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(angle));
+    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(deltaangleX));
     
 }
 void Draw() // Window redraw function
@@ -175,6 +163,10 @@ void Draw() // Window redraw function
         PlayerX += deltaMoveFront * lx * 0.1f;
         PlayerZ += deltaMoveFront * lz * 0.1f;
     }
+
+
+
+    
     if (deltaMoveSide)
     {
         PlayerX += deltaMoveSide *  lz * 0.1f;
@@ -187,7 +179,7 @@ void Draw() // Window redraw function
     glPushMatrix();
 
     gluLookAt(PlayerX,              PlayerY,        PlayerZ,
-              PlayerX + lx,         PlayerY,        PlayerZ + lz, 
+              PlayerX + lx,         PlayerY + ly,        PlayerZ + lz, 
               0.0f,                 1.0f,           0.0f                    );
 
     for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой 8х8
@@ -228,8 +220,9 @@ int main(int argc, char* argv[])
 
     glutDisplayFunc(Draw);    // основная функция рисования
     glutReshapeFunc(Reshape); // функция изменения окна
-    // glutMouseFunc(mouseButton);
+    //glutMouseFunc(mouseButton);
     glutPassiveMotionFunc(mouseMove);
+    glutSetCursor(GLUT_CURSOR_NONE);
     // нажимаем на стрелочки( не отспуская )- срабатывает первая функция, которая устанавливает ненулевую скорость
     // и передает ее другой функции, которая считает перемещение. при отпускании клавиши срабатывает вторая функция
     // и устанваливает значение скорости 0, что приводит к прекращению движения.
