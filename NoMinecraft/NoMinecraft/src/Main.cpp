@@ -7,7 +7,7 @@
 #include <SOIL.h>
 #pragma comment(lib, "SOIL.lib")
 float cube_size = 1.0; // размер кубов
-int width = 1920, height = 1080; // Размер окна
+int width = 1080, height = 720; // Размер окна
 int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
@@ -122,14 +122,14 @@ void mouseMove(int x, int y)
         
     } else {
         
-        mouseXOld = (width *4) - x;
-        mouseYOld = (height *2) - y;
-        glutWarpPointer((width *4), (height *2));
+        mouseXOld = (width *2) - x;
+        mouseYOld = (height *1.5) - y;
+        glutWarpPointer((width *2), (height *1.5));
     }
     //glutPostRedisplay();
 
 }
-void draw_cube()
+void draw_dirt()
 {
     glBindTexture(GL_TEXTURE_2D, texture);
     //задняя
@@ -217,7 +217,7 @@ void Draw() // Window redraw function
         {
             glPushMatrix();
             glTranslatef(i * distange_between_cubs, 0, j * distange_between_cubs);
-            draw_cube();
+            draw_dirt();
             glPopMatrix();
         }
     }
