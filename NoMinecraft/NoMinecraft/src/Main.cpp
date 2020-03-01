@@ -4,22 +4,24 @@
 #include <stdio.h>
 #include <string>
 #include <glut.h>
+#include <SOIL.h>
 float cube_size = 1.0; // размер кубов
-const int WindW = 1280, WindH = 720; // Размер окна
+const int Weight = 1280, Hight = 720; // Размер окна
 int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
-float PlayerX = 0.0f, PlayerY = 0.0f, PlayerZ = 0.0f; // координаты камеры
+float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
-float lx = 0.0f, lz = -1.0f, ly = 0.0f; // координаты вектора направления движения камеры
+float lx = 1.0f, lz = 1.0f, ly = 1.0f; // координаты вектора направления движения камеры
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
-float View = 45; // угол обзора
+float View = 75; // угол обзора
 double FPS = 120; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
-float distange_between_cubs = 3; //настоящее растояние между кубами;
+float distange_between_cubs = 2.05; //настоящее растояние между кубами;
 float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
+
 
 
 void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
@@ -36,7 +38,6 @@ void drawDebug() {
 }
 //void SpecialKeyUP(int key, int x, int y)
 //void SpecialKeyDOWN(int key, int x, int y)
-
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
     switch (key) {
@@ -50,7 +51,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         case 32 :   PlayerY_key    =  0.1; break;
         case 'c':   PlayerY_key    = -0.1; break;
         
-        case 27:    exit(0);
+        case 27:    exit(0); 
 
     }
 
@@ -89,9 +90,9 @@ void mouseMove(int x, int y)
         
     } else {
         
-        mouseXOld = (WindW / 2) - x;
-        mouseYOld = (WindH / 2) - y;
-        glutWarpPointer((WindW / 2), (WindH / 2));
+        mouseXOld = (Weight / 2) - x;
+        mouseYOld = (Hight / 2) - y;
+        glutWarpPointer((Weight / 2), (Hight / 2));
     }
     //glutPostRedisplay();
 
@@ -187,7 +188,7 @@ void Draw() // Window redraw function
         for (int j = -quantity_cube_z/2; j < quantity_cube_z/2; j++)
         {
             glPushMatrix();
-            glTranslatef(i * distange_between_cubs, -2, j * distange_between_cubs);
+            glTranslatef(i * distange_between_cubs, 0, j * distange_between_cubs);
             draw_cube();
             glPopMatrix();
         }
@@ -212,7 +213,7 @@ int main(int argc, char* argv[])
     
 
     glutInit(&argc, argv);
-    glutInitWindowSize(WindW, WindH);
+    glutInitWindowSize(Weight, Hight);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("cubes");
     glEnable(GL_DEPTH_TEST /*and GL_CULL_FACE*/);
