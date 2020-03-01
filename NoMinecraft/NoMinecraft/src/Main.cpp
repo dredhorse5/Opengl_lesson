@@ -7,15 +7,15 @@
 #include <SOIL.h>
 #pragma comment(lib, "SOIL.lib")
 float cube_size = 1.0; // размер кубов
-int width = 1280, height = 720; // Размер окна
-int quantity_cube_x = 8; // колличество кубиков по оси x
-int quantity_cube_z = 8; // колличество кубиков по оси z
+int width = 1920, height = 1080; // Размер окна
+int quantity_cube_x = 40; // колличество кубиков по оси x
+int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
 float lx = 1.0f, lz = 1.0f, ly = 1.0f; // координаты вектора направления движения камеры
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 float View = 75; // угол обзора
-double FPS = 120; // FPS 60
+double FPS = 60; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
 float distange_between_cubs = 2; //настоящее растояние между кубами;
 float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
@@ -122,9 +122,9 @@ void mouseMove(int x, int y)
         
     } else {
         
-        mouseXOld = (width / 2) - x;
-        mouseYOld = (height / 2) - y;
-        glutWarpPointer((width / 2), (height / 2));
+        mouseXOld = (width *4) - x;
+        mouseYOld = (height *2) - y;
+        glutWarpPointer((width *4), (height *2));
     }
     //glutPostRedisplay();
 
