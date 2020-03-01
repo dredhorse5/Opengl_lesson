@@ -8,8 +8,8 @@
 #pragma comment(lib, "SOIL.lib")
 float cube_size = 1.0; // размер кубов
 int width = 1280, height = 720; // –азмер окна
-int quantity_cube_x = 4; // колличество кубиков по оси x
-int quantity_cube_z = 4; // колличество кубиков по оси z
+int quantity_cube_x = 8; // колличество кубиков по оси x
+int quantity_cube_z = 8; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
 float lx = 1.0f, lz = 1.0f, ly = 1.0f; // координаты вектора направлени€ движени€ камеры
@@ -17,7 +17,7 @@ float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 float View = 75; // угол обзора
 double FPS = 120; // FPS 60
 float distance_between_cubs_key =  0; // ключ к изменению скорости рассто€ни€ между кубами
-float distange_between_cubs = 2.05; //насто€щее расто€ние между кубами;
+float distange_between_cubs = 2; //насто€щее расто€ние между кубами;
 float deltaMoveFront = 0.0; // ключ к изменению пермещени€ вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещени€ вбок
 float deltaMove = 0;
@@ -35,11 +35,11 @@ void LoadGLTextures()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load image, create texture and generate mipmaps
-    unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image = SOIL_load_image("textures/dirt.jpg", &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     //glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image);
-    //glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 
 
     /*GLuint texture;
@@ -78,8 +78,8 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
 
         case 'w':   deltaMoveFront =  0.5f; break; 
         case 's':   deltaMoveFront = -0.5f; break; 
-        case 'a':   deltaMoveSide  =  0.2; break;
-        case 'd':   deltaMoveSide  = -0.2; break;
+        case 'a':   deltaMoveSide  =  0.5; break;
+        case 'd':   deltaMoveSide  = -0.5; break;
         case 32 :   PlayerY_key    =  0.1; break;
         case 'c':   PlayerY_key    = -0.1; break;
         
@@ -132,64 +132,53 @@ void mouseMove(int x, int y)
 void draw_cube()
 {
     glBindTexture(GL_TEXTURE_2D, texture);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0, 0); glVertex2f(-cube_size, -cube_size );
-    glTexCoord2d(1, 0); glVertex2f(cube_size, -cube_size );
-    glTexCoord2d(1, 1); glVertex2f(cube_size, cube_size );
-    glTexCoord2d(0, 1); glVertex2f(-cube_size, cube_size);
-    glEnd();
-    /*glBegin(GL_POLYGON);
-    glColor3f(1.0, 1.0, 1.0);
-    glVertex3f(cube_size, -cube_size, cube_size);
-    glVertex3f(cube_size, cube_size, cube_size);
-    glVertex3f(-cube_size, cube_size, cube_size);
-    glVertex3f(-cube_size, -cube_size, cube_size);
+    //задн€€
+    glBegin(GL_POLYGON);
+    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, cube_size);
+    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, cube_size);
     glEnd();
 
-    // ‘иолетова€ сторона Ч ѕ–ј¬јя
+    //ѕ–ј¬јя
     glBegin(GL_POLYGON);
-    glColor3f(1.0, 0.0, 1.0);
-    glVertex3f(cube_size, -cube_size, -cube_size);
-    glVertex3f(cube_size, cube_size, -cube_size);
-    glVertex3f(cube_size, cube_size, cube_size);
-    glVertex3f(cube_size, -cube_size, cube_size);
+    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, cube_size);
+    glTexCoord2d(0, 0); glVertex3f(cube_size, -cube_size, cube_size);
     glEnd();
 
-    // «елена€ сторона Ч Ћ≈¬јя
+    //Ћ≈¬јя
     glBegin(GL_POLYGON);
-    glColor3f(0.0, 1.0, 0.0);
-    glVertex3f(-cube_size, -cube_size, cube_size);
-    glVertex3f(-cube_size, cube_size, cube_size);
-    glVertex3f(-cube_size, cube_size, -cube_size);
-    glVertex3f(-cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, cube_size);
+    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
     glEnd();
 
-    // —ин€€ сторона Ч ¬≈–’Ќяя
+    // ¬≈–’Ќяя
     glBegin(GL_POLYGON);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(cube_size, cube_size, cube_size);
-    glVertex3f(cube_size, cube_size, -cube_size);
-    glVertex3f(-cube_size, cube_size, -cube_size);
-    glVertex3f(-cube_size, cube_size, cube_size);
+    glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, cube_size);
     glEnd();
 
-    //  расна€ сторона Ч Ќ»∆Ќяя
+    //Ќ»∆Ќяя
     glBegin(GL_POLYGON);
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex3f(cube_size, -cube_size, -cube_size);
-    glVertex3f(cube_size, -cube_size, cube_size);
-    glVertex3f(-cube_size, -cube_size, cube_size);
-    glVertex3f(-cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
+    glTexCoord2d(0, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
     glEnd();
 
-    //  расна€ сторона Ч передн€€
+    //передн€€
     glBegin(GL_POLYGON);
-    glColor3f(0.9, 0.1, 0.9);
-    glVertex3f(cube_size, -cube_size, -cube_size);
-    glVertex3f(cube_size, cube_size, -cube_size);
-    glVertex3f(-cube_size, cube_size, -cube_size);
-    glVertex3f(-cube_size, -cube_size, -cube_size);
-    glEnd();*/
+    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+    glEnd();
 } 
 void Reshape(int w, int h) // Reshape function
 {
