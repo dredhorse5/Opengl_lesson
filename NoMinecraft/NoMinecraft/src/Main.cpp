@@ -6,8 +6,10 @@
 #include <glut.h>
 #include <SOIL.h>
 #pragma comment(lib, "SOIL.lib")
+#define GL_CLAMP_TO_EDGE 0x812F
 float cube_size = 1.0; // размер кубов
-int width = 1080, height = 720; // Размер окна
+const int width = 1920, height = 1080; // Размер окна
+int W = width, H = height;
 int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
@@ -22,39 +24,182 @@ float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
-GLuint  texture;
+GLuint  dirt;
+GLuint skybox_texturies[6];
 
-void LoadGLTextures()
+void skybox()
 {
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // Set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+    //back
+    unsigned char* back = SOIL_load_image("textures/skybox2/skybox_back.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[0]); 
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[0]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // Set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // Load image, create texture and generate mipmaps
-    unsigned char* image = SOIL_load_image("textures/dirt.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    //glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, back); 
+    SOIL_free_image_data(back); 
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+    //bottom
+    unsigned char* bottom = SOIL_load_image("textures/skybox2/skybox_bottom.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[1]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[1]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, bottom);
+    SOIL_free_image_data(bottom);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+    //front
+    unsigned char* front = SOIL_load_image("textures/skybox2/skybox_front.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[2]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[2]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, front);
+    SOIL_free_image_data(front);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+    //left
+    unsigned char* left = SOIL_load_image("textures/skybox2/skybox_left.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[3]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[3]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, left);
+    SOIL_free_image_data(left);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+    //right
+    unsigned char* right = SOIL_load_image("textures/skybox2/skybox_right.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[4]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[4]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, right);
+    SOIL_free_image_data(right);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+    //top
+    unsigned char* top = SOIL_load_image("textures/skybox2/skybox_top.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &skybox_texturies[5]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[5]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, top);
+    SOIL_free_image_data(top);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //===========================================================================================================================
+
+}
+void drawSkybox()
+{
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[0]);
+    //задняя
+    glBegin(GL_POLYGON);
+    glTexCoord2d(1, 1); glVertex3f(-400, -400, -400);
+    glTexCoord2d(0, 1); glVertex3f(400, -400, -400);
+    glTexCoord2d(0, 0); glVertex3f(400, 400, -400);
+    glTexCoord2d(1, 0); glVertex3f(-400, 400, -400);
+    glEnd();
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[1]);
+    //нижняя
+    glBegin(GL_POLYGON);
+    glTexCoord2d(0, 0); glVertex3f(-400, -400, 400);
+    glTexCoord2d(1, 0); glVertex3f(400, -400, 400);
+    glTexCoord2d(1, 1); glVertex3f(400, -400, -400);
+    glTexCoord2d(0, 1); glVertex3f(-400, -400, -400);
+    glEnd();
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[2]);
+    //передняя
+    glBegin(GL_POLYGON);
+    glTexCoord2d(1, 0); glVertex3f(400, 400, 400);
+    glTexCoord2d(1, 1); glVertex3f(400,-400, 400);
+    glTexCoord2d(0, 1); glVertex3f(-400, -400, 400);
+    glTexCoord2d(0, 0); glVertex3f(-400, 400, 400);
+    glEnd();
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[3]);
+    //левая
+    glBegin(GL_POLYGON);
+    glTexCoord2d(1, 1); glVertex3f(-400, -400, 400);
+    glTexCoord2d(0, 1); glVertex3f(-400, -400, -400);
+    glTexCoord2d(0, 0); glVertex3f(-400, 400, -400);
+    glTexCoord2d(1, 0); glVertex3f(-400, 400, 400);
+    glEnd();
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[4]);
+    //правая
+    glBegin(GL_POLYGON);
+    glTexCoord2d(0, 1); glVertex3f(400, -400, 400);
+    glTexCoord2d(1, 1); glVertex3f(400, -400, -400);
+    glTexCoord2d(1, 0); glVertex3f(400, 400, -400);
+    glTexCoord2d(0, 0); glVertex3f(400, 400, 400);
+    glEnd();
+    //==================================================================
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies[5]);
+    //верхняя
+    glBegin(GL_POLYGON);
+    glTexCoord2d(0, 0); glVertex3f(-400, 400, -400);
+    glTexCoord2d(1, 0); glVertex3f(400, 400, -400);
+    glTexCoord2d(1, 1); glVertex3f(400, 400, 400);
+    glTexCoord2d(0, 1); glVertex3f(-400, 400, 400);
+    glEnd();
+
+}
+void dirtTexturies()
+{
+    unsigned char* dirt_image = SOIL_load_image("textures/dirt.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &dirt); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, dirt); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, dirt_image); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(dirt_image); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 
-
-    /*GLuint texture;
-
-    glGenTextures(1, &texture);
-
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image.width, image.height, GL_RGB, GL_UNSIGNED_BYTE, image.data);*/
 }
 void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
     glColor3f(r, g, b);
@@ -73,13 +218,13 @@ void drawDebug() {
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
     switch (key) {
-        case '-':   distance_between_cubs_key = -0.05; break;
-        case '+':   distance_between_cubs_key = 0.05; break;
+        //case '-':   distance_between_cubs_key = -0.05; break;
+        //case '+':   distance_between_cubs_key = 0.05; break;
 
-        case 'w':   deltaMoveFront =  0.5f; break; 
-        case 's':   deltaMoveFront = -0.5f; break; 
-        case 'a':   deltaMoveSide  =  0.5; break;
-        case 'd':   deltaMoveSide  = -0.5; break;
+        case 'w':   deltaMoveFront =  1.0f; break; 
+        case 's':   deltaMoveFront = -1.0f; break; 
+        case 'a':   deltaMoveSide  =  1.0; break;
+        case 'd':   deltaMoveSide  = -1.0; break;
         case 32 :   PlayerY_key    =  0.1; break;
         case 'c':   PlayerY_key    = -0.1; break;
         
@@ -90,17 +235,18 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
 }
 void processNormalKeysUP(unsigned char key, int x, int y) {
     switch (key) {
-        case '+':
-        case '-':
-            distance_between_cubs_key = 0.0; break;
+        //case '+':
+        //case '-':
+        //    distance_between_cubs_key = 0.0; break;
         case 'w':
         case 's':
             deltaMoveFront = 0.0; break;
         case 'a':
         case 'd':
             deltaMoveSide = 0.0;  break;
-        case 32 :   PlayerY_key = 0; break;
-        case 'c':   PlayerY_key = 0; break;
+        case 32 :
+        case 'c':   
+            PlayerY_key = 0; break;
 
     }
 }
@@ -122,16 +268,16 @@ void mouseMove(int x, int y)
         
     } else {
         
-        mouseXOld = (width *2) - x;
-        mouseYOld = (height *1.5) - y;
-        glutWarpPointer((width *2), (height *1.5));
+        mouseXOld = (width /2) - x;
+        mouseYOld = (height /2) - y;
+        glutWarpPointer((width /2), (height /2));
     }
     //glutPostRedisplay();
 
 }
 void draw_dirt()
 {
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, dirt);
     //задняя
     glBegin(GL_POLYGON);
     glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, cube_size);
@@ -186,7 +332,7 @@ void Reshape(int w, int h) // Reshape function
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    gluPerspective(View, ratio, 0.1f, 100.0f);
+    gluPerspective(View, ratio, 0.1f, 750.0f);
     glMatrixMode(GL_MODELVIEW);
 }
 void Draw() // Window redraw function
@@ -211,7 +357,7 @@ void Draw() // Window redraw function
               PlayerX + lx,         PlayerY + ly,       PlayerZ + lz, 
               0.0f,                 1.0f,               0.0f                    );
 
-    for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой 8х8
+    for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой
     {
         for (int j = -quantity_cube_z/2; j < quantity_cube_z/2; j++)
         {
@@ -222,8 +368,11 @@ void Draw() // Window redraw function
         }
     }
 
-    drawDebug();
+    glTranslatef(PlayerX, PlayerY, PlayerZ);
+    drawSkybox();
+    glTranslatef(-PlayerX, -PlayerY, -PlayerZ);
 
+    drawDebug();
     glPopMatrix();
     glFinish();
     glutSwapBuffers();
@@ -248,9 +397,10 @@ int main(int argc, char* argv[])
     glutDisplayFunc(Draw);    // основная функция рисования
     glutReshapeFunc(Reshape); // функция изменения окна
     glutSetCursor(GLUT_CURSOR_NONE);
-    LoadGLTextures();
     //====================================================================================
-    
+    skybox();
+    dirtTexturies();
+
     glutPassiveMotionFunc(mouseMove);
 
     glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
