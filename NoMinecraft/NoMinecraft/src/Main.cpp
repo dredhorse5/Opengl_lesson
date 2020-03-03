@@ -55,12 +55,24 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         //case '-':   distance_between_cubs_key = -0.05; break;
         //case '+':   distance_between_cubs_key = 0.05; break;
 
-        case 'w':   deltaMoveFront =  1.0f; break; 
-        case 's':   deltaMoveFront = -1.0f; break; 
-        case 'a':   deltaMoveSide  =  1.0; break;
-        case 'd':   deltaMoveSide  = -1.0; break;
+        case 'w':
+        case 'W':
+            deltaMoveFront =  1.0f; break; 
+        case 's':
+        case 'S':
+            deltaMoveFront = -1.0f; break; 
+        case 'a':
+        case 'A':
+            deltaMoveSide  =  1.0; break;
+        case 'd':
+        case 'D':
+            deltaMoveSide  = -1.0; break;
+
         case 32 :   PlayerY_key    =  0.1; break;
-        case 'c':   PlayerY_key    = -0.1; break;
+        
+        case 'c':
+        case 'C':
+            PlayerY_key    = -0.1; break;
         
         case 27:    exit(0); 
 
@@ -73,13 +85,19 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
         //case '-':
         //    distance_between_cubs_key = 0.0; break;
         case 'w':
+        case 'W':
         case 's':
+        case 'S':
             deltaMoveFront = 0.0; break;
         case 'a':
+        case 'A':
         case 'd':
+        case 'D':
             deltaMoveSide = 0.0;  break;
         case 32 :
-        case 'c':   
+
+        case 'c':
+        case 'C':
             PlayerY_key = 0; break;
 
     }
@@ -157,9 +175,9 @@ void Draw() // Window redraw function
     
 
 
-    glTranslatef(PlayerX, PlayerY, PlayerZ);
+    /*glTranslatef(PlayerX, PlayerY, PlayerZ);
     drawSkybox(skybox_texturies);
-    glTranslatef(-PlayerX, -PlayerY, -PlayerZ);
+    glTranslatef(-PlayerX, -PlayerY, -PlayerZ);*/
 
 
 
@@ -183,20 +201,24 @@ int main(int argc, char* argv[])
     glutInitWindowSize(width, height);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutCreateWindow("cubes");
-    glEnable(GL_DEPTH_TEST /*and GL_CULL_FACE*/);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
     glutTimerFunc(1000 / FPS, timf, 0); // ограничение fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // основная функция рисования
     glutReshapeFunc(Reshape); // функция изменения окна
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
-    skybox(skybox_texturies, W, H);
+    //skybox(skybox_texturies, W, H);
     dirt = dirtTexturies(dirt, W, H);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
     glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
     glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
+
 
     for (int x = 0; x < 50; x++)
         for (int y = 0; y < 50; y++)

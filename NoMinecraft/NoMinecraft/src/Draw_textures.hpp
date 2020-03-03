@@ -61,52 +61,52 @@ void drawSkybox(GLuint skybox_texturies[])
 void draw_dirt(int dirt, int cube_size)
 {
     glBindTexture(GL_TEXTURE_2D, dirt);
-    //çàäíÿÿ
+    /*//çàäíÿÿ*/
     glBegin(GL_POLYGON);
     glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, cube_size);
-    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, cube_size);
     glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, cube_size);
-    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, cube_size);
+    glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
     glEnd();
 
     //ÏÐÀÂÀß
     glBegin(GL_POLYGON);
     glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
-    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
     glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, cube_size);
-    glTexCoord2d(0, 0); glVertex3f(cube_size, -cube_size, cube_size);
+    glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
     glEnd();
 
     //ËÅÂÀß
     glBegin(GL_POLYGON);
     glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, cube_size);
-    glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
     glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
-    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, cube_size);
     glEnd();
 
     // ÂÅÐÕÍßß
     glBegin(GL_POLYGON);
-    glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
+    glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
     glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
-    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, cube_size);
     glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, cube_size);
     glEnd();
 
     //ÍÈÆÍßß
     glBegin(GL_POLYGON);
-    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
-    glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
     glTexCoord2d(0, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
+    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
     glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
     glEnd();
 
     //ïåðåäíÿÿ
     glBegin(GL_POLYGON);
-    glTexCoord2d(1, 0); glVertex3f(cube_size, -cube_size, -cube_size);
-    glTexCoord2d(1, 1); glVertex3f(cube_size, cube_size, -cube_size);
-    glTexCoord2d(0, 1); glVertex3f(-cube_size, cube_size, -cube_size);
-    glTexCoord2d(0, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+    glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+    glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
+    glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, -cube_size);
     glEnd();
 }
 
