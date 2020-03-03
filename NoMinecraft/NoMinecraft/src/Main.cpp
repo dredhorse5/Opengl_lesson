@@ -8,6 +8,7 @@
 #include "Draw_textures.hpp"
 #include "Help.hpp"
 #include "Load_textures.hpp"
+#include <time.h>
 #pragma comment(lib, "SOIL.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -18,7 +19,7 @@ int quantity_cube_x = 40; // колличество кубиков по оси x
 int quantity_cube_z = 40; // колличество кубиков по оси z
 float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
 float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
-float lx = 1.0f, lz = 1.0f, ly = 1.0f; // координаты вектора направлени€ движени€ камеры
+float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направлени€ движени€ камеры
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 float View = 75; // угол обзора
 double FPS = 60; // FPS 60
@@ -28,8 +29,10 @@ float deltaMoveFront = 0.0; // ключ к изменению пермещени€ вперед/назад
 float deltaMoveSide = 0.0; // ключ к изменению перемещени€ вбок
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
+bool cubes[50][50][50];
 GLuint dirt;
 GLuint skybox_texturies[6];
+
 
 
 void drawText(float x, float y, float z, float r, float g, float b, std::string string) {
@@ -41,7 +44,7 @@ void drawText(float x, float y, float z, float r, float g, float b, std::string 
 }
 void drawDebug() {
 
-    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(PlayerY));
+    drawText(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, std::to_string(ly));
 
 }
 //void SpecialKeyUP(int key, int x, int y)
@@ -137,20 +140,28 @@ void Draw() // Window redraw function
               PlayerX + lx,         PlayerY + ly,       PlayerZ + lz, 
               0.0f,                 1.0f,               0.0f                    );
 
-    for (int i = -quantity_cube_x/2; i < quantity_cube_x/2; i++) // рисуем кубы сеткой
-    {
-        for (int j = -quantity_cube_z/2; j < quantity_cube_z/2; j++)
-        {
-            glPushMatrix();
-            glTranslatef(i * distange_between_cubs, 0, j * distange_between_cubs);
-            draw_dirt(dirt, cube_size);
-            glPopMatrix();
-        }
-    }
+    for (int x = 0; x < quantity_cube_x; x++) // рисуем кубы сеткой
+        for(int y = 0; y < quantity_cube_x; y++)
+            for (int z = 0; z < quantity_cube_z; z++)
+            {
+                if (!cubes[x][y][z]) continue;
+                glPushMatrix();
+                glTranslatef(x * distange_between_cubs, y * distange_between_cubs, z * distange_between_cubs);
+                draw_dirt(dirt, cube_size);
+                glPopMatrix();
+            }
+    
+
+    
+            
+    
+
 
     glTranslatef(PlayerX, PlayerY, PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-PlayerX, -PlayerY, -PlayerZ);
+
+
 
     drawDebug();
     glPopMatrix();
@@ -167,6 +178,7 @@ void timf(int value) // Timer function
 
 int main(int argc, char* argv[])
 {
+    //===========================INITIALIZATION===========================================
     glutInit(&argc, argv);
     glutInitWindowSize(width, height);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -177,14 +189,21 @@ int main(int argc, char* argv[])
     glutDisplayFunc(Draw);    // основна€ функци€ рисовани€
     glutReshapeFunc(Reshape); // функци€ изменени€ окна
     glutSetCursor(GLUT_CURSOR_NONE);
-    //====================================================================================
+    //=====================================TEXTURES=======================================
     skybox(skybox_texturies, W, H);
     dirt = dirtTexturies(dirt, W, H);
-
+    //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
     glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
     glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
+
+    for (int x = 0; x < 50; x++)
+        for (int y = 0; y < 50; y++)
+            for (int z = 0; z < 50; z++) {
+
+                if (y == 0 or rand() % 100 == 1) cubes[x][y][z] = 1;
+            }
 
 
     //glutMouseFunc(mouseButton);
