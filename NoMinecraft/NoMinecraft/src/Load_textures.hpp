@@ -5,22 +5,50 @@
 #include <SOIL.h>
 #define GL_CLAMP_TO_EDGE 0x812F
 
-GLuint dirtTexturies(GLuint dirt, int W, int H)
+void dirtTexturies(GLuint dirt[3], int W, int H)
 {
-    unsigned char* dirt_image = SOIL_load_image("textures/dirt.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
-    glGenTextures(1, &dirt); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
-    glBindTexture(GL_TEXTURE_2D, dirt); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    unsigned char* top = SOIL_load_image("textures/dirt.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &dirt[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, dirt[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, dirt_image); // загружаем текстуру soil в перменную dirt
-    SOIL_free_image_data(dirt_image); // освобождаем текстуру из soil
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, top); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    /*//================================================================================================================================
+    unsigned char* side = SOIL_load_image("textures/grassBox/side.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &dirt[1]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, dirt[1]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
-    return dirt;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, side); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(side); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //================================================================================================================================
+
+    unsigned char* bottom = SOIL_load_image("textures/grassBox/bottom.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &dirt[2]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, dirt[2]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, bottom); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(bottom); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //================================================================================================================================
+    */
+    //return dirt;
 }
 void skybox(GLuint skybox_texturies[6], int W, int H)
 {

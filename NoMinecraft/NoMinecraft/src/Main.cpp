@@ -30,7 +30,7 @@ float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
 bool cubes[50][50][50];
-GLuint dirt;
+GLuint dirt[3];
 GLuint skybox_texturies[6];
 
 
@@ -175,9 +175,9 @@ void Draw() // Window redraw function
     
 
 
-    /*glTranslatef(PlayerX, PlayerY, PlayerZ);
+    glTranslatef(PlayerX, PlayerY, PlayerZ);
     drawSkybox(skybox_texturies);
-    glTranslatef(-PlayerX, -PlayerY, -PlayerZ);*/
+    glTranslatef(-PlayerX, -PlayerY, -PlayerZ);
 
 
 
@@ -211,8 +211,8 @@ int main(int argc, char* argv[])
     glutReshapeFunc(Reshape); // функция изменения окна
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
-    //skybox(skybox_texturies, W, H);
-    dirt = dirtTexturies(dirt, W, H);
+    skybox(skybox_texturies, W, H);
+    dirtTexturies(dirt, W, H);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
