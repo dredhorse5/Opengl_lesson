@@ -12,24 +12,24 @@
 #pragma comment(lib, "SOIL.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 
-float cube_size = 1.0; // размер кубов
-const int width = 1280, height = 720; // Размер окна
+float cube_size = 1.0; // ?????? ?????
+const int width = 1280, height = 720; // ?????? ????
 int W = width, H = height;
-int quantity_cube_x = 40; // колличество кубиков по оси x
-int quantity_cube_z = 40; // колличество кубиков по оси z
-float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // координаты камеры
-float PlayerY_key = 0.0; // ключ к изменению координаты Y игрока
-float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
-float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
-float View = 75; // угол обзора
+const int quantity_cube_x = 10; // ??????????? ??????? ?? ??? x
+const int quantity_cube_y = 10; // ??????????? ??????? ?? ??? y 
+const int quantity_cube_z = 10; // ??????????? ??????? ?? ??? z
+float PlayerX = 0.0f, PlayerY = 4.0f, PlayerZ = 0.0f; // ?????????? ??????dddddddddssdffffffffffffffffffffffffffffffffffffffffffffffffff
+float PlayerY_key = 0.0; // ???? ? ????????? ?????????? Y ??????
+float lx = 1.0f, lz = 0.0f, ly = 0.0f; // ?????????? ??????? ??????????? ???????? ??????
+float angleX = 0.0f, angleY = 5.0f; // ???? ???????? ??????
+float View = 75; // ???? ??????
 double FPS = 60; // FPS 60
-float distance_between_cubs_key =  0; // ключ к изменению скорости расстояния между кубами
-float distange_between_cubs = 2; //настоящее растояние между кубами;
-float deltaMoveFront = 0.0; // ключ к изменению пермещения вперед/назад
-float deltaMoveSide = 0.0; // ключ к изменению перемещения вбок
+float distange_between_cubs = cube_size* 2; //????????? ????????? ????? ??????;
+float deltaMoveFront = 0.0; // ???? ? ????????? ?????????? ??????/?????
+float deltaMoveSide = 0.0; // ???? ? ????????? ??????????? ????
 float deltaMove = 0;
 int mouseXOld = 1, mouseYOld = 1;
-bool cubes[50][50][50];
+bool cubes[100][100][100];
 GLuint dirt[3];
 GLuint skybox_texturies[6];
 
@@ -55,26 +55,26 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         //case '-':   distance_between_cubs_key = -0.05; break;
         //case '+':   distance_between_cubs_key = 0.05; break;
 
-        case 'w':
-        case 'W':
-            deltaMoveFront =  1.0f; break; 
-        case 's':
-        case 'S':
-            deltaMoveFront = -1.0f; break; 
-        case 'a':
-        case 'A':
-            deltaMoveSide  =  1.0; break;
-        case 'd':
-        case 'D':
-            deltaMoveSide  = -1.0; break;
+    case 'w':
+    case 'W':
+        deltaMoveFront = 1.0f; break;
+    case 's':
+    case 'S':
+        deltaMoveFront = -1.0f; break;
+    case 'a':
+    case 'A':
+        deltaMoveSide = 1.0; break;
+    case 'd':
+    case 'D':
+        deltaMoveSide = -1.0; break;
 
-        case 32 :   PlayerY_key    =  0.1; break;
-        
-        case 'c':
-        case 'C':
-            PlayerY_key    = -0.1; break;
-        
-        case 27:    exit(0); 
+    case 32:   PlayerY_key = 0.1; break;
+
+    case 'c':
+    case 'C':
+        PlayerY_key = -0.1; break;
+
+    case 27:    exit(0);
 
     }
 
@@ -84,31 +84,31 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
         //case '+':
         //case '-':
         //    distance_between_cubs_key = 0.0; break;
-        case 'w':
-        case 'W':
-        case 's':
-        case 'S':
-            deltaMoveFront = 0.0; break;
-        case 'a':
-        case 'A':
-        case 'd':
-        case 'D':
-            deltaMoveSide = 0.0;  break;
-        case 32 :
+    case 'w':
+    case 'W':
+    case 's':
+    case 'S':
+        deltaMoveFront = 0.0; break;
+    case 'a':
+    case 'A':
+    case 'd':
+    case 'D':
+        deltaMoveSide = 0.0;  break;
+    case 32:
 
-        case 'c':
-        case 'C':
-            PlayerY_key = 0; break;
+    case 'c':
+    case 'C':
+        PlayerY_key = 0; break;
 
     }
 }
-void mouseMove(int x, int y) 
+void mouseMove(int x, int y)
 {
-    if ( mouseXOld != 0 or mouseYOld != 0) {
+    if (mouseXOld != 0 or mouseYOld != 0) {
         angleX -= mouseXOld * 0.001f;
         angleY -= mouseYOld * 0.001f;
 
-        if (angleY > 3.14 /2) angleY = 3.14/2 ;
+        if (angleY > 3.14 / 2) angleY = 3.14 / 2;
         if (angleY < -3.14 / 2) angleY = -3.14 / 2;
 
         mouseXOld = 0; mouseYOld = 0;
@@ -117,12 +117,13 @@ void mouseMove(int x, int y)
         lx = sin(angleX);
         lz = -cos(angleX);
         ly = -tan(angleY);
-        
-    } else {
-        
-        mouseXOld = (width /2) - x;
-        mouseYOld = (height /2) - y;
-        glutWarpPointer((width /2), (height /2));
+
+    }
+    else {
+
+        mouseXOld = (width / 2) - x;
+        mouseYOld = (height / 2) - y;
+        glutWarpPointer((width / 2), (height / 2));
     }
     //glutPostRedisplay();
 
@@ -145,21 +146,21 @@ void Draw() // Window redraw function
     }
     if (deltaMoveSide)
     {
-        PlayerX += deltaMoveSide *  lz * 0.1f;
+        PlayerX += deltaMoveSide * lz * 0.1f;
         PlayerZ += deltaMoveSide * (-lx) * 0.1f;
     }
-    if (distance_between_cubs_key) distange_between_cubs += distance_between_cubs_key;
+    //if (distance_between_cubs_key) distange_between_cubs += distance_between_cubs_key;
     if (PlayerY_key) PlayerY += PlayerY_key;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(PlayerX,              PlayerY,            PlayerZ,
-              PlayerX + lx,         PlayerY + ly,       PlayerZ + lz, 
-              0.0f,                 1.0f,               0.0f                    );
+    gluLookAt(PlayerX, PlayerY, PlayerZ,
+        PlayerX + lx, PlayerY + ly, PlayerZ + lz,
+        0.0f, 1.0f, 0.0f);
 
-    for (int x = 0; x < quantity_cube_x; x++) // рисуем кубы сеткой
-        for(int y = 0; y < quantity_cube_x; y++)
+    for (int x = 0; x < quantity_cube_x; x++) // ?????? ???? ??????
+        for (int y = 0; y < quantity_cube_y; y++)
             for (int z = 0; z < quantity_cube_z; z++)
             {
                 if (!cubes[x][y][z]) continue;
@@ -168,11 +169,11 @@ void Draw() // Window redraw function
                 draw_dirt(dirt, cube_size);
                 glPopMatrix();
             }
-    
 
-    
-            
-    
+
+
+
+
 
 
     glTranslatef(PlayerX, PlayerY, PlayerZ);
@@ -205,10 +206,10 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
-    glutTimerFunc(1000 / FPS, timf, 0); // ограничение fps
+    glutTimerFunc(1000 / FPS, timf, 0); // ??????????? fps
     glEnable(GL_TEXTURE_2D);
-    glutDisplayFunc(Draw);    // основная функция рисования
-    glutReshapeFunc(Reshape); // функция изменения окна
+    glutDisplayFunc(Draw);    // ???????? ??????? ?????????
+    glutReshapeFunc(Reshape); // ??????? ????????? ????
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, W, H);
@@ -216,8 +217,8 @@ int main(int argc, char* argv[])
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
-    glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
-    glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
+    glutKeyboardFunc(processNormalKeysDOWN);// ??????????? ????? ??????? ????????
+    glutKeyboardUpFunc(processNormalKeysUP);// ??????????? ????? ??????? ????????
 
 
     for (int x = 0; x < 50; x++)
@@ -231,15 +232,14 @@ int main(int argc, char* argv[])
     //glutMouseFunc(mouseButton);
     //glutSpecialFunc(SpecialKeyDOWN);
     //glutSpecialUpFunc(SpecialKeyUP);      
-    //glClearColor(0, 128, 255, 100); // цвет фона
-    //glutSetKeyRepeat(GLUT_KEY_REPEAT_ON); // хз зачем, ничего не меняет
-    //glutIgnoreKeyRepeat(0); хз зачем, при быстрой смене направления движения при кооф 1 не двигает камеру :/ 
-    //glutIdleFunc(Draw); // какая-то херня, которая увердохера загружает видюху. как будто игнорит ограничение fps
-    
+    //glClearColor(0, 128, 255, 100); // ???? ????
+    //glutSetKeyRepeat(GLUT_KEY_REPEAT_ON); // ?? ?????, ?????? ?? ??????
+    //glutIgnoreKeyRepeat(0); ?? ?????, ??? ??????? ????? ??????????? ???????? ??? ???? 1 ?? ??????? ?????? :/ 
+    //glutIdleFunc(Draw); // ?????-?? ?????, ??????? ?????????? ????????? ??????. ??? ????? ??????? ??????????? fps
+
 
 
     glutMainLoop();
 
     return 0;
 }//*/
-
