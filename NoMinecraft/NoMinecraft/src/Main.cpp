@@ -388,12 +388,12 @@ void Draw() // Window redraw function
     steve.update();
     steve.mousePressed();
 
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
 
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 
 
     /*glPushMatrix();
