@@ -20,9 +20,9 @@ GLuint skybox_texturies[6];
 // все дл€ кубов
 float cube_size = 1.0f; // размер кубов
 const int width = 1280, height = 720; // –азмер окна
-int quantity_cube_x = 5; // колличество кубиков по оси x
-int quantity_cube_y = 50; // колличество кубиков по оси y
-int quantity_cube_z = 5; // колличество кубиков по оси z
+int quantity_cube_x = 20; // колличество кубиков по оси x
+int quantity_cube_y = 5; // колличество кубиков по оси y
+int quantity_cube_z = 20; // колличество кубиков по оси z
 float distange_between_cubs = cube_size * 2; //насто€щее расто€ние между кубами;
 int cubes[500][500][500];
 
@@ -30,6 +30,7 @@ int cubes[500][500][500];
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направлени€ движени€ камеры
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 int mouseXOld = 1, mouseYOld = 1;
+bool mLeft = 0, mRight = 0; // mouse bottons
 
 // разное
 double FPS = 60; // FPS 60
@@ -44,7 +45,7 @@ float DzCheck = false;
 
 bool check(int x, int y, int z) {
     if ((x < 0) or (x > quantity_cube_x*2) or
-        (y < 0) or (y > quantity_cube_y*2) or
+        (y < 0) or (y > 50) or
         (z < 0) or (z > quantity_cube_z*2)) return false;
     return cubes[x][y][z];
 
@@ -136,7 +137,7 @@ public:
         dx = 0; dy = 0; dz = 0;
         dSideX = 0; dSideZ = 0;
         dFrontX = 0; dFrontZ = 0;
-        w = 0.25; h = 1.0; d = 0.25; speed = 0.07;
+        w = 0.25f; h = 1.0f; d = 0.25f; speed = 0.07;
         onGround = false; 
         View = 90; // угол обзора
     }
@@ -157,21 +158,45 @@ public:
         dx = dSideX + dFrontX;
         PlayerX += dx;
         collision(dx, 0, 0);
-
         PlayerY += dy;
         collision(0, dy, 0);
-
         dz = dSideZ + dFrontZ;
         PlayerZ += dz;
         collision(0, 0, dz);
 
         DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(PlayerX), std::to_string(PlayerY),
         std::to_string(PlayerZ), std::to_string(dx), std::to_string(dy), std::to_string(dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(onGround), std::to_string(DxCheck), std::to_string(DyCheck), std::to_string(DzCheck));
+        std::to_string(lz), std::to_string(onGround), std::to_string(DxCheck), std::to_string(mLeft), std::to_string(mRight));
 
+        //mLeft = mRight = false;
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
 
 
+    }
+    void mousePressed() {
+        if (mRight or mLeft) {
+            float mousex = PlayerX;
+            float mousey = PlayerY + h / 2;
+            float mousez = PlayerZ;
+            int  X = 0, Y = 0, Z = 0;
+            int oldX = 0, oldY = 0, oldZ = 0;
+            float dist = 0.0f;
+
+            while (dist < 20) {
+                dist += 0.1;
+                mousex += lx / 50; X = mousex / cube_size;
+                mousey += ly / 50; Y = mousey / cube_size;
+                mousez += lz / 50; Z = mousez / cube_size;
+
+                if (check(X, Y, Z)) {
+                    if (mLeft) { cubes[X][Y][Z] = 0;           break; }
+                    if(mRight) { cubes[oldX][oldY][oldZ] = 1;  break; }
+                }
+
+                oldX = X; oldY = Y; oldZ = Z;
+            }
+        }
+        mLeft = mRight = false;
     }
     void collision(float Dx, float Dy, float Dz) {
         for (int X = (PlayerX - w) / cube_size; X < (PlayerX + w) / cube_size; X++)
@@ -281,7 +306,33 @@ void mouseMove(int x, int y)
     //glutPostRedisplay();
 
 }
+void mouseButton(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON)		//Ћева€ кнопка
+    {
+        switch (state)
+        {
+        case GLUT_DOWN:		//≈сли нажата
+            mLeft = true;
+            break;
+        case GLUT_UP:
+            mLeft = false;
+            break;
+        }
+    }
 
+    if (button == GLUT_RIGHT_BUTTON)		//Ћева€ кнопка
+    {
+        switch (state)
+        {
+        case GLUT_DOWN:		//≈сли нажата
+            mRight = true;
+            break;
+        case GLUT_UP:
+            mRight = false;
+            break;
+        }
+    }
+}
 void Reshape(int w, int h) // Reshape function
 {
     float ratio = w * 1.0 / h;
@@ -308,14 +359,15 @@ void Draw() // Window redraw function
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(steve.PlayerX,                    steve.PlayerY + 0.5,                   steve.PlayerZ,
-              long float(steve.PlayerX) + lx,   long float(steve.PlayerY) + ly + 0.5,  long float(steve.PlayerZ) + lz,
-              0.0f,                             1.0f,                            0.0f                    );
+    gluLookAt(steve.PlayerX,                    steve.PlayerY + steve.h/2,                       steve.PlayerZ,
+              long float(steve.PlayerX) + lx,   long float(steve.PlayerY) + ly + +steve.h / 2,   long float(steve.PlayerZ) + lz,
+              0.0f,                             1.0f,                                            0.0f                            );
 
     steve.update();
+    steve.mousePressed();
     
     for (int x = 0; x < quantity_cube_x; x++) // рисуем кубы сеткой
-        for (int y = 0; y < quantity_cube_y; y++)
+        for (int y = 0; y < 50; y++)
             for (int z = 0; z < quantity_cube_z; z++)
             {
                 if (!cubes[x][y][z]) continue;
@@ -359,12 +411,14 @@ int main(int argc, char* argv[])
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // основна€ функци€ рисовани€
     glutReshapeFunc(Reshape); // функци€ изменени€ окна
-    glutSetCursor(GLUT_CURSOR_NONE);
+    //glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
+
+    glutMouseFunc(mouseButton);
 
     glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
     glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
@@ -375,7 +429,7 @@ int main(int argc, char* argv[])
         for (int y = 0; y < quantity_cube_y; y++)
             for (int z = 0; z < quantity_cube_z; z++) {
 
-                if (y == 0 or rand() % 20 == 1 ) cubes[x][y][z] = 1;
+                if (y == 0 or y == 1 ) cubes[x][y][z] = 1;
             }
 
 
