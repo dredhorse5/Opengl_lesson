@@ -58,7 +58,7 @@ void drawSkybox(GLuint skybox_texturies[])
     glEnd();
     
 }
-void draw_dirt(GLuint dirt[3], int cube_size)
+void draw_dirt(GLuint dirt[3], float cube_size)
 {
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
     /*//задн€€*/
