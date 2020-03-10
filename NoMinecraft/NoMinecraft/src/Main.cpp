@@ -14,6 +14,7 @@
 #define GL_CLAMP_TO_EDGE 0x812F
 
 // текстуры 
+GLuint cursor;
 GLuint dirt[3];
 GLuint skybox_texturies[6];
 
@@ -40,7 +41,21 @@ float DxCheck = false;
 float DyCheck = false;
 float DzCheck = false;
 
+void dirtTexturies(GLuint cursor, int W, int H)
+{
+    unsigned char* cursor_ = SOIL_load_image("textures/cursor.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &cursor); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, cursor); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, cursor_); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(cursor_); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+}
 
 
 bool check(int x, int y, int z) {
@@ -54,8 +69,9 @@ void DrawdebugScreen(float x, float y, float z, void* font,
     std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
     std::string speedY, std::string speedZ, std::string lx,  std::string ly, std::string lz, std::string Onground,
     std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {
+    glutSetCursor(GLUT_CURSOR_NONE);
     if (Draw_debug_Menu_key) {
-
+        glutSetCursor(GLUT_CURSOR_CROSSHAIR);
         //выбрать режим проекции
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
@@ -111,6 +127,13 @@ void DrawdebugScreen(float x, float y, float z, void* font,
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        glBindTexture(GL_TEXTURE_2D, cursor);
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex2f(-1, -1);
+        glTexCoord2d(0, 1); glVertex2f(-1, -1);
+        glTexCoord2d(0, 0); glVertex2f(-1, 1);
+        glTexCoord2d(1, 0); glVertex2f(-1, 1);
+        glEnd();
 
         glPopMatrix();
 
@@ -141,7 +164,6 @@ public:
         onGround = false; 
         View = 90; // угол обзора
     }
-
     void update() {
         if (KeyFront) {
             dFrontX = lx * speed * KeyFront;
@@ -222,7 +244,7 @@ public:
     }
 };
 
-Player steve(1, 25, 1);
+Player steve(1, 5, 1);
 
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
@@ -249,7 +271,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 32:
         if (steve.onGround) {
             steve.onGround = false;
-            steve.dy = 0.2;
+            steve.dy = 0.17;
         }
         break;
 
@@ -359,13 +381,31 @@ void Draw() // Window redraw function
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
 
-    gluLookAt(steve.PlayerX,                    steve.PlayerY + steve.h/2,                       steve.PlayerZ,
-              long float(steve.PlayerX) + lx,   long float(steve.PlayerY) + ly + +steve.h / 2,   long float(steve.PlayerZ) + lz,
-              0.0f,                             1.0f,                                            0.0f                            );
+    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,          steve.PlayerZ,
+              steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
+              0.0f,                 1.0f,                               0.0f                            );
 
     steve.update();
     steve.mousePressed();
-    
+
+    glDisable(GL_LIGHTING);
+
+    glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
+    drawSkybox(skybox_texturies);
+    glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
+    glEnable(GL_LIGHTING);
+
+
+    /*glPushMatrix();
+    glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
+    GLfloat light1_diffuse[] = { 1, 1, 1 };
+    GLfloat light1_position[] = {1, 1,1, 1 };
+    glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    glPopMatrix();*/
+
+
     for (int x = 0; x < quantity_cube_x; x++) // рисуем кубы сеткой
         for (int y = 0; y < 50; y++)
             for (int z = 0; z < quantity_cube_z; z++)
@@ -378,18 +418,16 @@ void Draw() // Window redraw function
                 glPopMatrix();
             }
     
-    
-    
 
     
 
-    glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
-    drawSkybox(skybox_texturies);
-    glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
+    
+
     //=================================конец основного цикла===================================================================================
 
     glPopMatrix();
     glFinish();
+    //glDisable(GL_LIGHT1);
     glutSwapBuffers();
 }
 
@@ -411,10 +449,11 @@ int main(int argc, char* argv[])
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // основная функция рисования
     glutReshapeFunc(Reshape); // функция изменения окна
-    //glutSetCursor(GLUT_CURSOR_NONE);
+    
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
+    dirtTexturies(cursor, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
