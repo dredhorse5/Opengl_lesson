@@ -7,7 +7,7 @@
 
 void dirtTexturies(GLuint dirt[3], int W, int H)
 {
-    unsigned char* top = SOIL_load_image("textures/stone.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    unsigned char* top = SOIL_load_image("textures/dirt.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &dirt[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, dirt[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 

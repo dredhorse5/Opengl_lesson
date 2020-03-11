@@ -13,19 +13,18 @@
 #pragma comment(lib, "SOIL.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 
-// текстуры 
+// textures
 GLuint cursor;
 GLuint dirt[3];
 GLuint skybox_texturies[6];
 
-// все для кубов
-float cube_size = 1.0f; // размер кубов
-const int width = 1280, height = 720; // Размер окна
-int quantity_cube_x = 20; // колличество кубиков по оси x
-int quantity_cube_y = 5; // колличество кубиков по оси y
-int quantity_cube_z = 20; // колличество кубиков по оси z
-float distange_between_cubs = cube_size * 2; //настоящее растояние между кубами;
-int cubes[500][500][500];
+// cubes
+float cube_size = 1.0f; // size of cubes
+const int width = 1280, height = 720; // size of window
+int quantity_cube_x = 50; // quanity cubes of x
+int quantity_cube_y = 4; // quanity cubes of y
+int quantity_cube_z = 50; // quanity cubes of z
+bool cubes[50][50][50];
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -37,25 +36,6 @@ bool mLeft = 0, mRight = 0; // mouse bottons
 double FPS = 60; // FPS 60
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = false;
-float DxCheck = false;
-float DyCheck = false;
-float DzCheck = false;
-
-void dirtTexturies(GLuint cursor, int W, int H)
-{
-    unsigned char* cursor_ = SOIL_load_image("textures/cursor.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
-    glGenTextures(1, &cursor); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
-    glBindTexture(GL_TEXTURE_2D, cursor); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, cursor_); // загружаем текстуру soil в перменную dirt
-    SOIL_free_image_data(cursor_); // освобождаем текстуру из soil
-    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-}
 
 
 bool check(int x, int y, int z) {
@@ -127,13 +107,6 @@ void DrawdebugScreen(float x, float y, float z, void* font,
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        glBindTexture(GL_TEXTURE_2D, cursor);
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex2f(-1, -1);
-        glTexCoord2d(0, 1); glVertex2f(-1, -1);
-        glTexCoord2d(0, 0); glVertex2f(-1, 1);
-        glTexCoord2d(1, 0); glVertex2f(-1, 1);
-        glEnd();
 
         glPopMatrix();
 
@@ -188,7 +161,7 @@ public:
 
         DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(PlayerX), std::to_string(PlayerY),
         std::to_string(PlayerZ), std::to_string(dx), std::to_string(dy), std::to_string(dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(onGround), std::to_string(DxCheck), std::to_string(mLeft), std::to_string(mRight));
+        std::to_string(lz), std::to_string(onGround), std::to_string(52), std::to_string(mLeft), std::to_string(mRight));
 
         //mLeft = mRight = false;
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
@@ -226,20 +199,15 @@ public:
         for (int Z = (PlayerZ - d) / cube_size; Z < (PlayerZ + d) / cube_size; Z++)
             if(check(X,Y,Z))
             {
-                if (Dx > 0) { PlayerX = X * cube_size - w; DxCheck = true; }
-                else DxCheck = false;
-                if (Dx < 0) { PlayerX = X * cube_size + cube_size + w; DxCheck = true; }
-                else DxCheck = false;
-                
-                if (Dy > 0) { PlayerY = Y * cube_size - h; dy = 0; DyCheck = true; }
-                else DyCheck = false;
-                if (Dy < 0) { PlayerY = Y * cube_size + cube_size + h; onGround = true; dy = 0; DyCheck = true; }
-                else DyCheck = false;
-
-                if (Dz > 0) { PlayerZ = Z * cube_size - d; DzCheck = true; }
-                else DzCheck = false;
-                if (Dz < 0) { PlayerZ = Z * cube_size + cube_size + d; DzCheck = true; }
-                else DzCheck = false;
+                if (Dx > 0) PlayerX = X * cube_size - w;
+                if (Dx < 0) PlayerX = X * cube_size + cube_size + w;
+              
+                if (Dy > 0) { PlayerY = Y * cube_size - h; dy = 0; }
+                if (Dy < 0) { PlayerY = Y * cube_size + cube_size + h; onGround = true; dy = 0;}
+             
+                if (Dz > 0) PlayerZ = Z * cube_size - d; 
+                if (Dz < 0) PlayerZ = Z * cube_size + cube_size + d;  
+               
             }
     }
 };
@@ -303,8 +271,7 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
 
     }
 }
-void mouseMove(int x, int y) 
-{
+void mouseMove(int x, int y) {
     if ( mouseXOld != 0 or mouseYOld != 0) {
         angleX -= mouseXOld * 0.001f;
         angleY -= mouseYOld * 0.001f;
@@ -329,10 +296,8 @@ void mouseMove(int x, int y)
 
 }
 void mouseButton(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON)		//Левая кнопка
-    {
-        switch (state)
-        {
+    if (button == GLUT_LEFT_BUTTON){
+        switch (state){
         case GLUT_DOWN:		//Если нажата
             mLeft = true;
             break;
@@ -342,10 +307,8 @@ void mouseButton(int button, int state, int x, int y) {
         }
     }
 
-    if (button == GLUT_RIGHT_BUTTON)		//Левая кнопка
-    {
-        switch (state)
-        {
+    if (button == GLUT_RIGHT_BUTTON){
+        switch (state){
         case GLUT_DOWN:		//Если нажата
             mRight = true;
             break;
@@ -355,8 +318,7 @@ void mouseButton(int button, int state, int x, int y) {
         }
     }
 }
-void Reshape(int w, int h) // Reshape function
-{
+void Reshape(int w, int h){
     float ratio = w * 1.0 / h;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -364,8 +326,7 @@ void Reshape(int w, int h) // Reshape function
     gluPerspective(steve.View, ratio, 0.1f, 750.0f);
     glMatrixMode(GL_MODELVIEW);
 }
-void timf(int value) // Timer function
-{
+void timf(int value){
     glutPostRedisplay();  // Redraw windows
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
@@ -394,7 +355,7 @@ void Draw() // Window redraw function
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
     //glEnable(GL_LIGHTING);
-
+    
 
     /*glPushMatrix();
     glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
@@ -406,14 +367,16 @@ void Draw() // Window redraw function
     glPopMatrix();*/
 
 
-    for (int x = 0; x < quantity_cube_x; x++) // рисуем кубы сеткой
+    for (int x = 0; x < quantity_cube_x; x++) // drawing cubs
         for (int y = 0; y < 50; y++)
             for (int z = 0; z < quantity_cube_z; z++)
             {
-                if (!cubes[x][y][z]) continue;
+                
+                
+                if (!cubes[x][y][z]) continue;  
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size /2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
-                draw_dirt(dirt, cube_size/2);
+                draw_dirt(dirt, cube_size/2, x, y, z, cubes);
                 glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
                 glPopMatrix();
             }
@@ -424,7 +387,7 @@ void Draw() // Window redraw function
     
 
     //=================================конец основного цикла===================================================================================
-
+    //glutPostRedisplay();
     glPopMatrix();
     glFinish();
     //glDisable(GL_LIGHT1);
@@ -445,22 +408,21 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
-    glutTimerFunc(1000 / FPS, timf, 0); // ограничение fps
+    glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
-    glutDisplayFunc(Draw);    // основная функция рисования
-    glutReshapeFunc(Reshape); // функция изменения окна
+    glutDisplayFunc(Draw);    // Main draw function
+    glutReshapeFunc(Reshape); // change window
     
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
-    dirtTexturies(cursor, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
     glutMouseFunc(mouseButton);
 
-    glutKeyboardFunc(processNormalKeysDOWN);// срабатывает когда клавиша нажалась
-    glutKeyboardUpFunc(processNormalKeysUP);// срабатывает когда клавиша отжалась
+    glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard down
+    glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard up
 
    
     // заполнение массива блоками
@@ -468,7 +430,7 @@ int main(int argc, char* argv[])
         for (int y = 0; y < quantity_cube_y; y++)
             for (int z = 0; z < quantity_cube_z; z++) {
 
-                if (y == 0 or y == 1 ) cubes[x][y][z] = 1;
+                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6) cubes[x][y][z] = 1;
             }
 
 
