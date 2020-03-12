@@ -50,78 +50,7 @@ bool check(int x, int y, int z) {
     return cubes[x][y][z];
 
 }
-void DrawdebugScreen(float x, float y, float z, void* font,
-    std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
-    std::string speedY, std::string speedZ, std::string lx,  std::string ly, std::string lz, std::string Onground,
-    std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {
-    glutSetCursor(GLUT_CURSOR_NONE);
-    if (Draw_debug_Menu_key) {
-        glutSetCursor(GLUT_CURSOR_CROSSHAIR);
-        //выбрать режим проекции
-        glMatrixMode(GL_PROJECTION);
-        //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
-        glPushMatrix();
-        //обнуляем матрицу
-        glLoadIdentity();
-        //устанавливаем 2D ортогональную проекцию
-        gluOrtho2D(0, width, height, 0);
-        //выбираем режим обзора модели
-        glMatrixMode(GL_MODELVIEW);
 
-        glPushMatrix();
-        glLoadIdentity();
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        glRasterPos3f(x, y, z);
-        for (int i = 0; i < PlayerX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerX[i]);
-
-        glRasterPos3f(x, y + 30, z);
-        for (int i = 0; i < PlayerY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerY[i]);
-
-        glRasterPos3f(x, y + 60, z);
-        for (int i = 0; i < PlayerZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerZ[i]);
-
-        glRasterPos3f(x, y + 110, z);
-        for (int i = 0; i < speedX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedX[i]);
-
-        glRasterPos3f(x, y + 140, z);
-        for (int i = 0; i < speedY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedY[i]);
-
-        glRasterPos3f(x, y + 170, z);
-        for (int i = 0; i < speedZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedZ[i]);
-
-        glRasterPos3f(x, y + 230, z);
-        for (int i = 0; i < lx.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lx[i]);
-
-        glRasterPos3f(x, y + 260, z);
-        for (int i = 0; i < ly.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ly[i]);
-
-        glRasterPos3f(x, y + 290, z);
-        for (int i = 0; i < lz.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lz[i]);
-
-        glRasterPos3f(x, y + 340, z);
-        for (int i = 0; i < Onground.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, Onground[i]);
-
-        glRasterPos3f(x, y + 390, z);
-        for (int i = 0; i < DxCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DxCHECK[i]);
-
-        glRasterPos3f(x, y + 420, z);
-        for (int i = 0; i < DyCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DyCHECK[i]);
-
-        glRasterPos3f(x, y + 450, z);
-        for (int i = 0; i < DzCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DzCHECK[i]);
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        glPopMatrix();
-
-        glMatrixMode(GL_PROJECTION);
-        //восстановить предыдущую матрицу проекции
-        glPopMatrix();
-        //вернуться в режим модели
-        glMatrixMode(GL_MODELVIEW);
-    }
-}
 class Player {
 public:
     float PlayerX, PlayerY, PlayerZ;
@@ -140,7 +69,7 @@ public:
         dFrontX = 0; dFrontZ = 0;
         w = 0.25f; h = 1.0f; d = 0.25f; speed = 0.07;
         onGround = false; 
-        View = 90; // угол обзора
+        View = 120; // угол обзора
     }
     void update() {
         if (KeyFront) {
@@ -164,10 +93,7 @@ public:
         PlayerZ += dz;
         collision(0, 0, dz);
 
-        DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(PlayerX), std::to_string(PlayerY),
-        std::to_string(PlayerZ), std::to_string(dx), std::to_string(dy), std::to_string(dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(mRight));
-
+        
         //mLeft = mRight = false;
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
 
@@ -219,6 +145,94 @@ public:
 
 Player steve(1, 5, 1);
 
+
+void DrawdebugScreen(float x, float y, float z, void* font,
+    std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
+    std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
+    std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {
+    glutSetCursor(GLUT_CURSOR_NONE);
+    if (Draw_debug_Menu_key) {
+        glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+
+        glTranslatef(2*lx + steve.PlayerX, steve.PlayerY, 2*lz + steve.PlayerZ); // -sin(angleY) + steve.PlayerY
+        glBegin(GL_POLYGON);
+        glVertex3f( 2 * lz,  1.5, -2 * lx); // :.
+        glVertex3f(-2 * lz,  1.5,  2 * lx); // .:
+        glVertex3f(-2 * lz, -0.5,  2 * lx); // ':
+        glVertex3f( 2 * lz, -0.5, -2 * lx); // :'
+        glEnd();
+        glTranslatef(-2*lx - steve.PlayerX, -steve.PlayerY , -2*lz - steve.PlayerZ); //sin(angleY) - steve.PlayerY
+
+        //выбрать режим проекции
+        glMatrixMode(GL_PROJECTION);
+        //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
+        glPushMatrix();
+        //обнуляем матрицу
+        glLoadIdentity();
+        //устанавливаем 2D ортогональную проекцию
+        gluOrtho2D(0, width, height, 0);
+        //выбираем режим обзора модели
+        glMatrixMode(GL_MODELVIEW);
+
+        glPushMatrix();
+        glLoadIdentity();
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        {
+            glRasterPos3f(x, y, z);
+            for (int i = 0; i < PlayerX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerX[i]);
+
+            glRasterPos3f(x, y + 30, z);
+            for (int i = 0; i < PlayerY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerY[i]);
+
+            glRasterPos3f(x, y + 60, z);
+            for (int i = 0; i < PlayerZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerZ[i]);
+
+            glRasterPos3f(x, y + 110, z);
+            for (int i = 0; i < speedX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedX[i]);
+
+            glRasterPos3f(x, y + 140, z);
+            for (int i = 0; i < speedY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedY[i]);
+
+            glRasterPos3f(x, y + 170, z);
+            for (int i = 0; i < speedZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedZ[i]);
+
+            glRasterPos3f(x, y + 230, z);
+            for (int i = 0; i < lX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lX[i]);
+
+            glRasterPos3f(x, y + 260, z);
+            for (int i = 0; i < lY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lY[i]);
+
+            glRasterPos3f(x, y + 290, z);
+            for (int i = 0; i < lZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lZ[i]);
+
+            glRasterPos3f(x, y + 340, z);
+            for (int i = 0; i < Onground.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, Onground[i]);
+
+            glRasterPos3f(x, y + 390, z);
+            for (int i = 0; i < DxCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DxCHECK[i]);
+
+            glRasterPos3f(x, y + 420, z);
+            for (int i = 0; i < DyCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DyCHECK[i]);
+
+            glRasterPos3f(x, y + 450, z);
+            for (int i = 0; i < DzCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DzCHECK[i]);
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        glPopMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        //восстановить предыдущую матрицу проекции
+        glPopMatrix();
+        //вернуться в режим модели
+        glMatrixMode(GL_MODELVIEW);
+    }
+}
+
+
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
     switch (key) {
@@ -235,9 +249,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 'D':
         KeySide = 1.0; break;
     case 'b':
-        steve.PlayerX = 1;
+        steve.PlayerX = 0;
         steve.PlayerY = 5;
-        steve.PlayerZ = 1;
+        steve.PlayerZ = 0;
         steve.dy = 0;
         break;
     case 'f':
@@ -340,8 +354,6 @@ void timf(int value){
 }
 
 
-
-
 void Draw() // Window redraw function
 {
 
@@ -353,18 +365,22 @@ void Draw() // Window redraw function
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,          steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
               0.0f,                 1.0f,                               0.0f                            );
+    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX), std::to_string(steve.PlayerY),
+        std::to_string(steve.PlayerZ), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(-sin(angleY)));
 
     steve.update();
     steve.mousePressed();
 
     //glDisable(GL_LIGHTING);
-
+    
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
     //glEnable(GL_LIGHTING);
-    
+    //glRotatef(30, 1, 0, 0);
 
+    //glRotatef(-30, 1, 0, 0);
     //glPushMatrix();
     ////glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
     //GLfloat light1_diffuse[] = { 1, 1, 1 };
@@ -373,7 +389,7 @@ void Draw() // Window redraw function
     //glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
     //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     //glPopMatrix();
-
+   
     for (int x = 0; x < quantity_cube_x; x++) // drawing cubs
         for (int y = 0; y < 50; y++)
             for (int z = 0; z < quantity_cube_z; z++)
@@ -397,8 +413,6 @@ void Draw() // Window redraw function
 
     
 
-    
-
     //=================================конец основного цикла===================================================================================
     //glutPostRedisplay();
     glPopMatrix();
@@ -406,7 +420,6 @@ void Draw() // Window redraw function
     //glDisable(GL_LIGHT0);
     glutSwapBuffers();
 }
-
 
 
 
