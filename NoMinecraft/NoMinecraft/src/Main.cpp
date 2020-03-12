@@ -69,7 +69,7 @@ public:
         dFrontX = 0; dFrontZ = 0;
         w = 0.25f; h = 1.0f; d = 0.25f; speed = 0.07;
         onGround = false; 
-        View = 120; // угол обзора
+        View =90; // угол обзора
     }
     void update() {
         if (KeyFront) {
@@ -154,16 +154,14 @@ void DrawdebugScreen(float x, float y, float z, void* font,
     if (Draw_debug_Menu_key) {
         glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 
-        glTranslatef(2*lx * cos(angleY) + steve.PlayerX, - 2 *sin(angleY) + steve.PlayerY + steve.h/2, 2*lz * cos(angleY) + steve.PlayerZ);
-        glBegin(GL_POLYGON);
-        glVertex3f( 2 * lz + (2*sin(angleY) * lx) / 2,  1 * cos(angleY), -2 * lx + (2 * sin(angleY) * lz) /2); // :.
-        glVertex3f(-2 * lz + (2*sin(angleY) * lx) / 2,  1 * cos(angleY),  2 * lx + (2 * sin(angleY) * lz) /2); // .:
-        glVertex3f(-2 * lz - (2*sin(angleY) * lx) / 2, -1 * cos(angleY),  2 * lx - (2 * sin(angleY) * lz) /2); // ':
-        glVertex3f( 2 * lz - (2*sin(angleY) * lx) / 2, -1 * cos(angleY), -2 * lx - (2 * sin(angleY) * lz) /2); // :'
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 *sin(angleY) + steve.PlayerY + steve.h/2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glBegin(GL_POLYGON); 
+        glVertex3f( 1  *lz+  0.1  *sin(angleY)*lx ,  0.1  *cos(angleY), -1  *lx+  0.1  *sin(angleY)*lz); // .: // двойка позволяет двигать вверх/вниз
+        glVertex3f(-1  *lz+  0.1  *sin(angleY)*lx ,  0.1  *cos(angleY),  1  *lx+  0.1  *sin(angleY)*lz); // :. // тройка позволяет двигать влево/право
+        glVertex3f(-1  *lz-  0.1  *sin(angleY)*lx , -0.1  *cos(angleY),  1  *lx-  0.1  *sin(angleY)*lz); // :'
+        glVertex3f( 1  *lz-  0.1  *sin(angleY)*lx , -0.1  *cos(angleY), -1  *lx-  0.1  *sin(angleY)*lz); // ':
         glEnd();
-        glTranslatef(-2*lx * cos(angleY) - steve.PlayerX, 2 * sin(angleY) - steve.PlayerY - steve.h / 2, -2*lz * cos(angleY) - steve.PlayerZ); //sin(angleY) - steve.PlayerY 
-        
-                                                                                                                                               
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока
                                                                                                                                                //выбрать режим проекции
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
