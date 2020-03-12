@@ -18,6 +18,7 @@ GLuint cursor;
 GLuint dirt[1];
 GLuint skybox_texturies[6];
 GLuint stone[1];
+GLuint planks[1];
 
 // cubes
 float cube_size = 1.0f; // size of cubes
@@ -28,7 +29,7 @@ int quantity_cube_z = 20; // quanity cubes of z
 bool cubes[100][100][100];
 short int cubes_types[100][100][100];
 short int IDblocks = 1;
-short int blocks = 2;
+short int blocks = 3;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -165,7 +166,7 @@ public:
 
         DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(PlayerX), std::to_string(PlayerY),
         std::to_string(PlayerZ), std::to_string(dx), std::to_string(dy), std::to_string(dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(onGround), std::to_string(52), std::to_string(mLeft), std::to_string(mRight));
+        std::to_string(lz), std::to_string(onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(mRight));
 
         //mLeft = mRight = false;
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
@@ -344,10 +345,10 @@ void timf(int value){
 void Draw() // Window redraw function
 {
 
-    
-    //===============================начало основного цикла================================================================================
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
+    //===============================начало основного цикла================================================================================
+    
 
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,          steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
@@ -380,22 +381,17 @@ void Draw() // Window redraw function
                 
                 
                 if (!cubes[x][y][z]) continue; 
+                glPushMatrix();
+                glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
+                
                 switch (cubes_types[x][y][z]) {
-                case 1:
-                    glPushMatrix();
-                    glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
-                    draw_dirt(dirt, cube_size / 2, x, y, z, cubes);
-                    glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
-                    glPopMatrix();
-                    break;
-                case 2:
-                    glPushMatrix();
-                    glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
-                    draw_stone(stone, cube_size / 2, x, y, z, cubes);
-                    glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
-                    glPopMatrix();
-                    break;
+                case 1:   draw_dirt(dirt, cube_size / 2, x, y, z, cubes); break;
+                case 2:   draw_stone(stone, cube_size / 2, x, y, z, cubes); break;
+                case 3:   draw_planks(planks, cube_size / 2, x, y, z, cubes); break;
                 }
+                
+                glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                glPopMatrix();
             }
     if (IDblocks > blocks) IDblocks = 1;
 
@@ -435,6 +431,7 @@ int main(int argc, char* argv[])
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
     stoneTextures(stone, width, height);
+    planksTextures(planks, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 

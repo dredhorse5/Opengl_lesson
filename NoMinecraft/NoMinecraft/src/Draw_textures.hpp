@@ -117,6 +117,66 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, bool cube
         glEnd();
     }
 }
+void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, bool cubes[100][100][100])
+{
+    glBindTexture(GL_TEXTURE_2D, planks[0]);
+    ///çàäíÿÿ
+    if ((cubes[X][Y][Z] != cubes[X][Y][Z + 1])) {
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glEnd();
+    }
+    //ÏÐÀÂÀß
+    if ((cubes[X][Y][Z] != cubes[X + 1][Y][Z])) {
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, -cube_size);
+        glEnd();
+    }
+    //ËÅÂÀß
+    if (cubes[X - 1][Y][Z] != cubes[X][Y][Z]) { // X == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
+        glEnd();
+    }
+    //ïåðåäíÿÿ
+    if (cubes[X][Y][Z - 1] != cubes[X][Y][Z]) { // Z == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glEnd();
+    }
+    //ÂÅÐÕÍßß
+    if (cubes[X][Y][Z] != cubes[X][Y + 1][Z]) { // Y == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
+        glEnd();
+    }
+    //ÍÈÆÍßß
+    if (cubes[X][Y - 1][Z] != cubes[X][Y][Z]) {
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glEnd();
+    }
+
+}
+
 void drawSkybox(GLuint skybox_texturies[])
 {
     //==================================================================
