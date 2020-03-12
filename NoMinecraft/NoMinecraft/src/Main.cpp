@@ -21,7 +21,7 @@ GLuint stone[1];
 GLuint planks[1];
 
 // cubes
-float cube_size = 1.0f; // size of cubes
+float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
 int quantity_cube_x = 20; // quanity cubes of x
 int quantity_cube_y = 40; // quanity cubes of y
@@ -67,7 +67,7 @@ public:
         dx = 0; dy = 0; dz = 0;
         dSideX = 0; dSideZ = 0;
         dFrontX = 0; dFrontZ = 0;
-        w = 0.25f; h = 1.0f; d = 0.25f; speed = 0.07;
+        w = 0.5f; h = 2.0f; d = 0.5f; speed = 0.14;
         onGround = false; 
         View =90; // ףדמכ מבחמנא
     }
@@ -81,7 +81,7 @@ public:
             dSideZ = lx * speed * KeySide;
         }
        
-        dy -= 0.01;
+        dy -= 0.02;
         onGround = 0;
 
         dx = dSideX + dFrontX;
@@ -260,7 +260,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 32:
         if (steve.onGround) {
             steve.onGround = false;
-            steve.dy = 0.17;
+            steve.dy = 0.34;
         }
         break;
 
