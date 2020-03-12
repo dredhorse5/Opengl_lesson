@@ -15,16 +15,20 @@
 
 // textures
 GLuint cursor;
-GLuint dirt[3];
+GLuint dirt[1];
 GLuint skybox_texturies[6];
+GLuint stone[1];
 
 // cubes
 float cube_size = 1.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
-int quantity_cube_x = 50; // quanity cubes of x
-int quantity_cube_y = 4; // quanity cubes of y
-int quantity_cube_z = 50; // quanity cubes of z
-bool cubes[50][50][50];
+int quantity_cube_x = 20; // quanity cubes of x
+int quantity_cube_y = 40; // quanity cubes of y
+int quantity_cube_z = 20; // quanity cubes of z
+bool cubes[100][100][100];
+short int cubes_types[100][100][100];
+short int IDblocks = 1;
+short int blocks = 2;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -184,8 +188,8 @@ public:
                 mousez += lz / 50; Z = mousez / cube_size;
 
                 if (check(X, Y, Z)) {
-                    if (mLeft) { cubes[X][Y][Z] = 0;           break; }
-                    if(mRight) { cubes[oldX][oldY][oldZ] = 1;  break; }
+                    if (mLeft) { cubes[X][Y][Z] = 0; ;          break; }
+                    if (mRight) { cubes_types[oldX][oldY][oldZ] = IDblocks; cubes[oldX][oldY][oldZ] = 1;   break; }
                 }
 
                 oldX = X; oldY = Y; oldZ = Z;
@@ -234,6 +238,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         steve.PlayerY = 5;
         steve.PlayerZ = 1;
         steve.dy = 0;
+        break;
+    case 'f':
+        IDblocks++;
         break;
     
     case 32:
@@ -323,7 +330,7 @@ void Reshape(int w, int h){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    gluPerspective(steve.View, ratio, 0.1f, 750.0f);
+    gluPerspective(steve.View, ratio, 0.1f, 180.0f);
     glMatrixMode(GL_MODELVIEW);
 }
 void timf(int value){
@@ -357,15 +364,14 @@ void Draw() // Window redraw function
     //glEnable(GL_LIGHTING);
     
 
-    /*glPushMatrix();
-    glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
-    GLfloat light1_diffuse[] = { 1, 1, 1 };
-    GLfloat light1_position[] = {1, 1,1, 1 };
-    glEnable(GL_LIGHT1);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glPopMatrix();*/
-
+    //glPushMatrix();
+    ////glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
+    //GLfloat light1_diffuse[] = { 1, 1, 1 };
+    //GLfloat light1_position[] = { quantity_cube_x/2, 50,quantity_cube_z/2, 1 };
+    //glEnable(GL_LIGHT1);
+    //glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+    //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    //glPopMatrix();
 
     for (int x = 0; x < quantity_cube_x; x++) // drawing cubs
         for (int y = 0; y < 50; y++)
@@ -373,14 +379,25 @@ void Draw() // Window redraw function
             {
                 
                 
-                if (!cubes[x][y][z]) continue;  
-                glPushMatrix();
-                glTranslatef(x * cube_size + cube_size /2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
-                draw_dirt(dirt, cube_size/2, x, y, z, cubes);
-                glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
-                glPopMatrix();
+                if (!cubes[x][y][z]) continue; 
+                switch (cubes_types[x][y][z]) {
+                case 1:
+                    glPushMatrix();
+                    glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
+                    draw_dirt(dirt, cube_size / 2, x, y, z, cubes);
+                    glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                    glPopMatrix();
+                    break;
+                case 2:
+                    glPushMatrix();
+                    glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
+                    draw_stone(stone, cube_size / 2, x, y, z, cubes);
+                    glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                    glPopMatrix();
+                    break;
+                }
             }
-    
+    if (IDblocks > blocks) IDblocks = 1;
 
     
 
@@ -390,7 +407,7 @@ void Draw() // Window redraw function
     //glutPostRedisplay();
     glPopMatrix();
     glFinish();
-    //glDisable(GL_LIGHT1);
+    //glDisable(GL_LIGHT0);
     glutSwapBuffers();
 }
 
@@ -412,10 +429,12 @@ int main(int argc, char* argv[])
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
     glutReshapeFunc(Reshape); // change window
-    
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //for light
+    glEnable(GL_NORMALIZE); //for light
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
+    stoneTextures(stone, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
@@ -430,8 +449,14 @@ int main(int argc, char* argv[])
         for (int y = 0; y < quantity_cube_y; y++)
             for (int z = 0; z < quantity_cube_z; z++) {
 
-                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6) cubes[x][y][z] = 1;
+                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4) {
+                    cubes[x][y][z] = 1; 
+                    cubes_types[x][y][z] = 1;
+                }
+                
+                if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
             }
+
 
 
     //glutIdleFunc(Draw); // какая-то херня, которая увердохера загружает видюху. как будто игнорит ограничение fps
