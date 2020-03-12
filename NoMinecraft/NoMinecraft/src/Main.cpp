@@ -154,16 +154,17 @@ void DrawdebugScreen(float x, float y, float z, void* font,
     if (Draw_debug_Menu_key) {
         glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 
-        glTranslatef(2*lx + steve.PlayerX, steve.PlayerY, 2*lz + steve.PlayerZ); // -sin(angleY) + steve.PlayerY
+        glTranslatef(2*lx * cos(angleY) + steve.PlayerX, - 2 *sin(angleY) + steve.PlayerY + steve.h/2, 2*lz * cos(angleY) + steve.PlayerZ);
         glBegin(GL_POLYGON);
-        glVertex3f( 2 * lz,  1.5, -2 * lx); // :.
-        glVertex3f(-2 * lz,  1.5,  2 * lx); // .:
-        glVertex3f(-2 * lz, -0.5,  2 * lx); // ':
-        glVertex3f( 2 * lz, -0.5, -2 * lx); // :'
+        glVertex3f( 2 * lz + (2*sin(angleY) * lx) / 2,  1 * cos(angleY), -2 * lx + (2 * sin(angleY) * lz) /2); // :.
+        glVertex3f(-2 * lz + (2*sin(angleY) * lx) / 2,  1 * cos(angleY),  2 * lx + (2 * sin(angleY) * lz) /2); // .:
+        glVertex3f(-2 * lz - (2*sin(angleY) * lx) / 2, -1 * cos(angleY),  2 * lx - (2 * sin(angleY) * lz) /2); // ':
+        glVertex3f( 2 * lz - (2*sin(angleY) * lx) / 2, -1 * cos(angleY), -2 * lx - (2 * sin(angleY) * lz) /2); // :'
         glEnd();
-        glTranslatef(-2*lx - steve.PlayerX, -steve.PlayerY , -2*lz - steve.PlayerZ); //sin(angleY) - steve.PlayerY
-
-        //выбрать режим проекции
+        glTranslatef(-2*lx * cos(angleY) - steve.PlayerX, 2 * sin(angleY) - steve.PlayerY - steve.h / 2, -2*lz * cos(angleY) - steve.PlayerZ); //sin(angleY) - steve.PlayerY 
+        
+                                                                                                                                               
+                                                                                                                                               //выбрать режим проекции
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
         glPushMatrix();
@@ -367,7 +368,7 @@ void Draw() // Window redraw function
               0.0f,                 1.0f,                               0.0f                            );
     DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX), std::to_string(steve.PlayerY),
         std::to_string(steve.PlayerZ), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(-sin(angleY)));
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
 
     steve.update();
     steve.mousePressed();
