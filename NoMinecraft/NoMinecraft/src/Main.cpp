@@ -1,20 +1,16 @@
-#include <locale.h>
-#include <Windows.h>
 #include <Math.h>
 #include <stdio.h>
-#include <string>
-#include <glut.h>
-#include <SOIL.h>
+#include <ctime>
+#include "glut.h"
+#include "SOIL.h"
 #include "Draw_textures.hpp"
 #include "Help.hpp"
 #include "Load_textures.hpp"
-#include <time.h>
-#include <ctime>
 #pragma comment(lib, "SOIL.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 
 // textures
-GLuint cursor;
+GLuint cursor_tex[1];
 GLuint dirt[1];
 GLuint skybox_texturies[6];
 GLuint stone[1];
@@ -41,6 +37,7 @@ bool mLeft = 0, mRight = 0; // mouse bottons
 double FPS = 60; // FPS 60
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = false;
+float a = 1;
 
 
 bool check(int x, int y, int z) {
@@ -100,7 +97,7 @@ public:
 
     }
     void mousePressed() {
-        if (mRight or mLeft) {
+        //if (mRight or mLeft) {
             float mousex = PlayerX;
             float mousey = PlayerY + h / 2;
             float mousez = PlayerZ;
@@ -108,20 +105,49 @@ public:
             int oldX = 0, oldY = 0, oldZ = 0;
             float dist = 0.0f;
 
-            while (dist < 20) {
-                dist += 0.1;
+            while (dist < 80) {
+                dist += 0.2;
                 mousex += lx / 50; X = mousex / cube_size;
                 mousey += ly / 50; Y = mousey / cube_size;
                 mousez += lz / 50; Z = mousez / cube_size;
 
-                if (check(X, Y, Z)) {
-                    if (mLeft) { cubes[X][Y][Z] = 0; ;          break; }
-                    if (mRight) { cubes_types[oldX][oldY][oldZ] = IDblocks; cubes[oldX][oldY][oldZ] = 1;   break; }
+                if (check(X, Y, Z) ) {
+                    draw_lines_cubes(cube_size,X,Y,Z);
+
+                    if (mLeft) { cubes[X][Y][Z] = 0;          break; }
+                    if (mRight) {
+                        cubes_types[oldX][oldY][oldZ] = IDblocks;
+                        cubes[oldX][oldY][oldZ] = 1;
+                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
+
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
+
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+
+                        break;
+                    }
+                    break;
                 }
 
                 oldX = X; oldY = Y; oldZ = Z;
             }
-        }
+        //}
         mLeft = mRight = false;
     }
     void collision(float Dx, float Dy, float Dz) {
@@ -142,27 +168,42 @@ public:
             }
     }
 };
-
 Player steve(1, 5, 1);
+class GUI {
+public:
+    float x1; float y1;
+    float x2; float y2;
+    float x3; float y3;
+    float x4; float y4;
+    
+    GUI(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+        this->x1 = x1; this->y1 = y1;
+        this->x2 = x2; this->y2 = y2;
+        this->x3 = x3; this->y3 = y3;
+        this->x4 = x4; this->y4 = y4;
+    }
 
+    void update(GLuint tex[1]) {
+        //float Z =(0.7 / (tan(120/2)*14)*a);
+        float Z = 0.2 * a; // 0.32 max
+        glBindTexture(GL_TEXTURE_2D, tex[0]);
+        glTranslatef(Z * lx * cos(angleY) + steve.PlayerX, -Z * sin(angleY) + steve.PlayerY + steve.h / 2, Z * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f( x1 * lz + y1 * sin(angleY) * lx,  y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
+        glTexCoord2d(0, 1); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx,  y2 * cos(angleY),  x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glTexCoord2d(0, 0); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY),  x3 * lx - y3 * sin(angleY) * lz); // :'
+        glTexCoord2d(1, 0); glVertex3f( x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
+        glEnd();
+        glTranslatef(-Z * lx * cos(angleY) - steve.PlayerX, Z * sin(angleY) - steve.PlayerY - steve.h / 2, -Z * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+    }
+};
+
+GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
 
 void DrawdebugScreen(float x, float y, float z, void* font,
     std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
-    std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {
-    glutSetCursor(GLUT_CURSOR_NONE);
-    if (Draw_debug_Menu_key) {
-        glutSetCursor(GLUT_CURSOR_CROSSHAIR);
-
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 *sin(angleY) + steve.PlayerY + steve.h/2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
-        glBegin(GL_POLYGON); 
-        glVertex3f( 1  *lz+  0.1  *sin(angleY)*lx ,  0.1  *cos(angleY), -1  *lx+  0.1  *sin(angleY)*lz); // .: // двойка позволяет двигать вверх/вниз
-        glVertex3f(-1  *lz+  0.1  *sin(angleY)*lx ,  0.1  *cos(angleY),  1  *lx+  0.1  *sin(angleY)*lz); // :. // тройка позволяет двигать влево/право
-        glVertex3f(-1  *lz-  0.1  *sin(angleY)*lx , -0.1  *cos(angleY),  1  *lx-  0.1  *sin(angleY)*lz); // :'
-        glVertex3f( 1  *lz-  0.1  *sin(angleY)*lx , -0.1  *cos(angleY), -1  *lx-  0.1  *sin(angleY)*lz); // ':
-        glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока
-                                                                                                                                               //выбрать режим проекции
+    std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
         glPushMatrix();
@@ -179,31 +220,39 @@ void DrawdebugScreen(float x, float y, float z, void* font,
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
             glRasterPos3f(x, y, z);
-            for (int i = 0; i < PlayerX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerX[i]);
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z');
+            glRasterPos3f(x + 40, y , z);
+            for (int i = 0; i < PlayerX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerX[i]);
+            glRasterPos3f(x + PlayerX.length()*7 + 40, y , z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
+            glRasterPos3f(x + PlayerX.length() * 9 + 40, y, z);
+            for (int i = 0; i < PlayerY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerY[i]);
+            glRasterPos3f(x + PlayerY.length() * 7 + PlayerX.length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
+            glRasterPos3f(x + PlayerX.length() * 9 + PlayerY.length() * 9 + 40, y, z);
+            for (int i = 0; i < PlayerZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerZ[i]);
+
+
+            /*glRasterPos3f(x+ 50, y + 40, z);
+            for (int i = 0; i < speedX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedX[i]);
+
+            glRasterPos3f(x + 100, y + 40, z);
+            for (int i = 0; i < speedY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedY[i]);
+
+            glRasterPos3f(x + 150, y + 40, z);
+            for (int i = 0; i < speedZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedZ[i]);*/
 
             glRasterPos3f(x, y + 30, z);
-            for (int i = 0; i < PlayerY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerY[i]);
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'L'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '('); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X');
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ')');
 
-            glRasterPos3f(x, y + 60, z);
-            for (int i = 0; i < PlayerZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerZ[i]);
+            glRasterPos3f(x + 60, y + 30, z);
+            for (int i = 0; i < lX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lX[i]);
+            glRasterPos3f(x + lX.length() * 7 + 60, y + 30, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
 
-            glRasterPos3f(x, y + 110, z);
-            for (int i = 0; i < speedX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedX[i]);
+            glRasterPos3f(x + lX.length() * 7 + 60 + 20, y + 30, z);
+            for (int i = 0; i < lY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lY[i]);
 
-            glRasterPos3f(x, y + 140, z);
-            for (int i = 0; i < speedY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedY[i]);
-
-            glRasterPos3f(x, y + 170, z);
-            for (int i = 0; i < speedZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedZ[i]);
-
-            glRasterPos3f(x, y + 230, z);
-            for (int i = 0; i < lX.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lX[i]);
-
-            glRasterPos3f(x, y + 260, z);
-            for (int i = 0; i < lY.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lY[i]);
-
-            glRasterPos3f(x, y + 290, z);
-            for (int i = 0; i < lZ.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lZ[i]);
+            glRasterPos3f(x + 200, y + 30, z);
+            for (int i = 0; i < lZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lZ[i]);
 
             glRasterPos3f(x, y + 340, z);
             for (int i = 0; i < Onground.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, Onground[i]);
@@ -254,6 +303,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         steve.dy = 0;
         break;
     case 'f':
+        a -= 0.1;
         IDblocks++;
         break;
     
@@ -267,7 +317,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 27:    exit(0);
 
     }
-    if (key == '~') {
+    if (key == 9) {
         if (!Draw_debug_Menu_key) {
             Draw_debug_Menu_key = 1;
         }
@@ -312,9 +362,9 @@ void mouseMove(int x, int y) {
         mouseXOld = (width /2) - x;
         mouseYOld = (height /2) - y;
         glutWarpPointer((width /2), (height /2));
-    }
+    } 
     //glutPostRedisplay();
-
+    
 }
 void mouseButton(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON){
@@ -361,40 +411,34 @@ void Draw() // Window redraw function
     //===============================начало основного цикла================================================================================
     
 
-    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,          steve.PlayerZ,
+    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
-              0.0f,                 1.0f,                               0.0f                            );
-    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX), std::to_string(steve.PlayerY),
-        std::to_string(steve.PlayerZ), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+              0.0f,                 1.0f,                             0.0f                            );
+
+    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX/2 + 0.5), std::to_string(steve.PlayerY / 2),
+        std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
         std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
 
-    steve.update();
-    steve.mousePressed();
-
+    cursor.update(cursor_tex);
     //glDisable(GL_LIGHTING);
     
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
     //glEnable(GL_LIGHTING);
-    //glRotatef(30, 1, 0, 0);
-
-    //glRotatef(-30, 1, 0, 0);
     //glPushMatrix();
-    ////glTranslatef(steve.PlayerX, 2, steve.PlayerZ);
     //GLfloat light1_diffuse[] = { 1, 1, 1 };
     //GLfloat light1_position[] = { quantity_cube_x/2, 50,quantity_cube_z/2, 1 };
     //glEnable(GL_LIGHT1);
     //glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
     //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     //glPopMatrix();
+
    
     for (int x = 0; x < quantity_cube_x; x++) // drawing cubs
         for (int y = 0; y < 50; y++)
             for (int z = 0; z < quantity_cube_z; z++)
             {
-                
-                
                 if (!cubes[x][y][z]) continue; 
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
@@ -410,7 +454,10 @@ void Draw() // Window redraw function
             }
     if (IDblocks > blocks) IDblocks = 1;
 
-    
+
+
+    steve.update();
+    steve.mousePressed();
 
     //=================================конец основного цикла===================================================================================
     //glutPostRedisplay();
@@ -422,7 +469,7 @@ void Draw() // Window redraw function
 
 
 
-int main(int argc, char* argv[])
+void main(int argc, char* argv[])
 {
     //===========================INITIALIZATION===========================================
     glutInit(&argc, argv);
@@ -439,11 +486,13 @@ int main(int argc, char* argv[])
     glutReshapeFunc(Reshape); // change window
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //for light
     glEnable(GL_NORMALIZE); //for light
+    glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
     dirtTexturies(dirt, width, height);
     stoneTextures(stone, width, height);
     planksTextures(planks, width, height);
+    cursorTextures(cursor_tex, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
 
@@ -473,6 +522,4 @@ int main(int argc, char* argv[])
 
 
     glutMainLoop();
-
-    return 0;
 }//*/

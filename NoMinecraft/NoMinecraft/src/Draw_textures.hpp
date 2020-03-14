@@ -177,6 +177,69 @@ void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, bool cu
 
 }
 
+void draw_lines_cubes(float cube_size,int X, int Y,int Z) {
+    glLineWidth(4);
+    //glColor3f(1, 1, 1);
+    cube_size = cube_size/2 + 0.004;
+    glTranslatef(X*2+1, Y*2+1, Z*2+1);
+    //вертикальные
+    glBegin(GL_LINES);
+    glColor3d(0, 1, 1);
+    glVertex3f(-cube_size, -cube_size, -cube_size);
+    glVertex3f(-cube_size, cube_size, -cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, -cube_size, -cube_size);
+    glVertex3f(cube_size, cube_size, -cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, -cube_size, cube_size);
+    glVertex3f(cube_size, cube_size, cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(-cube_size, -cube_size, cube_size);
+    glVertex3f(-cube_size, cube_size, cube_size);
+    glEnd();
+    // нижние
+    glBegin(GL_LINES);
+    glVertex3f(-cube_size, -cube_size, -cube_size);
+    glVertex3f(cube_size, -cube_size, -cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, -cube_size, -cube_size);
+    glVertex3f(cube_size, -cube_size, cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, -cube_size, cube_size);
+    glVertex3f(-cube_size, -cube_size, cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(-cube_size, -cube_size, cube_size);
+    glVertex3f(-cube_size, -cube_size, -cube_size);
+    glEnd();
+    //верхние
+    glBegin(GL_LINES);
+    glVertex3f(-cube_size, cube_size, -cube_size);
+    glVertex3f(cube_size, cube_size, -cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, cube_size, -cube_size);
+    glVertex3f(cube_size, cube_size, cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(cube_size, cube_size, cube_size);
+    glVertex3f(-cube_size, cube_size, cube_size);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f(-cube_size, cube_size, cube_size);
+    glVertex3f(-cube_size, cube_size, -cube_size);
+    glEnd();
+    glTranslatef(-(X*2)-1, -Y*2-1, -Z*2-1);
+    //glClear(GL_COLOR_BUFFER_BIT);
+    glColor3d(1, 1, 1);     // красный цвет
+
+}
+
 void drawSkybox(GLuint skybox_texturies[])
 {
     //==================================================================
