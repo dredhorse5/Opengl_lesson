@@ -1,6 +1,6 @@
 #ifndef __TEXTURES_H__
 #define __TEXTURES_H__
-void draw_dirt(GLuint dirt[1], float cube_size,int X, int Y, int Z,bool cubes[100][100][100])
+void draw_dirt(GLuint dirt[1], float cube_size,int X, int Y, int Z,bool cubes[300][100][300])
 {
 
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
@@ -14,7 +14,7 @@ void draw_dirt(GLuint dirt[1], float cube_size,int X, int Y, int Z,bool cubes[10
         glEnd();
     }
     //ÏÐÀÂÀß
-    if ((cubes[X ][Y][Z] != cubes[X+1][Y][Z])) {
+    if ((cubes[X][Y][Z] != cubes[X+1][Y][Z])) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 0.5); glVertex3f(cube_size, -cube_size, -cube_size);
         glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
@@ -60,7 +60,7 @@ void draw_dirt(GLuint dirt[1], float cube_size,int X, int Y, int Z,bool cubes[10
     }
    
 }
-void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, bool cubes[100][100][100]) {
+void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, bool cubes[300][100][300]) {
     glBindTexture(GL_TEXTURE_2D, stone[0]);
     ///çàäíÿÿ
     if ((cubes[X][Y][Z] != cubes[X][Y][Z + 1])) {
@@ -117,7 +117,7 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, bool cube
         glEnd();
     }
 }
-void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, bool cubes[100][100][100])
+void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, bool cubes[300][100][300])
 {
     glBindTexture(GL_TEXTURE_2D, planks[0]);
     ///çàäíÿÿ

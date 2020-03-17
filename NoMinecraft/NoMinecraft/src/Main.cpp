@@ -15,15 +15,15 @@ GLuint dirt[1];
 GLuint skybox_texturies[6];
 GLuint stone[1];
 GLuint planks[1];
-
+GLuint HeightMap[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
-int quantity_cube_x = 20; // quanity cubes of x
-int quantity_cube_y = 40; // quanity cubes of y
-int quantity_cube_z = 20; // quanity cubes of z
-bool cubes[100][100][100];
-short int cubes_types[100][100][100];
+int quantity_cube_x = 200; // quanity cubes of x
+int quantity_cube_y = 50; // quanity cubes of y
+int quantity_cube_z = 200; // quanity cubes of z
+bool cubes[300][100][300];
+short int cubes_types[300][100][300];
 short int IDblocks = 1;
 short int blocks = 3;
 
@@ -32,17 +32,16 @@ float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движени
 float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
 int mouseXOld = 1, mouseYOld = 1;
 bool mLeft = 0, mRight = 0; // mouse bottons
-
+float FPS = 60;
 // разное
-double FPS = 60; // FPS 60
+//double FPS = 60; // FPS 60
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = false;
-float a = 1;
 
 
 bool check(int x, int y, int z) {
     if ((x < 0) or (x > quantity_cube_x*2) or
-        (y < 0) or (y > 50) or
+        (y < 0) or (y > quantity_cube_y) or
         (z < 0) or (z > quantity_cube_z*2)) return false;
     return cubes[x][y][z];
 
@@ -64,7 +63,7 @@ public:
         dx = 0; dy = 0; dz = 0;
         dSideX = 0; dSideZ = 0;
         dFrontX = 0; dFrontZ = 0;
-        w = 0.5f; h = 2.0f; d = 0.5f; speed = 0.14;
+        w = 0.5f; h = 2.0f; d = 0.5f; speed = 0.09;
         onGround = false; 
         View =90; // угол обзора
     }
@@ -78,7 +77,7 @@ public:
             dSideZ = lx * speed * KeySide;
         }
        
-        dy -= 0.02;
+        dy -= 0.009;
         onGround = 0;
 
         dx = dSideX + dFrontX;
@@ -168,7 +167,7 @@ public:
             }
     }
 };
-Player steve(1, 5, 1);
+Player steve(0,20, 0);
 class GUI {
 public:
     float x1; float y1;
@@ -184,21 +183,32 @@ public:
     }
 
     void update(GLuint tex[1]) {
-        //float Z =(0.7 / (tan(120/2)*14)*a);
-        float Z = 0.2 * a; // 0.32 max
         glBindTexture(GL_TEXTURE_2D, tex[0]);
-        glTranslatef(Z * lx * cos(angleY) + steve.PlayerX, -Z * sin(angleY) + steve.PlayerY + steve.h / 2, Z * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 1); glVertex3f( x1 * lz + y1 * sin(angleY) * lx,  y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
         glTexCoord2d(0, 1); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx,  y2 * cos(angleY),  x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
         glTexCoord2d(0, 0); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY),  x3 * lx - y3 * sin(angleY) * lz); // :'
         glTexCoord2d(1, 0); glVertex3f( x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
         glEnd();
-        glTranslatef(-Z * lx * cos(angleY) - steve.PlayerX, Z * sin(angleY) - steve.PlayerY - steve.h / 2, -Z * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+    }
+    void update() {
+        glColor4f(1, 1, 1, 0.85 );
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glBegin(GL_POLYGON);
+        glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
+        glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
+        glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
+        glEnd();
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+        glColor4f(1, 1, 1, 1);
     }
 };
 
 GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
+GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
 
 void DrawdebugScreen(float x, float y, float z, void* font,
     std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
@@ -277,6 +287,7 @@ void DrawdebugScreen(float x, float y, float z, void* font,
         glPopMatrix();
         //вернуться в режим модели
         glMatrixMode(GL_MODELVIEW);
+        quad.update();
     }
 }
 
@@ -297,20 +308,20 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 'D':
         KeySide = 1.0; break;
     case 'b':
-        steve.PlayerX = 0;
-        steve.PlayerY = 5;
-        steve.PlayerZ = 0;
+        steve.PlayerX = 2;
+        steve.PlayerY = 20*cube_size;
+        steve.PlayerZ = 2;
         steve.dy = 0;
         break;
     case 'f':
-        a -= 0.1;
         IDblocks++;
+        if (IDblocks > blocks) IDblocks = 1;
         break;
     
     case 32:
         if (steve.onGround) {
             steve.onGround = false;
-            steve.dy = 0.34;
+            steve.dy = 0.21;
         }
         break;
 
@@ -363,6 +374,7 @@ void mouseMove(int x, int y) {
         mouseYOld = (height /2) - y;
         glutWarpPointer((width /2), (height /2));
     } 
+
     //glutPostRedisplay();
     
 }
@@ -405,7 +417,7 @@ void timf(int value){
 
 void Draw() // Window redraw function
 {
-
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
     //===============================начало основного цикла================================================================================
@@ -415,10 +427,7 @@ void Draw() // Window redraw function
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
               0.0f,                 1.0f,                             0.0f                            );
 
-    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX/2 + 0.5), std::to_string(steve.PlayerY / 2),
-        std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
-
+    
     cursor.update(cursor_tex);
     //glDisable(GL_LIGHTING);
     
@@ -426,19 +435,21 @@ void Draw() // Window redraw function
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
     //glEnable(GL_LIGHTING);
+    //getpix();
     //glPushMatrix();
     //GLfloat light1_diffuse[] = { 1, 1, 1 };
-    //GLfloat light1_position[] = { quantity_cube_x/2, 50,quantity_cube_z/2, 1 };
+    //GLfloat light1_position[] = { 0, 50,0, 1 };
     //glEnable(GL_LIGHT1);
     //glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
     //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     //glPopMatrix();
 
-   
-    for (int x = 0; x < quantity_cube_x; x++) // drawing cubs
-        for (int y = 0; y < 50; y++)
-            for (int z = 0; z < quantity_cube_z; z++)
+    for (int x = steve.PlayerX/2 - 10; x < steve.PlayerX/2 + 10; x++) // drawing cubs
+        for (int y = 0; y < quantity_cube_y; y++)
+            for (int z = steve.PlayerZ/2 - 10; z < steve.PlayerZ/2 + 10; z++)
             {
+                if (x < 0) x = 0;
+                if (z < 0) z = 0;
                 if (!cubes[x][y][z]) continue; 
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
@@ -452,10 +463,14 @@ void Draw() // Window redraw function
                 glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
                 glPopMatrix();
             }
-    if (IDblocks > blocks) IDblocks = 1;
+    
 
-
-
+    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX / 2 + 0.5), std::to_string(steve.PlayerY / 2),
+        std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
+    
+    
+    
     steve.update();
     steve.mousePressed();
 
@@ -485,7 +500,7 @@ void main(int argc, char* argv[])
     glutDisplayFunc(Draw);    // Main draw function
     glutReshapeFunc(Reshape); // change window
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //for light
-    glEnable(GL_NORMALIZE); //for light
+    //glEnable(GL_NORMALIZE); //for light
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
@@ -493,27 +508,40 @@ void main(int argc, char* argv[])
     stoneTextures(stone, width, height);
     planksTextures(planks, width, height);
     cursorTextures(cursor_tex, width, height);
+    HeightMap_Load(HeightMap, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
+    glutMotionFunc(mouseMove);
 
     glutMouseFunc(mouseButton);
 
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard down
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard up
 
+    glBindTexture(GL_TEXTURE_2D, HeightMap[0]);
+    for (int x = 0; x < 20; x++)
+        for (int z = 0; z < 20; z++) {
+            int pixel[1] = { 0 };
+            glReadPixels(x, z, 1, 1, GL_LUMINANCE, GL_UNSIGNED_BYTE, pixel);
+            int c = pixel[1];
+            cubes[x][c][z] = 1;
+            cubes_types[x][c][z] = 1;
+                            
+            if ((rand() % 2) == 1) cubes_types[x][c][z] = 2;
+        }
    
-    // заполнение массива блоками
-    for (int x = 0; x < quantity_cube_x; x++)
-        for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = 0; z < quantity_cube_z; z++) {
-
-                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4) {
-                    cubes[x][y][z] = 1; 
-                    cubes_types[x][y][z] = 1;
-                }
-                
-                if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
-            }
+    //// заполнение массива блоками
+    //for (int x = 0; x < quantity_cube_x; x++)
+    //    for (int y = 0; y < quantity_cube_y; y++)
+    //        for (int z = 0; z < quantity_cube_z; z++) {
+    //            if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6 or y == 7 or y == 8
+    //                or y == 9 or y == 10 or y == 11 or y == 12 or y == 13 or y == 14 or y == 15 or y == 16 or(rand() % 2000) == 1) {
+    //                cubes[x][y][z] = 1; 
+    //                cubes_types[x][y][z] = 1;
+    //            }
+    //            
+    //            if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
+    //        }
 
 
 
