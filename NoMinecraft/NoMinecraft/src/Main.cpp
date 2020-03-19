@@ -476,9 +476,9 @@ void Draw() // Window redraw function
 
     //=================================конец основного цикла===================================================================================
     //glutPostRedisplay();
+    //glutPostRedisplay();
     glPopMatrix();
     glFinish();
-    //glDisable(GL_LIGHT0);
     glutSwapBuffers();
 }
 
@@ -515,18 +515,19 @@ void main(int argc, char* argv[])
 
     glutMouseFunc(mouseButton);
 
-    glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard down
-    glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard up
+    glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard is down
+    glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard is up
 
     glBindTexture(GL_TEXTURE_2D, HeightMap[0]);
     for (int x = 0; x < 20; x++)
         for (int z = 0; z < 20; z++) {
-            int pixel[1] = { 0 };
-            glReadPixels(x, z, 1, 1, GL_LUMINANCE, GL_UNSIGNED_BYTE, pixel);
+            glReadBuffer(GL_FRONT);
+            unsigned char pixel[4];
+            glReadPixels(x, z, 1, 1, GL_RGB, GL_FLOAT, pixel);
             int c = pixel[1];
             cubes[x][c][z] = 1;
             cubes_types[x][c][z] = 1;
-                            
+                             
             if ((rand() % 2) == 1) cubes_types[x][c][z] = 2;
         }
    
