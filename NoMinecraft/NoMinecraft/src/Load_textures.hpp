@@ -68,7 +68,7 @@ void cursorTextures(GLuint cursor[1], int W, int H) {
 }
 void HeightMap_Load(GLuint HeightMap[1], int W, int H) {
 
-    unsigned char* SOILT = SOIL_load_image("textures/cursor.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    unsigned char* SOILT = SOIL_load_image("textures/heightmap.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
     glGenTextures(1, &HeightMap[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, HeightMap[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 

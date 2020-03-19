@@ -6,6 +6,8 @@
 #include "Draw_textures.hpp"
 #include "Help.hpp"
 #include "Load_textures.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #pragma comment(lib, "SOIL.lib")
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -19,9 +21,9 @@ GLuint HeightMap[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
-int quantity_cube_x = 200; // quanity cubes of x
+int quantity_cube_x = 257; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
-int quantity_cube_z = 200; // quanity cubes of z
+int quantity_cube_z = 257; // quanity cubes of z
 bool cubes[300][100][300];
 short int cubes_types[300][100][300];
 short int IDblocks = 1;
@@ -444,9 +446,9 @@ void Draw() // Window redraw function
     //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     //glPopMatrix();
 
-    for (int x = steve.PlayerX/2 - 10; x < steve.PlayerX/2 + 10; x++) // drawing cubs
+    for (int x = steve.PlayerX/2 - 25; x < steve.PlayerX/2 + 25; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ/2 - 10; z < steve.PlayerZ/2 + 10; z++)
+            for (int z = steve.PlayerZ/2 - 25; z < steve.PlayerZ/2 + 25; z++)
             {
                 if (x < 0) x = 0;
                 if (z < 0) z = 0;
@@ -476,7 +478,6 @@ void Draw() // Window redraw function
 
     //=================================конец основного цикла===================================================================================
     //glutPostRedisplay();
-    //glutPostRedisplay();
     glPopMatrix();
     glFinish();
     glutSwapBuffers();
@@ -484,7 +485,7 @@ void Draw() // Window redraw function
 
 
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     //===========================INITIALIZATION===========================================
     glutInit(&argc, argv);
@@ -518,31 +519,32 @@ void main(int argc, char* argv[])
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard is down
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard is up
 
-    glBindTexture(GL_TEXTURE_2D, HeightMap[0]);
-    for (int x = 0; x < 20; x++)
-        for (int z = 0; z < 20; z++) {
-            glReadBuffer(GL_FRONT);
-            unsigned char pixel[4];
-            glReadPixels(x, z, 1, 1, GL_RGB, GL_FLOAT, pixel);
-            int c = pixel[1];
-            cubes[x][c][z] = 1;
-            cubes_types[x][c][z] = 1;
-                             
-            if ((rand() % 2) == 1) cubes_types[x][c][z] = 2;
+    //glBindTexture(GL_TEXTURE_2D, HeightMap[0]);
+    sf::Image im; im.loadFromFile("textures/heightmap.png");
+    for (int x = 0; x < 257; x++)
+        for (int z = 0; z < 257; z++) {
+
+            int c = im.getPixel(x,z).r/10 +1;
+            for(int y = 0; y<c; y++){
+                    cubes[x][y][z] = 1;
+                    cubes_types[x][y][z] = 1;
+                }
+                            
+            //if ((rand() % 2) == 1) cubes_types[x][c][z] = 2;
         }
    
-    //// заполнение массива блоками
-    //for (int x = 0; x < quantity_cube_x; x++)
-    //    for (int y = 0; y < quantity_cube_y; y++)
-    //        for (int z = 0; z < quantity_cube_z; z++) {
-    //            if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6 or y == 7 or y == 8
-    //                or y == 9 or y == 10 or y == 11 or y == 12 or y == 13 or y == 14 or y == 15 or y == 16 or(rand() % 2000) == 1) {
-    //                cubes[x][y][z] = 1; 
-    //                cubes_types[x][y][z] = 1;
-    //            }
-    //            
-    //            if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
-    //        }
+    // заполнение массива блоками
+    /*for (int x = 0; x < quantity_cube_x; x++)
+        for (int y = 0; y < quantity_cube_y; y++)
+            for (int z = 0; z < quantity_cube_z; z++) {
+                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6 or y == 7 or y == 8
+                    or y == 9 or y == 10 or y == 11 or y == 12 or y == 13 or y == 14 or y == 15 or y == 16 or(rand() % 2000) == 1) {
+                    cubes[x][y][z] = 1; 
+                    cubes_types[x][y][z] = 1;
+                }
+                
+                if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
+            }*/
 
 
 
