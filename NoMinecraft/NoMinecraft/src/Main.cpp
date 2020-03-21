@@ -519,7 +519,7 @@ int main(int argc, char* argv[])
     sf::Image im; im.loadFromFile("textures/heightmap.png");
     for (int x = 0; x < 257; x++)
         for (int z = 0; z < 257; z++) {
-            int c = im.getPixel(x,z).r/10 +10;
+            int c = im.getPixel(x,z).r/15 +10;
             for(int y = 0; y<=c; y++){
                     //cubes[x][y][z] = 1;
                     if (y == c) {
