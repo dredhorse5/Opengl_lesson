@@ -1,6 +1,7 @@
 #include <Math.h>
 #include <stdio.h>
 #include <ctime>
+#include <thread>
 #include "glut.h"
 #include "SOIL.h"
 #include "Draw_textures.hpp"
@@ -13,21 +14,21 @@
 
 // textures
 GLuint cursor_tex[1];
-GLuint dirt[1];
+GLuint super_grass[1];
 GLuint skybox_texturies[6];
 GLuint stone[1];
 GLuint planks[1];
 GLuint HeightMap[1];
+GLuint dirt[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
 int quantity_cube_x = 257; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
 int quantity_cube_z = 257; // quanity cubes of z
-bool cubes[300][100][300];
-short int cubes_types[300][100][300];
+int cubes[300][100][300];
 short int IDblocks = 1;
-short int blocks = 3;
+short int blocks = 4;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -70,6 +71,7 @@ public:
         View =90; // угол обзора
     }
     void update() {
+        mousePressed();
         if (KeyFront) {
             dFrontX = lx * speed * KeyFront;
             dFrontZ = lz * speed * KeyFront;
@@ -92,10 +94,7 @@ public:
         collision(0, 0, dz);
 
         
-        //mLeft = mRight = false;
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
-
-
     }
     void mousePressed() {
         //if (mRight or mLeft) {
@@ -117,8 +116,8 @@ public:
 
                     if (mLeft) { cubes[X][Y][Z] = 0;          break; }
                     if (mRight) {
-                        cubes_types[oldX][oldY][oldZ] = IDblocks;
-                        cubes[oldX][oldY][oldZ] = 1;
+                        //cubes_types[oldX][oldY][oldZ] = IDblocks;
+                        cubes[oldX][oldY][oldZ] = IDblocks;
                         cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
                         cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
                         cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
@@ -169,7 +168,7 @@ public:
             }
     }
 };
-Player steve(0,20, 0);
+Player steve(quantity_cube_x/2,20, quantity_cube_z/2);
 class GUI {
 public:
     float x1; float y1;
@@ -196,7 +195,7 @@ public:
         glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
     }
     void update() {
-        glColor4f(1, 1, 1, 0.85 );
+        glColor3f(1, 0, 0);
         glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
         glBegin(GL_POLYGON);
         glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
@@ -205,7 +204,7 @@ public:
         glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
         glEnd();
         glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
-        glColor4f(1, 1, 1, 1);
+        glColor3f(1, 1, 1);
     }
 };
 
@@ -377,7 +376,7 @@ void mouseMove(int x, int y) {
         glutWarpPointer((width /2), (height /2));
     } 
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
     
 }
 void mouseButton(int button, int state, int x, int y) {
@@ -415,72 +414,68 @@ void timf(int value){
     glutPostRedisplay();  // Redraw windows
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
+void Draw_cubes() {
+    for (int x = steve.PlayerX / 2 - 25; x < steve.PlayerX / 2 + 25; x++) // drawing cubs
+        for (int y = 0; y < quantity_cube_y; y++)
+            for (int z = steve.PlayerZ / 2 - 25; z < steve.PlayerZ / 2 + 25; z++)
+            {
+                if (x < 0) x = 0;
+                if (z < 0) z = 0;
+                int type = cubes[x][y][z];
+                if (!type) continue;
+                glPushMatrix();
+                glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
+                switch (type) {
+                case 1: {draw_stone(stone, cube_size / 2, x, y, z, cubes); break; }
+                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes); break; }
+                case 3: {draw_dirt(dirt, cube_size / 2, x, y, z, cubes); break; }
+                case 4: {draw_planks(planks, cube_size / 2, x, y, z, cubes); break; }
+                }
+
+                glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                glPopMatrix();
+            }
+
+}
 
 void Draw() // Window redraw function
 {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
-    //===============================начало основного цикла================================================================================
     
+    //===============================начало основного цикла================================================================================
+
 
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
               0.0f,                 1.0f,                             0.0f                            );
-
-    
+    Draw_cubes();
+    //std::thread th(Draw_cubes);
     cursor.update(cursor_tex);
-    //glDisable(GL_LIGHTING);
     
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
-    //glEnable(GL_LIGHTING);
-    //getpix();
-    //glPushMatrix();
-    //GLfloat light1_diffuse[] = { 1, 1, 1 };
-    //GLfloat light1_position[] = { 0, 50,0, 1 };
-    //glEnable(GL_LIGHT1);
-    //glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-    //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    //glPopMatrix();
 
-    for (int x = steve.PlayerX/2 - 25; x < steve.PlayerX/2 + 25; x++) // drawing cubs
-        for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ/2 - 25; z < steve.PlayerZ/2 + 25; z++)
-            {
-                if (x < 0) x = 0;
-                if (z < 0) z = 0;
-                if (!cubes[x][y][z]) continue; 
-                glPushMatrix();
-                glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
-                
-                switch (cubes_types[x][y][z]) {
-                case 1:   draw_dirt(dirt, cube_size / 2, x, y, z, cubes); break;
-                case 2:   draw_stone(stone, cube_size / 2, x, y, z, cubes); break;
-                case 3:   draw_planks(planks, cube_size / 2, x, y, z, cubes); break;
-                }
-                
-                glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
-                glPopMatrix();
-            }
+
     
 
     DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX / 2 + 0.5), std::to_string(steve.PlayerY / 2),
         std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
         std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
     
-    
+
+    //std::thread th(&Player::update, std::ref(steve));
     
     steve.update();
-    steve.mousePressed();
-
+    //steve.mousePressed();
     //=================================конец основного цикла===================================================================================
-    glutPostRedisplay();
+    //glutPostRedisplay();
+    //th.detach();
     glPopMatrix();
-    glFinish();
-    //glDisable(GL_LIGHT0);
+    //glFinish();
     glutSwapBuffers();
 }
 
@@ -506,9 +501,10 @@ int main(int argc, char* argv[])
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
-    dirtTexturies(dirt, width, height);
+    super_grass_Texturies(super_grass, width, height);
     stoneTextures(stone, width, height);
     planksTextures(planks, width, height);
+    dirtTextures(dirt, width, height);
     cursorTextures(cursor_tex, width, height);
     HeightMap_Load(HeightMap, width, height);
     //====================================================================================
@@ -520,32 +516,20 @@ int main(int argc, char* argv[])
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard down
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard up
 
-    //glBindTexture(GL_TEXTURE_2D, HeightMap[0]);
     sf::Image im; im.loadFromFile("textures/heightmap.png");
     for (int x = 0; x < 257; x++)
         for (int z = 0; z < 257; z++) {
-
-            int c = im.getPixel(x,z).r/10 +1;
-            for(int y = 0; y<c; y++){
-                    cubes[x][y][z] = 1;
-                    cubes_types[x][y][z] = 1;
+            int c = im.getPixel(x,z).r/10 +10;
+            for(int y = 0; y<=c; y++){
+                    //cubes[x][y][z] = 1;
+                    if (y == c) {
+                        cubes[x][y][z] = 2;
+                    } 
+                    else if(y > c-3 )  cubes[x][y][z] = 3;
+                    else cubes[x][y][z] = 1;
                 }
-                            
-            //if ((rand() % 2) == 1) cubes_types[x][c][z] = 2;
         }
-   
-    // заполнение массива блоками
-    /*for (int x = 0; x < quantity_cube_x; x++)
-        for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = 0; z < quantity_cube_z; z++) {
-                if (y == 0 or y == 1 or y == 2 or y == 3 or y == 4 or y == 5 or y == 6 or y == 7 or y == 8
-                    or y == 9 or y == 10 or y == 11 or y == 12 or y == 13 or y == 14 or y == 15 or y == 16 or(rand() % 2000) == 1) {
-                    cubes[x][y][z] = 1; 
-                    cubes_types[x][y][z] = 1;
-                }
-                
-                if ((rand() % 2) == 1) cubes_types[x][y][z] = 2;
-            }*/
+            
 
 
 
