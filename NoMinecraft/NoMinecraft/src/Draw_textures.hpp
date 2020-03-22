@@ -5,6 +5,7 @@ void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cu
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
     ///çàäíÿÿ
+    glColor3f(0.8, 0.8, 0.8);
     if ((bool (cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 0.5); glVertex3f(cube_size, -cube_size, cube_size);
@@ -13,6 +14,16 @@ void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cu
         glTexCoord2d(0.5, 0.5); glVertex3f(cube_size, cube_size, cube_size);
         glEnd();
     }
+    //ïåðåäíÿÿ
+    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 0.5); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0.5, 1); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(0.5, 0.5); glVertex3f(-cube_size, cube_size, -cube_size);
+        glEnd();
+    }
+    glColor3f(0.7, 0.7, 0.7);
     //ÏÐÀÂÀß
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X+1][Y][Z]))) {
         glBegin(GL_POLYGON);
@@ -31,24 +42,7 @@ void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cu
         glTexCoord2d(0.5, 0.5); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
-    //ïåðåäíÿÿ
-    if (bool(cubes[X][Y][Z-1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 0.5); glVertex3f(-cube_size, -cube_size, -cube_size);
-        glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0.5, 1); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(0.5, 0.5); glVertex3f(-cube_size, cube_size, -cube_size);
-        glEnd();
-    }
-     //ÂÅÐÕÍßß
-    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 0.5); glVertex3f(-cube_size, cube_size, -cube_size);
-        glTexCoord2d(0.5, 0.5); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(0.5, 0); glVertex3f(cube_size, cube_size, cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
-        glEnd();
-    }
+    glColor3f(0.5, 0.5, 0.5);
     //ÍÈÆÍßß
     if (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z])) {
         glBegin(GL_POLYGON);
@@ -58,12 +52,22 @@ void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cu
         glTexCoord2d(0.5, 0.5); glVertex3f(-cube_size, -cube_size, -cube_size);
         glEnd();
     }
-   
+    glColor3f(1, 1, 1);
+     //ÂÅÐÕÍßß
+    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 0.5); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(0.5, 0.5); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(0.5, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
+        glEnd();
+    }
 }
 void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes[300][100][300]) {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, stone[0]);
     ///çàäíÿÿ
+    glColor3f(0.8, 0.8, 0.8);
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
@@ -72,7 +76,17 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes
         glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
         glEnd();
     }
+    //ïåðåäíÿÿ
+    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glEnd();
+    }
     //ÏÐÀÂÀß
+        glColor3f(0.7, 0.7, 0.7);
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, -cube_size);
@@ -90,24 +104,7 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes
         glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
-    //ïåðåäíÿÿ
-    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
-        glEnd();
-    }
-    //ÂÅÐÕÍßß
-    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, -cube_size);
-        glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
-        glEnd();
-    }
+    glColor3f(0.5, 0.5, 0.5);
     //ÍÈÆÍßß
     if (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z])) {
         glBegin(GL_POLYGON);
@@ -117,12 +114,23 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes
         glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
         glEnd();
     }
+    glColor3f(1, 1, 1);
+    //ÂÅÐÕÍßß
+    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
+        glEnd();
+    }
 }
 void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cubes[300][100][300])
 {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, planks[0]);
     ///çàäíÿÿ
+    glColor3f(0.8, 0.8, 0.8);
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
@@ -131,6 +139,16 @@ void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cub
         glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
         glEnd();
     }
+    //ïåðåäíÿÿ
+    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glEnd();
+    }
+    glColor3f(0.7, 0.7, 0.7);
     //ÏÐÀÂÀß
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
         glBegin(GL_POLYGON);
@@ -149,15 +167,17 @@ void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cub
         glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
-    //ïåðåäíÿÿ
-    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
+    glColor3f(0.5, 0.5, 0.5);
+    //ÍÈÆÍßß
+    if (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z])) {
         glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
         glEnd();
     }
+    glColor3f(1, 1, 1);
     //ÂÅÐÕÍßß
     if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
         glBegin(GL_POLYGON);
@@ -167,6 +187,7 @@ void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cub
         glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
+    glColor3f(0.5, 0.5, 0.5);
     //ÍÈÆÍßß
     if (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z])) {
         glBegin(GL_POLYGON);
@@ -182,6 +203,7 @@ void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[3
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
     ///çàäíÿÿ
+    glColor3f(0.8, 0.8, 0.8);
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
         glBegin(GL_POLYGON);
         glTexCoord2d(1, 1); glVertex3f(cube_size, -cube_size, cube_size);
@@ -190,6 +212,16 @@ void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[3
         glTexCoord2d(1, 0); glVertex3f(cube_size, cube_size, cube_size);
         glEnd();
     }
+    //ïåðåäíÿÿ
+    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
+        glEnd();
+    }
+    glColor3f(0.7, 0.7, 0.7);
     //ÏÐÀÂÀß
     if ((bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
         glBegin(GL_POLYGON);
@@ -208,24 +240,7 @@ void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[3
         glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
-    //ïåðåäíÿÿ
-    if (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z])) { // Z == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f(-cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, -cube_size);
-        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, -cube_size);
-        glEnd();
-    }
-    //ÂÅÐÕÍßß
-    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
-        glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, -cube_size);
-        glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
-        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
-        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
-        glEnd();
-    }
+    glColor3f(0.5, 0.5, 0.5);
     //ÍÈÆÍßß
     if (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z])) {
         glBegin(GL_POLYGON);
@@ -233,6 +248,16 @@ void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[3
         glTexCoord2d(0, 1); glVertex3f(cube_size, -cube_size, cube_size);
         glTexCoord2d(0, 0); glVertex3f(cube_size, -cube_size, -cube_size);
         glTexCoord2d(1, 0); glVertex3f(-cube_size, -cube_size, -cube_size);
+        glEnd();
+    }
+    glColor3f(1, 1, 1);
+    //ÂÅÐÕÍßß
+    if (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z])) { // Y == 0 or 
+        glBegin(GL_POLYGON);
+        glTexCoord2d(1, 1); glVertex3f(-cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 1); glVertex3f(cube_size, cube_size, -cube_size);
+        glTexCoord2d(0, 0); glVertex3f(cube_size, cube_size, cube_size);
+        glTexCoord2d(1, 0); glVertex3f(-cube_size, cube_size, cube_size);
         glEnd();
     }
 }

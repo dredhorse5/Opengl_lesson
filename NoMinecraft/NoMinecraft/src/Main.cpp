@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctime>
 #include <thread>
+#include <iostream>
 #include "glut.h"
 #include "SOIL.h"
 #include "Draw_textures.hpp"
@@ -20,6 +21,7 @@ GLuint stone[1];
 GLuint planks[1];
 GLuint HeightMap[1];
 GLuint dirt[1];
+GLuint GUI_tex[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
@@ -28,7 +30,7 @@ int quantity_cube_y = 50; // quanity cubes of y
 int quantity_cube_z = 257; // quanity cubes of z
 int cubes[300][100][300];
 short int IDblocks = 1;
-short int blocks = 4;
+short int blocks = 5;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -108,7 +110,7 @@ public:
             while (dist < 80) {
                 dist += 0.2;
                 mousex += lx / 50; X = mousex / cube_size;
-                mousey += ly / 50; Y = mousey / cube_size;
+                mousey += ly / 50; Y = mousey / cube_size; 
                 mousez += lz / 50; Z = mousez / cube_size;
 
                 if (check(X, Y, Z) ) {
@@ -194,6 +196,17 @@ public:
         glEnd();
         glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
     }
+    void update(GLuint tex[1],float x1h, float y1h, float x2h, float y2h, float x3h, float y3h, float x4h, float y4h) {
+        glBindTexture(GL_TEXTURE_2D, tex[0]);
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glBegin(GL_POLYGON);
+        glTexCoord2d(x1h, y1h); glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
+        glTexCoord2d(x2h, y2h); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glTexCoord2d(x3h, y3h); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
+        glTexCoord2d(x4h, y4h); glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
+        glEnd();
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+    }
     void update() {
         glColor3f(1, 0, 0);
         glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
@@ -210,7 +223,8 @@ public:
 
 GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
 GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
-
+GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
+ 
 void DrawdebugScreen(float x, float y, float z, void* font,
     std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
@@ -309,14 +323,14 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 'D':
         KeySide = 1.0; break;
     case 'b':
-        steve.PlayerX = 2;
-        steve.PlayerY = 20*cube_size;
-        steve.PlayerZ = 2;
+        steve.PlayerX = 257             * cube_size;
+        steve.PlayerY = 20              * cube_size;
+        steve.PlayerZ = 257             * cube_size;
         steve.dy = 0;
         break;
     case 'f':
         IDblocks++;
-        if (IDblocks > blocks) IDblocks = 1;
+        if (IDblocks > blocks) IDblocks = 0;
         break;
     
     case 32:
@@ -454,6 +468,7 @@ void Draw() // Window redraw function
     Draw_cubes();
     //std::thread th(Draw_cubes);
     cursor.update(cursor_tex);
+    hotbar_down.update(GUI_tex, 1, 1,     0.09f, 1,      0.09f, 0.89f,     1, 0.89f);
     
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
@@ -464,7 +479,7 @@ void Draw() // Window redraw function
 
     DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX / 2 + 0.5), std::to_string(steve.PlayerY / 2),
         std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(cos(angleY)));
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
     
 
     //std::thread th(&Player::update, std::ref(steve));
@@ -491,8 +506,7 @@ int main(int argc, char* argv[])
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW);
-    glutTimerFunc(1000 / FPS, timf, 0); // limit fps
+     glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
     glutReshapeFunc(Reshape); // change window
@@ -507,6 +521,7 @@ int main(int argc, char* argv[])
     dirtTextures(dirt, width, height);
     cursorTextures(cursor_tex, width, height);
     HeightMap_Load(HeightMap, width, height);
+    GUITextures(GUI_tex, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
@@ -519,13 +534,14 @@ int main(int argc, char* argv[])
     sf::Image im; im.loadFromFile("textures/heightmap.png");
     for (int x = 0; x < 257; x++)
         for (int z = 0; z < 257; z++) {
-            int c = im.getPixel(x,z).r/15 +10;
+            int c = im.getPixel(x,z).r/10 +10;
             for(int y = 0; y<=c; y++){
                     //cubes[x][y][z] = 1;
-                    if (y == c) {
-                        cubes[x][y][z] = 2;
-                    } 
-                    else if(y > c-3 )  cubes[x][y][z] = 3;
+                if (y == c) {
+                    cubes[x][y][z] = 2;
+                }
+                else if (y > c - 3)  cubes[x][y][z] = 3;
+                else if (y == 0) cubes[x][y][z] = 999;
                     else cubes[x][y][z] = 1;
                 }
         }
