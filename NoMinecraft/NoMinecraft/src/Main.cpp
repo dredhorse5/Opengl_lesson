@@ -428,9 +428,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 void Draw_cubes() {
-    for (int x = steve.PlayerX / 2-80; x < steve.PlayerX / 2 + 80; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2-30; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 80; z < steve.PlayerZ / 2 + 80; z++)
+            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++)
             {
                 if (x < 0) x = 0;
                 if (z < 0) z = 0;
