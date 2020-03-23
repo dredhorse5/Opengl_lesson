@@ -436,7 +436,10 @@ void Draw_cubes() {
                 if (x < 0) x = 0;
                 if (z < 0) z = 0;
                 int type = cubes[x][y][z];
-                if (!type) continue;
+                if (!type or   (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
+                                bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
+                                bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1]))) continue;
+                //if (!type) continue;
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
@@ -506,7 +509,7 @@ int main(int argc, char* argv[])
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-     glutTimerFunc(1000 / FPS, timf, 0); // limit fps
+    glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
     glutReshapeFunc(Reshape); // change window
