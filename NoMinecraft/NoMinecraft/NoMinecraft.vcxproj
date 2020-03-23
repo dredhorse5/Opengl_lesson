@@ -87,13 +87,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib\SFML;D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\dredhorse5PC\source\repos\GameShoot\lib\SFML;C:\Users\dredhorse5PC\source\repos\GameShoot\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib\lib_SFML;D:\My projects\NEDOMinecraft\NoMinecraft\NoMinecraft\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\dredhorse5PC\source\repos\GameShoot\lib\lib_SFML;C:\Users\dredhorse5PC\source\repos\GameShoot\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EmbedManagedResourceFile>%(EmbedManagedResourceFile)</EmbedManagedResourceFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>

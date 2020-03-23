@@ -39,7 +39,6 @@ int mouseXOld = 1, mouseYOld = 1;
 bool mLeft = 0, mRight = 0; // mouse bottons
 float FPS = 60;
 // разное
-//double FPS = 60; // FPS 60
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = false;
 
@@ -429,9 +428,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 25; x < steve.PlayerX / 2 + 25; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2 - 60; x < steve.PlayerX / 2 + 60; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 25; z < steve.PlayerZ / 2 + 25; z++)
+            for (int z = steve.PlayerZ / 2 - 60; z < steve.PlayerZ / 2 + 60; z++)
             {
                 if (x < 0) x = 0;
                 if (z < 0) z = 0;
