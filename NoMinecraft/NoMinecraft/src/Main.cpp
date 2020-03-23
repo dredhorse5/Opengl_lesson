@@ -420,7 +420,7 @@ void Reshape(int w, int h){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    gluPerspective(steve.View, ratio, 0.1f, 180.0f);
+    gluPerspective(steve.View, ratio, 0.1f, 360.0f);
     glMatrixMode(GL_MODELVIEW);
 }
 void timf(int value){
@@ -428,9 +428,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 60; x < steve.PlayerX / 2 + 60; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2-80; x < steve.PlayerX / 2 + 80; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 60; z < steve.PlayerZ / 2 + 60; z++)
+            for (int z = steve.PlayerZ / 2 - 80; z < steve.PlayerZ / 2 + 80; z++)
             {
                 if (x < 0) x = 0;
                 if (z < 0) z = 0;
@@ -443,10 +443,10 @@ void Draw_cubes() {
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
                 switch (type) {
-                case 1: {draw_stone(stone, cube_size / 2, x, y, z, cubes); break; }
-                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes); break; }
-                case 3: {draw_dirt(dirt, cube_size / 2, x, y, z, cubes); break; }
-                case 4: {draw_planks(planks, cube_size / 2, x, y, z, cubes); break; }
+                case 1: {draw_stone(      stone,       cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 3: {draw_dirt(       dirt,        cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 4: {draw_planks(     planks,      cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
                 glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
