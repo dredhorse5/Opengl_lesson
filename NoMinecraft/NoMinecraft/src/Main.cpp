@@ -449,8 +449,8 @@ void timf(int value){
     glutPostRedisplay();  // Redraw windows
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
-void Draw_cubes_ONE() {
-    for (int x = steve.PlayerX / 2 - 30; x < steve.PlayerX / 2 -1; x++) // drawing cubs
+void Draw_cubes() {
+    for (int x = steve.PlayerX / 2 - 30; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
             for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++ )
             {
@@ -460,7 +460,9 @@ void Draw_cubes_ONE() {
                 if (!type or   (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
                                 bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
                                 bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1])    )) continue;
-                //if (!type) continue;
+               /* if (!type or bool(type == cubes[x][y + 1][z] and type == cubes[x][y - 1][z] and
+                                    type == cubes[x + 1][y][z] and type == cubes[x - 1][y][z] and
+                                    type == cubes[x][y][z + 1] and type == cubes[x][y][z - 1])     ) continue;*/
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
@@ -474,36 +476,8 @@ void Draw_cubes_ONE() {
                 //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
                 glPopMatrix();
             }
-    std::cout << "ONE" << std::endl;
 }
-void Draw_cubes_TWO() {
-    for (int x = steve.PlayerX / 2 ; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
-        for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++)
-            {
-                if (x < 0 or x > quantity_cube_x) continue;
-                if (z < 0 or z > quantity_cube_z)  continue;
-                int type = cubes[x][y][z];
-                if (!type or (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
-                    bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
-                    bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1]))) continue;
-                //if (!type) continue;
-                glPushMatrix();
-                glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
-                switch (type) {
-                case 1: {draw_stone(stone, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 3: {draw_dirt(dirt, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 4: {draw_planks(planks, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                }
-
-                //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
-                glPopMatrix();
-            }
-    std::cout << "TWO" << std::endl;
-
-}
 void Draw() // Window redraw function
 {
     
@@ -516,11 +490,7 @@ void Draw() // Window redraw function
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
               0.0f,                 1.0f,                             0.0f                            );
-    std::thread th(Draw_cubes_ONE);
-    Draw_cubes_TWO();
-    th.join();
-    //std::thread th(&Player::update, std::ref(steve));
-    //std::thread th(Draw_cubes);
+    Draw_cubes();
     cursor.update(cursor_tex);
     hotbar_down.update(GUI_tex, 1, 1,     0.09f, 1,      0.09f, 0.89f,     1, 0.89f);
     
