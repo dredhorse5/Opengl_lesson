@@ -4,6 +4,8 @@
 #include <glut.h>
 #include <SOIL.h>
 #define GL_CLAMP_TO_EDGE 0x812F
+
+
 void dirtTextures(GLuint dirt[1], int W, int H) {
     unsigned char* top = SOIL_load_image("textures/dirt.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &dirt[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
