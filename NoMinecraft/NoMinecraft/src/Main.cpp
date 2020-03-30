@@ -40,8 +40,9 @@ bool mLeft = 0, mRight = 0; // mouse bottons
 float FPS = 60;
 // разное
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
-bool Draw_debug_Menu_key = false;
-
+bool Draw_debug_Menu_key = true;
+time_t oldtime = 1;
+time_t newtime = 1;
 
 bool check(int x, int y, int z) {
     if ((x < 0) or (x > quantity_cube_x) or
@@ -61,38 +62,42 @@ public:
     bool onGround;
     float speed;
     float View; // угол обзора
+    float time;
 
     Player(float x0, float y0, float z0) {
         PlayerX = x0; PlayerY= y0; PlayerZ= z0;
         dx = 0; dy = 0; dz = 0;
         dSideX = 0; dSideZ = 0;
         dFrontX = 0; dFrontZ = 0;
-        w = 0.5f; h = 1.9f; d = 0.5f; speed = 0.09;
+        w = 0.5f; h = 1.9f; d = 0.5f; speed = 0.5;
         onGround = false; 
         View =90; // угол обзора
     }
-    void update() {
+    void update(float time) {
+        this->time = time;
         mousePressed();
         if (KeyFront) {
-            dFrontX = lx * speed * KeyFront;
-            dFrontZ = lz * speed * KeyFront;
+            dFrontX = lx * speed * KeyFront * time/50;
+            dFrontZ = lz * speed * KeyFront * time / 50;
         }
         if (KeySide) {
-            dSideX = -lz * speed * KeySide;
-            dSideZ = lx * speed * KeySide;
+            dSideX = -lz * speed * KeySide * time / 50;
+            dSideZ = lx * speed * KeySide * time / 50;
         }
        
-        dy -= 0.009;
+        dy -= 0.1 * pow(time/50,2);
         onGround = 0;
 
         dx = dSideX + dFrontX;
         PlayerX += dx;
+        //std::thread one(Player::*collision, dx, 0, 0);
         collision(dx, 0, 0);
         PlayerY += dy;
         collision(0, dy, 0);
         dz = dSideZ + dFrontZ;
         PlayerZ += dz;
         collision(0, 0, dz);
+        //one.join();
 
         
         dx = dz = dSideX = dSideZ = dFrontX = dFrontZ = 0;
@@ -168,8 +173,14 @@ public:
                
             }
     }
+    void jump() {
+        if (onGround) {
+            onGround = false;
+            dy = 0.3;
+        }
+    }
 };
-Player steve(quantity_cube_x/2,50, quantity_cube_z/2);
+Player steve(quantity_cube_x/2,60, quantity_cube_z/2);
 class GUI {
 public:
     float x1; float y1;
@@ -224,8 +235,7 @@ GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
 GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
 GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
  
-void DrawdebugScreen(float x, float y, float z, void* font,
-    std::string PlayerX, std::string PlayerY, std::string PlayerZ, std::string speedX,
+inline void DrawdebugScreen(float x, float y, float z, void* font, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
     std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
         glMatrixMode(GL_PROJECTION);
@@ -246,13 +256,13 @@ void DrawdebugScreen(float x, float y, float z, void* font,
             glRasterPos3f(x, y, z);
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z');
             glRasterPos3f(x + 40, y , z);
-            for (int i = 0; i < PlayerX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerX[i]);
-            glRasterPos3f(x + PlayerX.length()*7 + 40, y , z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
-            glRasterPos3f(x + PlayerX.length() * 9 + 40, y, z);
-            for (int i = 0; i < PlayerY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerY[i]);
-            glRasterPos3f(x + PlayerY.length() * 7 + PlayerX.length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
-            glRasterPos3f(x + PlayerX.length() * 9 + PlayerY.length() * 9 + 40, y, z);
-            for (int i = 0; i < PlayerZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, PlayerZ[i]);
+            for (int i = 0; i < std::to_string(steve.PlayerX/2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerX / 2 + 0.5)[i]);
+            glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length()*7 + 40, y , z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
+            glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z);
+            for (int i = 0; i < std::to_string(steve.PlayerY / 2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerY / 2 + 0.5)[i]);
+            glRasterPos3f(x + std::to_string(steve.PlayerY / 2 + 0.5).length() * 7 + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
+            glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + std::to_string(steve.PlayerY / 2 + 0.5).length() * 9 + 40, y, z);
+            for (int i = 0; i < std::to_string(steve.PlayerZ / 2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerZ / 2 + 0.5)[i]);
 
 
             /*glRasterPos3f(x+ 50, y + 40, z);
@@ -332,9 +342,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 'D':
         KeySide = 1.0; break;
     case 'b':
-        steve.PlayerX = 257             * cube_size;
-        steve.PlayerY = 20              * cube_size;
-        steve.PlayerZ = 257             * cube_size;
+        steve.PlayerX = 257/2             * cube_size;
+        steve.PlayerY = 100              * cube_size;
+        steve.PlayerZ = 257/2             * cube_size;
         steve.dy = 0;
         break;
     case 'f':
@@ -343,10 +353,8 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         break;
     
     case 32:
-        if (steve.onGround) {
-            steve.onGround = false;
-            steve.dy = 0.21;
-        }
+        steve.jump();
+        
         break;
 
     case 27: {
@@ -449,10 +457,10 @@ void timf(int value){
     glutPostRedisplay();  // Redraw windows
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
-void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 30; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
+inline void Draw_cubes() {
+    for (int x = steve.PlayerX / 2 - 50; x < steve.PlayerX / 2 + 50; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++ )
+            for (int z = steve.PlayerZ / 2 - 50; z < steve.PlayerZ / 2 + 50; z++ )
             {
                 if (x < 0 or x > quantity_cube_x) continue;
                 if (z < 0 or z > quantity_cube_z)  continue;
@@ -478,10 +486,12 @@ void Draw_cubes() {
             }
 }
 
-void Draw() // Window redraw function
-{
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void Draw(){
+ 
+    std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT); 
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glclear_th.join();
+
     glPushMatrix();
     
     //===============================начало основного цикла================================================================================
@@ -501,17 +511,19 @@ void Draw() // Window redraw function
 
     
 
-    DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.PlayerX / 2 + 0.5), std::to_string(steve.PlayerY / 2),
-        std::to_string(steve.PlayerZ / 2 + 0.5), std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+    DrawdebugScreen( 5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
         std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
     
 
     
-    
-    steve.update();
+
+    newtime = clock();
+    float times = newtime - oldtime;
+    oldtime = clock();
+    steve.update(times);
     //steve.mousePressed();
     //=================================конец основного цикла===================================================================================
-    //glutPostRedisplay();
+    glutPostRedisplay();
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -528,12 +540,10 @@ int main(int argc, char* argv[])
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    glutTimerFunc(1000 / FPS, timf, 0); // limit fps
+    //glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
     glutReshapeFunc(Reshape); // change window
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //for light
-    //glEnable(GL_NORMALIZE); //for light
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     skybox(skybox_texturies, width, height);
@@ -562,7 +572,7 @@ int main(int argc, char* argv[])
 sf::Image im; im.loadFromFile("textures/heightmap.png");
     for (int x = 0; x < quantity_cube_x; x++)
         for (int z = 0; z < quantity_cube_z; z++) {
-            int c = im.getPixel(x,z).r/20 +10;
+            int c = im.getPixel(x,z).r/10 +10;
             for(int y = 4; y<=c; y++){
                     //cubes[x][y][z] = 1;
                 if (y == c) {
