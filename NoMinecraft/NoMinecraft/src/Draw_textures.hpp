@@ -1,6 +1,6 @@
 #ifndef __TEXTURES_H__
 #define __TEXTURES_H__
-void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cubes[300][100][300], int PX, int PY, int PZ)
+void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cubes[257][50][257], int PX, int PY, int PZ)
 {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
@@ -63,7 +63,7 @@ void draw_super_grass(GLuint dirt[1], float cube_size,int X, int Y, int Z,int cu
         glEnd();
     }
 }
-void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes[300][100][300], int PX, int PY, int PZ) {
+void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes[257][50][257], int PX, int PY, int PZ) {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, stone[0]);
     ///задн€€
@@ -125,7 +125,7 @@ void draw_stone(GLuint stone[1], float cube_size, int X, int Y, int Z, int cubes
         glEnd();
     }
 }
-void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cubes[300][100][300], int PX, int PY, int PZ)
+void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cubes[257][50][257], int PX, int PY, int PZ)
 {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, planks[0]);
@@ -189,7 +189,7 @@ void draw_planks(GLuint planks[1], float cube_size, int X, int Y, int Z, int cub
     }
 
 }
-void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[300][100][300], int PX, int PY, int PZ) {
+void draw_dirt(GLuint dirt[1], float cube_size, int X, int Y, int Z, int cubes[257][50][257], int PX, int PY, int PZ) {
     //bool cubes = cubes;
     glBindTexture(GL_TEXTURE_2D, dirt[0]);
     ///задн€€

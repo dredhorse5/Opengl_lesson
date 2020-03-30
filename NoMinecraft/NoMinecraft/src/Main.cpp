@@ -3,10 +3,10 @@
 #include <ctime>
 #include <thread>
 #include <iostream>
+#include <fstream>
 #include "glut.h"
 #include "SOIL.h"
 #include "Draw_textures.hpp"
-#include "Help.hpp"
 #include "Load_textures.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
@@ -25,10 +25,10 @@ GLuint GUI_tex[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
-int quantity_cube_x = 257; // quanity cubes of x
+int quantity_cube_x = 256; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
-int quantity_cube_z = 257; // quanity cubes of z
-int cubes[300][100][300];
+int quantity_cube_z = 256; // quanity cubes of z
+int cubes[257][50][257];
 short int IDblocks = 1;
 short int blocks = 5;
 
@@ -44,9 +44,9 @@ bool Draw_debug_Menu_key = false;
 
 
 bool check(int x, int y, int z) {
-    if ((x < 0) or (x > quantity_cube_x*2) or
+    if ((x < 0) or (x > quantity_cube_x) or
         (y < 0) or (y > quantity_cube_y) or
-        (z < 0) or (z > quantity_cube_z*2)) return false;
+        (z < 0) or (z > quantity_cube_z)) return false;
     return cubes[x][y][z];
 
 }
@@ -67,7 +67,7 @@ public:
         dx = 0; dy = 0; dz = 0;
         dSideX = 0; dSideZ = 0;
         dFrontX = 0; dFrontZ = 0;
-        w = 0.5f; h = 2.0f; d = 0.5f; speed = 0.09;
+        w = 0.5f; h = 1.9f; d = 0.5f; speed = 0.09;
         onGround = false; 
         View =90; // угол обзора
     }
@@ -100,7 +100,7 @@ public:
     void mousePressed() {
         //if (mRight or mLeft) {
             float mousex = PlayerX;
-            float mousey = PlayerY + h / 2;
+            float mousey = PlayerY +h / 2;
             float mousez = PlayerZ;
             int  X = 0, Y = 0, Z = 0;
             int oldX = 0, oldY = 0, oldZ = 0;
@@ -125,16 +125,16 @@ public:
                         cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
                         cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
 
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
 
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - 1)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - 1)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
 
                         cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
                         cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
@@ -169,7 +169,7 @@ public:
             }
     }
 };
-Player steve(quantity_cube_x/2,20, quantity_cube_z/2);
+Player steve(quantity_cube_x/2,50, quantity_cube_z/2);
 class GUI {
 public:
     float x1; float y1;
@@ -305,7 +305,17 @@ void DrawdebugScreen(float x, float y, float z, void* font,
     }
 }
 
-
+void close_game() {
+    int msg;
+        std::ofstream fout("Text.txt", std::fstream::trunc);
+        for (int x = 0; x < quantity_cube_x; x++)
+            for(int y = 0; y < quantity_cube_y; y++)
+                for (int z = 0; z < quantity_cube_z; z++) {
+                    fout << cubes[x][y][z];
+                }
+        fout.close();
+    exit(0);
+}
 void processNormalKeysDOWN(unsigned char key, int x, int y)
 {
     switch (key) {
@@ -339,8 +349,20 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
         }
         break;
 
-    case 27:    exit(0);
-
+    case 27: {
+        //std::thread th(close_game);
+        //th.detach();    
+        /*int msg;
+        std::ofstream fout("Text.txt", std::fstream::trunc);
+        for (int x = 0; x < quantity_cube_x; x++)
+            for(int y = 0; y < quantity_cube_y; y++)
+                for (int z = 0; z < quantity_cube_z; z++) {
+                    fout << cubes[x][y][z];
+                }
+        fout.close();*/
+        exit(0);
+        
+    }
     }
     if (key == 9) {
         if (!Draw_debug_Menu_key) {
@@ -427,17 +449,17 @@ void timf(int value){
     glutPostRedisplay();  // Redraw windows
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
-void Draw_cubes() {
-    for (int x = steve.PlayerX / 2-30; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
+void Draw_cubes_ONE() {
+    for (int x = steve.PlayerX / 2 - 30; x < steve.PlayerX / 2 -1; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++)
+            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++ )
             {
-                if (x < 0) x = 0;
-                if (z < 0) z = 0;
+                if (x < 0 or x > quantity_cube_x) continue;
+                if (z < 0 or z > quantity_cube_z)  continue;
                 int type = cubes[x][y][z];
                 if (!type or   (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
                                 bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
-                                bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1]))) continue;
+                                bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1])    )) continue;
                 //if (!type) continue;
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
@@ -449,12 +471,39 @@ void Draw_cubes() {
                 case 4: {draw_planks(     planks,      cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
-                glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
                 glPopMatrix();
             }
+    std::cout << "ONE" << std::endl;
+}
+void Draw_cubes_TWO() {
+    for (int x = steve.PlayerX / 2 ; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
+        for (int y = 0; y < quantity_cube_y; y++)
+            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++)
+            {
+                if (x < 0 or x > quantity_cube_x) continue;
+                if (z < 0 or z > quantity_cube_z)  continue;
+                int type = cubes[x][y][z];
+                if (!type or (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
+                    bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
+                    bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1]))) continue;
+                //if (!type) continue;
+                glPushMatrix();
+                glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
+
+                switch (type) {
+                case 1: {draw_stone(stone, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 3: {draw_dirt(dirt, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 4: {draw_planks(planks, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                }
+
+                //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
+                glPopMatrix();
+            }
+    std::cout << "TWO" << std::endl;
 
 }
-
 void Draw() // Window redraw function
 {
     
@@ -467,7 +516,10 @@ void Draw() // Window redraw function
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
               steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
               0.0f,                 1.0f,                             0.0f                            );
-    Draw_cubes();
+    std::thread th(Draw_cubes_ONE);
+    Draw_cubes_TWO();
+    th.join();
+    //std::thread th(&Player::update, std::ref(steve));
     //std::thread th(Draw_cubes);
     cursor.update(cursor_tex);
     hotbar_down.update(GUI_tex, 1, 1,     0.09f, 1,      0.09f, 0.89f,     1, 0.89f);
@@ -484,15 +536,13 @@ void Draw() // Window redraw function
         std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
     
 
-    //std::thread th(&Player::update, std::ref(steve));
+    
     
     steve.update();
     //steve.mousePressed();
     //=================================конец основного цикла===================================================================================
     //glutPostRedisplay();
-    //th.detach();
     glPopMatrix();
-    //glFinish();
     glutSwapBuffers();
 }
 
@@ -533,25 +583,26 @@ int main(int argc, char* argv[])
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard is down
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard is up
 
-    sf::Image im; im.loadFromFile("textures/heightmap.png");
-    for (int x = 0; x < 257; x++)
-        for (int z = 0; z < 257; z++) {
-            int c = im.getPixel(x,z).r/10 +10;
-            for(int y = 0; y<=c; y++){
+    std::ifstream fout("Text.txt", std::ifstream::binary);
+
+
+
+
+
+sf::Image im; im.loadFromFile("textures/heightmap.png");
+    for (int x = 0; x < quantity_cube_x; x++)
+        for (int z = 0; z < quantity_cube_z; z++) {
+            int c = im.getPixel(x,z).r/20 +10;
+            for(int y = 4; y<=c; y++){
                     //cubes[x][y][z] = 1;
                 if (y == c) {
                     cubes[x][y][z] = 2;
                 }
                 else if (y > c - 3)  cubes[x][y][z] = 3;
-                else if (y == 0) cubes[x][y][z] = 999;
+                else if (y == 4) cubes[x][y][z] = 999;
                     else cubes[x][y][z] = 1;
                 }
         }
-            
-
-
-
-    //glutIdleFunc(Draw); // какая-то херня, которая увердохера загружает видюху. как будто игнорит ограничение fps
     
 
 
