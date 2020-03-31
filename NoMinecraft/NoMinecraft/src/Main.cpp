@@ -6,8 +6,6 @@
 #include <fstream>
 #include "glut.h"
 #include "SOIL.h"
-#include "Draw_textures.hpp"
-#include "Load_textures.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #pragma comment(lib, "SOIL.lib")
@@ -22,6 +20,8 @@ GLuint planks[1];
 GLuint HeightMap[1];
 GLuint dirt[1];
 GLuint GUI_tex[1];
+GLuint leaves[1];
+GLuint tree_oak[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
@@ -30,7 +30,7 @@ int quantity_cube_y = 50; // quanity cubes of y
 int quantity_cube_z = 256; // quanity cubes of z
 int cubes[257][50][257];
 short int IDblocks = 1;
-short int blocks = 5;
+short int blocks = 7;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -41,8 +41,12 @@ float FPS = 60;
 // разное
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = true;
+int tick = 0;
 time_t oldtime = 1;
 time_t newtime = 1;
+#include "builders.hpp"
+#include "Draw_textures.hpp"
+#include "Load_textures.hpp"
 
 bool check(int x, int y, int z) {
     if ((x < 0) or (x > quantity_cube_x) or
@@ -62,7 +66,6 @@ public:
     bool onGround;
     float speed;
     float View; // угол обзора
-    float time;
 
     Player(float x0, float y0, float z0) {
         PlayerX = x0; PlayerY= y0; PlayerZ= z0;
@@ -74,10 +77,18 @@ public:
         View =90; // угол обзора
     }
     void update(float time) {
-        this->time = time;
+
+        if (PlayerY < 0) {
+            PlayerX = quantity_cube_x / 2 + 0.5 * cube_size;
+            PlayerY = 20 * cube_size;
+            PlayerZ = quantity_cube_z/ 2 + 0.5 * cube_size;
+            dy = 0;
+        }
+
         mousePressed();
+
         if (KeyFront) {
-            dFrontX = lx * speed * KeyFront * time/50;
+            dFrontX = lx * speed * KeyFront * time / 50;
             dFrontZ = lz * speed * KeyFront * time / 50;
         }
         if (KeySide) {
@@ -85,7 +96,7 @@ public:
             dSideZ = lx * speed * KeySide * time / 50;
         }
        
-        dy -= 0.1 * pow(time/50,2);
+        dy -= 0.02;
         onGround = 0;
 
         dx = dSideX + dFrontX;
@@ -124,27 +135,35 @@ public:
                     if (mRight) {
                         //cubes_types[oldX][oldY][oldZ] = IDblocks;
                         cubes[oldX][oldY][oldZ] = IDblocks;
-                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2)] = 0;
-
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
-                        cubes[int(PlayerX/2)][int(PlayerY/2 - h / 2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
-                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
-                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h / 2)][int(PlayerZ/2)] = 0;
-
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 + h/2 - 0.05)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2)]              = 0;
                         cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
                         cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
                         cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
                         cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 + d/2 - 0.01)] = 0;
+                        cubes[int(PlayerX/2)]             [int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2 - d/2 + 0.01)] = 0;
+                        cubes[int(PlayerX/2 + w/2 - 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2)]              = 0;
+                        cubes[int(PlayerX/2 - w/2 + 0.01)][int(PlayerY/2 - h/2 + 0.01)][int(PlayerZ/2)]              = 0;
 
                         break;
                     }
@@ -176,7 +195,7 @@ public:
     void jump() {
         if (onGround) {
             onGround = false;
-            dy = 0.3;
+            dy = 0.33;
         }
     }
 };
@@ -237,7 +256,7 @@ GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,      
  
 inline void DrawdebugScreen(float x, float y, float z, void* font, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
-    std::string DxCHECK, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
+    std::string timer, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
         glPushMatrix();
@@ -251,16 +270,18 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
         glPushMatrix();
         glLoadIdentity();
 
+            
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
+            
             glRasterPos3f(x, y, z);
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z');
             glRasterPos3f(x + 40, y , z);
             for (int i = 0; i < std::to_string(steve.PlayerX/2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerX / 2 + 0.5)[i]);
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length()*7 + 40, y , z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z);
-            for (int i = 0; i < std::to_string(steve.PlayerY / 2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerY / 2 + 0.5)[i]);
-            glRasterPos3f(x + std::to_string(steve.PlayerY / 2 + 0.5).length() * 7 + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
+            for (int i = 0; i < std::to_string(steve.PlayerY / 2).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerY/2 +0.05)[i]);
+            glRasterPos3f(x + std::to_string(steve.PlayerY / 2).length() * 7 + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + std::to_string(steve.PlayerY / 2 + 0.5).length() * 9 + 40, y, z);
             for (int i = 0; i < std::to_string(steve.PlayerZ / 2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerZ / 2 + 0.5)[i]);
 
@@ -292,7 +313,7 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
             for (int i = 0; i < Onground.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, Onground[i]);
 
             glRasterPos3f(x, y + 390, z);
-            for (int i = 0; i < DxCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DxCHECK[i]);
+            for (int i = 0; i < timer.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, timer[i]);
 
             glRasterPos3f(x, y + 420, z);
             for (int i = 0; i < DyCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DyCHECK[i]);
@@ -342,9 +363,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y)
     case 'D':
         KeySide = 1.0; break;
     case 'b':
-        steve.PlayerX = 257/2             * cube_size;
-        steve.PlayerY = 100              * cube_size;
-        steve.PlayerZ = 257/2             * cube_size;
+        steve.PlayerX = 1/2 + 0.5           *cube_size;
+        steve.PlayerY = (20  )          * cube_size;
+        steve.PlayerZ = 1/2 + 0.5 * cube_size;
         steve.dy = 0;
         break;
     case 'f':
@@ -458,9 +479,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 inline void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 50; x < steve.PlayerX / 2 + 50; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2 - 30 ; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
         for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 50; z < steve.PlayerZ / 2 + 50; z++ )
+            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++ )
             {
                 if (x < 0 or x > quantity_cube_x) continue;
                 if (z < 0 or z > quantity_cube_z)  continue;
@@ -475,10 +496,12 @@ inline void Draw_cubes() {
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
                 switch (type) {
-                case 1: {draw_stone(      stone,       cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 2: {draw_super_grass(super_grass, cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 3: {draw_dirt(       dirt,        cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 4: {draw_planks(     planks,      cube_size / 2, x, y, z, cubes, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 1: {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 2: {draw_super_grass(  x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 3: {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 4: {draw_planks(            x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 5: {draw_leaves(            x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 6: {draw_tree_oak(       x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
                 //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
@@ -487,6 +510,9 @@ inline void Draw_cubes() {
 }
 
 void Draw(){
+    newtime = clock();
+    float times = newtime - oldtime;
+    oldtime = clock();
  
     std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT); 
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -507,25 +533,24 @@ void Draw(){
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     drawSkybox(skybox_texturies);
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
-
-
     
+
+    static int timer = 1; static int a = 0; a++;
+    if (a == 5) { timer = times; a = 0; }
 
     DrawdebugScreen( 5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(steve.onGround), std::to_string(52), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000/timer), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
     
 
     
 
-    newtime = clock();
-    float times = newtime - oldtime;
-    oldtime = clock();
     steve.update(times);
     //steve.mousePressed();
     //=================================конец основного цикла===================================================================================
-    glutPostRedisplay();
     glPopMatrix();
+    glutPostRedisplay();
     glutSwapBuffers();
+    //glFinish();
 }
 
 
@@ -535,7 +560,7 @@ int main(int argc, char* argv[])
     //===========================INITIALIZATION===========================================
     glutInit(&argc, argv);
     glutInitWindowSize(width, height);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_RGB | GL_DOUBLE);
     glutCreateWindow("cubes");
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -554,6 +579,8 @@ int main(int argc, char* argv[])
     cursorTextures(cursor_tex, width, height);
     HeightMap_Load(HeightMap, width, height);
     GUITextures(GUI_tex, width, height);
+    leavesTextures(leaves, width, height);
+    tree_oakTextures(tree_oak, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
@@ -566,23 +593,27 @@ int main(int argc, char* argv[])
     std::ifstream fout("Text.txt", std::ifstream::binary);
 
 
-
-
-
-sf::Image im; im.loadFromFile("textures/heightmap.png");
-    for (int x = 0; x < quantity_cube_x; x++)
+    sf::Image im; im.loadFromFile("textures/heightmap.png");
+    for (int x = 0; x < quantity_cube_x; x++) {
+        tick += rand() % 2;
         for (int z = 0; z < quantity_cube_z; z++) {
-            int c = im.getPixel(x,z).r/10 +10;
-            for(int y = 4; y<=c; y++){
-                    //cubes[x][y][z] = 1;
-                if (y == c) {
-                    cubes[x][y][z] = 2;
+            tick += rand() % 2;
+            int c = im.getPixel(x, z).r / 10 + 10;
+            for (int y = 4; y <= c; y++) {
+
+                if (tick > 50 and x > 5 and x < quantity_cube_x -5 and z > 5 and x < quantity_cube_z - 5) {
+                    trees(x, c, z);
+                    tick = 0;
                 }
+                if (y == c) cubes[x][y][z] = 2;
+
                 else if (y > c - 3)  cubes[x][y][z] = 3;
                 else if (y == 4) cubes[x][y][z] = 999;
-                    else cubes[x][y][z] = 1;
-                }
+                else cubes[x][y][z] = 1;
+            }
         }
+    }
+
     
 
 

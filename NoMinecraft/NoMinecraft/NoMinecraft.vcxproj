@@ -150,6 +150,7 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\builders.hpp" />
     <ClInclude Include="src\Draw_textures.hpp" />
     <ClInclude Include="src\Help.hpp" />
     <ClInclude Include="src\Load_textures.hpp" />

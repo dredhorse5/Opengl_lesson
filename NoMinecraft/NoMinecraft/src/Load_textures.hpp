@@ -1,7 +1,6 @@
 #ifndef __LOAD_TEXTURES_H__
 #define __LOAD_TEXTURES_H__
 #include <string>
-#include <glut.h>
 #include <SOIL.h>
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -63,6 +62,35 @@ void planksTextures(GLuint planks[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
+void leavesTextures(GLuint leaves[1], int W, int H) {
+    unsigned char* SOILT = SOIL_load_image("textures/leaves.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &leaves[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, leaves[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+}
+void tree_oakTextures(GLuint tree_oak[1], int W, int H) {
+    unsigned char* SOILT = SOIL_load_image("textures/tree_oak.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &tree_oak[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, tree_oak[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+}
+
 void cursorTextures(GLuint cursor[1], int W, int H) {
 
     unsigned char* SOILT = SOIL_load_image("textures/cursor.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
@@ -220,4 +248,4 @@ void skybox(GLuint skybox_texturies[6], int W, int H)
 }
 
 
-#endif __LOAD_TEXTURES_H__#pragma once
+#endif __LOAD_TEXTURES_H__
