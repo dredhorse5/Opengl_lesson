@@ -48,13 +48,7 @@ time_t newtime = 1;
 #include "Draw_textures.hpp"
 #include "Load_textures.hpp"
 
-bool check(int x, int y, int z) {
-    if ((x < 0) or (x > quantity_cube_x) or
-        (y < 0) or (y > quantity_cube_y) or
-        (z < 0) or (z > quantity_cube_z)) return false;
-    return cubes[x][y][z];
 
-}
 
 class Player {
 public:
@@ -75,6 +69,13 @@ public:
         w = 0.5f; h = 1.9f; d = 0.5f; speed = 0.5;
         onGround = false; 
         View =90; // угол обзора
+    }
+    bool check(int x, int y, int z) {
+        if ((x < 0) or (x > quantity_cube_x) or
+            (y < 0) or (y > quantity_cube_y) or
+            (z < 0) or (z > quantity_cube_z)) return false;
+        return cubes[x][y][z];
+
     }
     void update(float time) {
 
@@ -479,29 +480,26 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 inline void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 30 ; x < steve.PlayerX / 2 + 30; x++) // drawing cubs
-        for (int y = 0; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 30; z < steve.PlayerZ / 2 + 30; z++ )
+    for (int x = steve.PlayerX / 2 - 80 ; x < steve.PlayerX / 2 + 80; x++) // drawing cubs
+        for (int y = 4; y < quantity_cube_y; y++)
+            for (int z = steve.PlayerZ / 2 - 80; z < steve.PlayerZ / 2 + 80; z++ )
             {
                 if (x < 0 or x > quantity_cube_x) continue;
                 if (z < 0 or z > quantity_cube_z)  continue;
                 int type = cubes[x][y][z];
                 if (!type or   (bool(type) == bool(cubes[x][y + 1][z]) and bool(type) == bool(cubes[x][y - 1][z]) and
                                 bool(type) == bool(cubes[x + 1][y][z]) and bool(type) == bool(cubes[x - 1][y][z]) and
-                                bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1])    )) continue;
-               /* if (!type or bool(type == cubes[x][y + 1][z] and type == cubes[x][y - 1][z] and
-                                    type == cubes[x + 1][y][z] and type == cubes[x - 1][y][z] and
-                                    type == cubes[x][y][z + 1] and type == cubes[x][y][z - 1])     ) continue;*/
+                                bool(type) == bool(cubes[x][y][z + 1]) and bool(type) == bool(cubes[x][y][z - 1])      )) continue;
                 glPushMatrix();
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
                 switch (type) {
                 case 1: {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 2: {draw_super_grass(  x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 2: {draw_super_grass(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 case 3: {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 4: {draw_planks(            x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 5: {draw_leaves(            x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 6: {draw_tree_oak(       x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 4: {draw_planks(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 5: {draw_leaves(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case 6: {draw_tree_oak(           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
                 //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
@@ -549,18 +547,18 @@ void Draw(){
     //=================================конец основного цикла===================================================================================
     glPopMatrix();
     glutPostRedisplay();
-    glutSwapBuffers();
-    //glFinish();
+    //glutSwapBuffers();
+    glFinish();
 }
 
 
 
-int main(int argc, char* argv[])
+int main()
 {
     //===========================INITIALIZATION===========================================
-    glutInit(&argc, argv);
+    //glutInit();
     glutInitWindowSize(width, height);
-    glutInitDisplayMode(GLUT_RGB | GL_DOUBLE);
+    glutInitDisplayMode(GLUT_RGBA /*| GL_DOUBLE*/);
     glutCreateWindow("cubes");
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

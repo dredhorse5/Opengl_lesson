@@ -1,8 +1,8 @@
 #ifndef __TEXTURES_H__
 #define __TEXTURES_H__
 void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
-{
-    //bool cubes = cubes;
+{ 
+
     glBindTexture(GL_TEXTURE_2D, super_grass[0]);
     glBegin(GL_QUADS);
     ///задн€€
