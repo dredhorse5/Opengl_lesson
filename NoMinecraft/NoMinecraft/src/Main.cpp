@@ -1,4 +1,4 @@
-#include <Math.h>
+п»ї#include <Math.h>
 #include <stdio.h>
 #include <ctime>
 #include <thread>
@@ -32,14 +32,14 @@ int cubes[257][50][257];
 short int IDblocks = 1;
 short int blocks = 7;
 
-// камера
-float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
-float angleX = 0.0f, angleY = 5.0f; // угол поворота камеры
+// РєР°РјРµСЂР°
+float lx = 1.0f, lz = 0.0f, ly = 0.0f; // РєРѕРѕСЂРґРёРЅР°С‚С‹ РІРµРєС‚РѕСЂР° РЅР°РїСЂР°РІР»РµРЅРёСЏ РґРІРёР¶РµРЅРёСЏ РєР°РјРµСЂС‹
+float angleX = 0.0f, angleY = 5.0f; // СѓРіРѕР» РїРѕРІРѕСЂРѕС‚Р° РєР°РјРµСЂС‹
 int mouseXOld = 1, mouseYOld = 1;
 bool mLeft = 0, mRight = 0; // mouse bottons
 float FPS = 60;
-// разное
-float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
+// СЂР°Р·РЅРѕРµ
+float KeyFront = 0, KeySide = 0; // РєР»СЋС‡ Рє РёР·РјРµРЅРµРЅРёСЋ РїРµСЂРµРјРµС‰РµРЅРёСЏ РІРїРµСЂРµРґ/РЅР°Р·Р°Рґ
 bool Draw_debug_Menu_key = true;
 int tick = 0;
 time_t oldtime = 1;
@@ -59,7 +59,7 @@ public:
     float w, h, d;
     bool onGround;
     float speed;
-    float View; // угол обзора
+    float View; // СѓРіРѕР» РѕР±Р·РѕСЂР°
 
     Player(float x0, float y0, float z0) {
         PlayerX = x0; PlayerY= y0; PlayerZ= z0;
@@ -68,7 +68,7 @@ public:
         dFrontX = 0; dFrontZ = 0;
         w = 0.5f; h = 1.9f; d = 0.5f; speed = 0.5;
         onGround = false; 
-        View =90; // угол обзора
+        View =90; // СѓРіРѕР» РѕР±Р·РѕСЂР°
     }
     bool check(int x, int y, int z) {
         if ((x < 0) or (x > quantity_cube_x) or
@@ -217,36 +217,36 @@ public:
 
     void update(GLuint tex[1]) {
         glBindTexture(GL_TEXTURE_2D, tex[0]);
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°
         glBegin(GL_POLYGON);
-        glTexCoord2d(1, 1); glVertex3f( x1 * lz + y1 * sin(angleY) * lx,  y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
-        glTexCoord2d(0, 1); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx,  y2 * cos(angleY),  x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glTexCoord2d(1, 1); glVertex3f( x1 * lz + y1 * sin(angleY) * lx,  y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // РґРІРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІРІРµСЂС…/РІРЅРёР· 0.356
+        glTexCoord2d(0, 1); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx,  y2 * cos(angleY),  x2 * lx + y2 * sin(angleY) * lz); // :. // С‚СЂРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІР»РµРІРѕ/РїСЂР°РІРѕ
         glTexCoord2d(0, 0); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY),  x3 * lx - y3 * sin(angleY) * lz); // :'
         glTexCoord2d(1, 0); glVertex3f( x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
         glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°  
     }
     void update(GLuint tex[1],float x1h, float y1h, float x2h, float y2h, float x3h, float y3h, float x4h, float y4h) {
         glBindTexture(GL_TEXTURE_2D, tex[0]);
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°
         glBegin(GL_POLYGON);
-        glTexCoord2d(x1h, y1h); glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
-        glTexCoord2d(x2h, y2h); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glTexCoord2d(x1h, y1h); glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // РґРІРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІРІРµСЂС…/РІРЅРёР· 0.356
+        glTexCoord2d(x2h, y2h); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // С‚СЂРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІР»РµРІРѕ/РїСЂР°РІРѕ
         glTexCoord2d(x3h, y3h); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
         glTexCoord2d(x4h, y4h); glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
         glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°  
     }
     void update() {
         glColor3f(1, 0, 0);
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°
         glBegin(GL_POLYGON);
-        glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
-        glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+        glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // РґРІРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІРІРµСЂС…/РІРЅРёР· 0.356
+        glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // С‚СЂРѕР№РєР° РїРѕР·РІРѕР»СЏРµС‚ РґРІРёРіР°С‚СЊ РІР»РµРІРѕ/РїСЂР°РІРѕ
         glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
         glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
         glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // РґРІРѕР№РєРё Р·Р°РґР°СЋС‚ СѓРґР°Р»РµРЅРЅРѕСЃС‚СЊ РѕС‚ РёРіСЂРѕРєР°  
         glColor3f(1, 1, 1);
     }
 };
@@ -259,13 +259,13 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
     std::string timer, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
         glMatrixMode(GL_PROJECTION);
-        //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
+        //РЎРѕС…СЂР°РЅСЏРµРј РїСЂРµРґС‹РґСѓС‰СѓСЋ РјР°С‚СЂРёС†Сѓ, РєРѕС‚РѕСЂР°СЏ СЃРѕРґРµСЂР¶РёС‚ РїР°СЂР°РјРµС‚СЂС‹ РїРµСЂСЃРїРµРєС‚РёРІРЅРѕР№ РїСЂРѕРµРєС†РёРё
         glPushMatrix();
-        //обнуляем матрицу
+        //РѕР±РЅСѓР»СЏРµРј РјР°С‚СЂРёС†Сѓ
         glLoadIdentity();
-        //устанавливаем 2D ортогональную проекцию
+        //СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј 2D РѕСЂС‚РѕРіРѕРЅР°Р»СЊРЅСѓСЋ РїСЂРѕРµРєС†РёСЋ
         gluOrtho2D(0, width, height, 0);
-        //выбираем режим обзора модели
+        //РІС‹Р±РёСЂР°РµРј СЂРµР¶РёРј РѕР±Р·РѕСЂР° РјРѕРґРµР»Рё
         glMatrixMode(GL_MODELVIEW);
 
         glPushMatrix();
@@ -329,9 +329,9 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
         glPopMatrix();
 
         glMatrixMode(GL_PROJECTION);
-        //восстановить предыдущую матрицу проекции
+        //РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РїСЂРµРґС‹РґСѓС‰СѓСЋ РјР°С‚СЂРёС†Сѓ РїСЂРѕРµРєС†РёРё
         glPopMatrix();
-        //вернуться в режим модели
+        //РІРµСЂРЅСѓС‚СЊСЃСЏ РІ СЂРµР¶РёРј РјРѕРґРµР»Рё
         glMatrixMode(GL_MODELVIEW);
         quad.update();
     }
@@ -447,7 +447,7 @@ void mouseMove(int x, int y) {
 void mouseButton(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON){
         switch (state){
-        case GLUT_DOWN:		//Если нажата
+        case GLUT_DOWN:		//Р•СЃР»Рё РЅР°Р¶Р°С‚Р°
             mLeft = true;
             break;
         case GLUT_UP:
@@ -458,7 +458,7 @@ void mouseButton(int button, int state, int x, int y) {
 
     if (button == GLUT_RIGHT_BUTTON){
         switch (state){
-        case GLUT_DOWN:		//Если нажата
+        case GLUT_DOWN:		//Р•СЃР»Рё РЅР°Р¶Р°С‚Р°
             mRight = true;
             break;
         case GLUT_UP:
@@ -518,7 +518,7 @@ void Draw(){
 
     glPushMatrix();
     
-    //===============================начало основного цикла================================================================================
+    //===============================РЅР°С‡Р°Р»Рѕ РѕСЃРЅРѕРІРЅРѕРіРѕ С†РёРєР»Р°================================================================================
 
 
     gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
@@ -544,7 +544,7 @@ void Draw(){
 
     steve.update(times);
     //steve.mousePressed();
-    //=================================конец основного цикла===================================================================================
+    //=================================РєРѕРЅРµС† РѕСЃРЅРѕРІРЅРѕРіРѕ С†РёРєР»Р°===================================================================================
     glPopMatrix();
     glutPostRedisplay();
     //glutSwapBuffers();
@@ -582,7 +582,7 @@ int main()
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
-
+     
     glutMouseFunc(mouseButton);
 
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard is down
