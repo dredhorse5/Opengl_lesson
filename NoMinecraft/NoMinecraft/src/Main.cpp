@@ -588,6 +588,7 @@ int main()
     glutKeyboardFunc(processNormalKeysDOWN);// working when keyBoard is down
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard is up
 
+
     std::ifstream fout("Text.txt", std::ifstream::binary);
 
 
