@@ -12,6 +12,7 @@
 #define GL_CLAMP_TO_EDGE 0x812F
 
 // textures
+GLuint backround_tex[1];
 GLuint cursor_tex[1];
 GLuint super_grass[1];
 GLuint skybox_texturies[6];
@@ -42,14 +43,31 @@ float FPS = 60;
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = true;
 int tick = 0;
+int MENU = 0;
 time_t oldtime = 1;
 time_t newtime = 1;
-#include "builders.hpp"
-#include "Draw_textures.hpp"
+
+
+
 #include "Load_textures.hpp"
+void draw_lines_cubes(float cube_size, int X, int Y, int Z);
 
+enum Blocks {
+    AIR,
+    STONE,
+    SUPER_GRASS,
+    DIRT,
+    COBBLESTONE,
+    PLANKS,
+    TREE_OAK,
+    LEAVES
 
-
+};
+enum Menu_types {
+    game,
+    game_menu
+};
+#include "builders.hpp"
 class Player {
 public:
     float PlayerX, PlayerY, PlayerZ;
@@ -131,8 +149,8 @@ public:
 
                 if (check(X, Y, Z) ) {
                     draw_lines_cubes(cube_size,X,Y,Z);
-
-                    if (mLeft) { cubes[X][Y][Z] = 0;          break; }
+                    
+                    if (mLeft) { cubes[X][Y][Z] = 0; break; }
                     if (mRight) {
                         //cubes_types[oldX][oldY][oldZ] = IDblocks;
                         cubes[oldX][oldY][oldZ] = IDblocks;
@@ -254,6 +272,8 @@ public:
 GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
 GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
 GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
+GUI background(0.357, 0.2, 0.357f, 0.2, 0.357f, 0.2, 0.357f, 0.2);
+#include "Draw_textures.hpp"
  
 inline void DrawdebugScreen(float x, float y, float z, void* font, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
@@ -269,6 +289,7 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
         glMatrixMode(GL_MODELVIEW);
 
         glPushMatrix();
+
         glLoadIdentity();
 
             
@@ -348,125 +369,6 @@ void close_game() {
         fout.close();
     exit(0);
 }
-void processNormalKeysDOWN(unsigned char key, int x, int y)
-{
-    switch (key) {
-    case 'w':
-    case 'W':
-        KeyFront = 1.0; break;
-    case 's':
-    case 'S':
-        KeyFront = -1.0; break;
-    case 'a':
-    case 'A':
-        KeySide = -1.0; break;
-    case 'd':
-    case 'D':
-        KeySide = 1.0; break;
-    case 'b':
-        steve.PlayerX = 1/2 + 0.5           *cube_size;
-        steve.PlayerY = (20  )          * cube_size;
-        steve.PlayerZ = 1/2 + 0.5 * cube_size;
-        steve.dy = 0;
-        break;
-    case 'f':
-        IDblocks++;
-        if (IDblocks > blocks) IDblocks = 0;
-        break;
-    
-    case 32:
-        steve.jump();
-        
-        break;
-
-    case 27: {
-        //std::thread th(close_game);
-        //th.detach();    
-        /*int msg;
-        std::ofstream fout("Text.txt", std::fstream::trunc);
-        for (int x = 0; x < quantity_cube_x; x++)
-            for(int y = 0; y < quantity_cube_y; y++)
-                for (int z = 0; z < quantity_cube_z; z++) {
-                    fout << cubes[x][y][z];
-                }
-        fout.close();*/
-        exit(0);
-        
-    }
-    }
-    if (key == 9) {
-        if (!Draw_debug_Menu_key) {
-            Draw_debug_Menu_key = 1;
-        }
-        else Draw_debug_Menu_key = 0;
-    }
-
-}
-void processNormalKeysUP(unsigned char key, int x, int y) {
-    switch (key) {
-        case 'w':
-        case 'W':
-        case 's':
-        case 'S':
-            KeyFront = 0;
-            break;
-        case 'a':
-        case 'A':
-        case 'd':
-        case 'D':
-            KeySide = 0;
-            break;
-
-    }
-}
-void mouseMove(int x, int y) {
-    if ( mouseXOld != 0 or mouseYOld != 0) {
-        angleX -= mouseXOld * 0.001f;
-        angleY -= mouseYOld * 0.001f;
-
-        if (angleY > 3.14 / 2) angleY = 3.14 / 2;
-        if (angleY < -3.14 / 2) angleY = -3.14 / 2;
-
-        mouseXOld = 0; mouseYOld = 0;
-
-        // update camera's direction
-        lx = float(sin(angleX));
-        lz = float(-cos(angleX));
-        ly = float(-tan(angleY));
-        
-    } else {
-        
-        mouseXOld = (width /2) - x;
-        mouseYOld = (height /2) - y;
-        glutWarpPointer((width /2), (height /2));
-    } 
-
-    //glutPostRedisplay();
-    
-}
-void mouseButton(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON){
-        switch (state){
-        case GLUT_DOWN:		//Если нажата
-            mLeft = true;
-            break;
-        case GLUT_UP:
-            mLeft = false;
-            break;
-        }
-    }
-
-    if (button == GLUT_RIGHT_BUTTON){
-        switch (state){
-        case GLUT_DOWN:		//Если нажата
-            mRight = true;
-            break;
-        case GLUT_UP:
-            mRight = false;
-            break;
-        }
-    }
-}
 void Reshape(int w, int h){
     float ratio = w * 1.0 / h;
     glMatrixMode(GL_PROJECTION);
@@ -494,56 +396,63 @@ inline void Draw_cubes() {
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
                 switch (type) {
-                case 1: {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 2: {draw_super_grass(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 3: {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 4: {draw_planks(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 5: {draw_leaves(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case 6: {draw_tree_oak(           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::STONE:       {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::SUPER_GRASS: {draw_super_grass(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::DIRT:        {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::PLANKS:      {draw_planks(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::LEAVES:      {draw_leaves(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::TREE_OAK:    {draw_tree_oak(           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
-                //glTranslatef(-x * cube_size - cube_size / 2, -y * cube_size - cube_size / 2, -z * cube_size - cube_size / 2);
                 glPopMatrix();
             }
 }
 
 void Draw(){
-    newtime = clock();
-    float times = newtime - oldtime;
-    oldtime = clock();
- 
-    std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT); 
+    static int a = 0; static int timer = 1; float times;
+    std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glclear_th.join();
 
     glPushMatrix();
+    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h / 2,          steve.PlayerZ,
+              steve.PlayerX + lx,   steve.PlayerY + ly + steve.h / 2,     steve.PlayerZ + lz,
+              0.0f,                 1.0f,                                 0.0f                 );
     
-    //===============================начало основного цикла================================================================================
+    switch (MENU) {
+    case Menu_types::game:
+        newtime = clock();
+        times = newtime - oldtime;
+        oldtime = clock();
 
 
-    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h/2,        steve.PlayerZ,
-              steve.PlayerX + lx,   steve.PlayerY + ly + steve.h/2,   steve.PlayerZ + lz,
-              0.0f,                 1.0f,                             0.0f                            );
-    Draw_cubes();
-    cursor.update(cursor_tex);
-    hotbar_down.update(GUI_tex, 1, 1,     0.09f, 1,      0.09f, 0.89f,     1, 0.89f);
-    
-    glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
-    drawSkybox(skybox_texturies);
-    glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
-    
 
-    static int timer = 1; static int a = 0; a++;
-    if (a == 5) { timer = times; a = 0; }
+        //===============================начало основного цикла================================================================================
 
-    DrawdebugScreen( 5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-        std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000/timer), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
-    
 
-    
+        
+        Draw_cubes();
+        cursor.update(cursor_tex);
+        hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);
+        
 
-    steve.update(times);
-    //steve.mousePressed();
+        drawSkybox(skybox_texturies);
+
+
+
+        a++; if (a == 5) { timer = times; a = 0; }
+
+        DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+            std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
+
+
+
+
+        steve.update(times);
+        break;
+    case Menu_types::game_menu:
+        background.update(backround_tex);
+    }
     //=================================конец основного цикла===================================================================================
     glPopMatrix();
     glutPostRedisplay();
@@ -552,6 +461,7 @@ void Draw(){
 }
 
 
+#include "Mouse_and_keyboard.hpp"
 
 int main()
 {
@@ -579,6 +489,7 @@ int main()
     GUITextures(GUI_tex, width, height);
     leavesTextures(leaves, width, height);
     tree_oakTextures(tree_oak, width, height);
+    backroundTextures(backround_tex, width, height);
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
@@ -604,11 +515,11 @@ int main()
                     trees(x, c, z);
                     tick = 0;
                 }
-                if (y == c) cubes[x][y][z] = 2;
+                if (y == c) cubes[x][y][z] = Blocks::SUPER_GRASS;
 
-                else if (y > c - 3)  cubes[x][y][z] = 3;
+                else if (y > c - 3)  cubes[x][y][z] = Blocks::DIRT;
                 else if (y == 4) cubes[x][y][z] = 999;
-                else cubes[x][y][z] = 1;
+                else cubes[x][y][z] = Blocks::STONE;
             }
         }
     }

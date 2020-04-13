@@ -7,14 +7,14 @@ void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
     glBegin(GL_QUADS);
     ///задняя 
     glColor3f(0.8, 0.8, 0.8); // cool glColor3f(1.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool (cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+    if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 0.5); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 0.5); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or 
         glTexCoord2d(1, 0.5); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -22,14 +22,14 @@ void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     glColor3f(0.7, 0.7, 0.7);
     //ПРАВАЯ
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X+1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 0.5); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 0.5); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 0.5); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -37,7 +37,7 @@ void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0.5); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -45,7 +45,7 @@ void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     glColor3f(1, 1, 1);
      //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(1, 0.5); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 0.5); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -59,14 +59,14 @@ void draw_stone(  int X, int Y, int Z, int PX, int PY, int PZ) {
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+     if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or  { // Z == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -74,14 +74,14 @@ void draw_stone(  int X, int Y, int Z, int PX, int PY, int PZ) {
     }
     //ПРАВАЯ
         glColor3f(0.7, 0.7, 0.7);
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -89,7 +89,7 @@ void draw_stone(  int X, int Y, int Z, int PX, int PY, int PZ) {
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -97,7 +97,7 @@ void draw_stone(  int X, int Y, int Z, int PX, int PY, int PZ) {
     }
     glColor3f(1, 1, 1);
     //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -112,14 +112,14 @@ void draw_planks( int X, int Y, int Z, int PX, int PY, int PZ)
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+     if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or  { // Z == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -127,14 +127,14 @@ void draw_planks( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     //ПРАВАЯ
     glColor3f(0.7, 0.7, 0.7);
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -142,7 +142,7 @@ void draw_planks( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -150,7 +150,7 @@ void draw_planks( int X, int Y, int Z, int PX, int PY, int PZ)
     }
     glColor3f(1, 1, 1);
     //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -165,14 +165,14 @@ void draw_dirt( int X, int Y, int Z,  int PX, int PY, int PZ) {
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+     if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or  { // Z == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -180,14 +180,14 @@ void draw_dirt( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     //ПРАВАЯ
     glColor3f(0.7, 0.7, 0.7);
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -195,7 +195,7 @@ void draw_dirt( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -203,7 +203,7 @@ void draw_dirt( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(1, 1, 1);
     //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -217,14 +217,14 @@ void draw_leaves( int X, int Y, int Z,  int PX, int PY, int PZ) {
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+     if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or  { // Z == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -232,14 +232,14 @@ void draw_leaves( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     //ПРАВАЯ
     glColor3f(0.7, 0.7, 0.7);
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -247,7 +247,7 @@ void draw_leaves( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -255,7 +255,7 @@ void draw_leaves( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(1, 1, 1);
     //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -269,14 +269,14 @@ void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
-    if ((PZ / 2 + 0.5 > Z) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y][Z + 1]))) {
+     if ((PZ / 2 + 0.5 > Z) and !cubes[X][Y][Z + 1]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 0); glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
     }
     //передняя
-    if ((PZ / 2 + 0.5 < Z) and (bool(cubes[X][Y][Z - 1]) != bool(cubes[X][Y][Z]))) { // Z == 0 or 
+    if ((PZ / 2 + 0.5 < Z) and !cubes[X][Y][Z - 1]) { // Z == 0 or  
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
@@ -284,14 +284,14 @@ void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     //ПРАВАЯ
     glColor3f(0.7, 0.7, 0.7);
-    if ((PX / 2 + 0.5 > X) and (bool(cubes[X][Y][Z]) != bool(cubes[X + 1][Y][Z]))) {
+    if ((PX / 2 + 0.5 > X) and !cubes[X+1][Y][Z]) {
         glTexCoord2d(1, 1); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
         glTexCoord2d(1, 0); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
     }
     //ЛЕВАЯ
-    if ((PX / 2 + 0.5 < X) and (bool(cubes[X - 1][Y][Z]) != bool(cubes[X][Y][Z]))) { // X == 0 or 
+    if ((PX / 2 + 0.5 < X) and !cubes[X - 1][Y][Z]) { // X == 0 or 
         glTexCoord2d(1, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
         glTexCoord2d(0.5, 0); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
@@ -299,7 +299,7 @@ void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(0.5, 0.5, 0.5);
     //НИЖНЯЯ
-    if ((PY / 2 + 0.5 < Y) and (bool(cubes[X][Y - 1][Z]) != bool(cubes[X][Y][Z]))) {
+    if ((PY / 2 + 0.5 < Y) and !cubes[X][Y - 1][Z]) {
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
@@ -307,7 +307,7 @@ void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
     }
     glColor3f(1, 1, 1);
     //ВЕРХНЯЯ
-    if ((PY / 2 + 0.5 > Y) and (bool(cubes[X][Y][Z]) != bool(cubes[X][Y + 1][Z]))) { // Y == 0 or 
+    if ((PY / 2 + 0.5 > Y) and !cubes[X][Y + 1][Z]) { // Y == 0 or 
         glTexCoord2d(0.5, 1); glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 1); glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
         glTexCoord2d(0, 0); glVertex3f(cube_size/2, cube_size/2, cube_size/2);
@@ -317,70 +317,55 @@ void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
 }
 
 void draw_lines_cubes(float cube_size,int X, int Y,int Z) {
-    glLineWidth(4);
-    //glColor3f(1, 1, 1);
+    glLineWidth(2);
     cube_size = cube_size/2 + 0.004;
     glTranslatef(X*2+1, Y*2+1, Z*2+1);
-    //вертикальные
     glBegin(GL_LINES);
-    glColor3d(0, 1, 1);
+    glColor3d(0, 0, 0);
     glVertex3f(-cube_size, -cube_size, -cube_size);
     glVertex3f(-cube_size, cube_size, -cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, -cube_size, -cube_size);
     glVertex3f(cube_size, cube_size, -cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, -cube_size, cube_size);
     glVertex3f(cube_size, cube_size, cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(-cube_size, -cube_size, cube_size);
     glVertex3f(-cube_size, cube_size, cube_size);
-    glEnd();
-    // нижние
-    glBegin(GL_LINES);
+
     glVertex3f(-cube_size, -cube_size, -cube_size);
     glVertex3f(cube_size, -cube_size, -cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, -cube_size, -cube_size);
     glVertex3f(cube_size, -cube_size, cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, -cube_size, cube_size);
     glVertex3f(-cube_size, -cube_size, cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(-cube_size, -cube_size, cube_size);
     glVertex3f(-cube_size, -cube_size, -cube_size);
-    glEnd();
-    //верхние
-    glBegin(GL_LINES);
+
     glVertex3f(-cube_size, cube_size, -cube_size);
     glVertex3f(cube_size, cube_size, -cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, cube_size, -cube_size);
     glVertex3f(cube_size, cube_size, cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(cube_size, cube_size, cube_size);
     glVertex3f(-cube_size, cube_size, cube_size);
-    glEnd();
-    glBegin(GL_LINES);
+
     glVertex3f(-cube_size, cube_size, cube_size);
     glVertex3f(-cube_size, cube_size, -cube_size);
     glEnd();
     glTranslatef(-(X*2)-1, -Y*2-1, -Z*2-1);
-    //glClear(GL_COLOR_BUFFER_BIT);
-    glColor3d(1, 1, 1);     // красный цвет
+    glColor3d(1, 1, 1);
 
 }
 
 void drawSkybox(GLuint skybox_texturies[])
 {
+    glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     //==================================================================
     glBindTexture(GL_TEXTURE_2D, skybox_texturies[0]);
     //задняя
@@ -435,7 +420,7 @@ void drawSkybox(GLuint skybox_texturies[])
     glTexCoord2d(1, 1); glVertex3f(200, 200, -200);
     glTexCoord2d(0, 1); glVertex3f(-200, 200, -200);
     glEnd();
-    
+    glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
 }
 
 
