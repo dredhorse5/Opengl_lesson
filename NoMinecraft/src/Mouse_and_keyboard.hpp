@@ -11,7 +11,6 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
     case 'a':
     case 'A':
         KeySide = -1.0;
-        std::cout << "SSSSSSSSSSSSS" << std::endl; 
         break;
     case 'd':
     case 'D':
@@ -24,6 +23,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
         break;
 
     case 'f':
+    case 'F':
         IDblocks++;
         if (IDblocks > blocks) IDblocks = 0;
         break;

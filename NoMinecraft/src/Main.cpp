@@ -26,10 +26,10 @@ GLuint tree_oak[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
-int quantity_cube_x = 256; // quanity cubes of x
+int quantity_cube_x = 540; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
-int quantity_cube_z = 256; // quanity cubes of z
-int cubes[257][50][257];
+int quantity_cube_z = 540; // quanity cubes of z
+int cubes[540][50][540];
 short int IDblocks = 1;
 short int blocks = 7;
 
@@ -115,14 +115,14 @@ public:
             dSideZ = lx * speed * KeySide * time / 50;
         }
        
-        dy -= 0.02;
+        dy -= 0.12 * (time/50);
         onGround = 0;
 
         dx = dSideX + dFrontX;
         PlayerX += dx;
         //std::thread one(Player::*collision, dx, 0, 0);
         collision(dx, 0, 0);
-        PlayerY += dy;
+        PlayerY += dy * (time / 50);
         collision(0, dy, 0);
         dz = dSideZ + dFrontZ;
         PlayerZ += dz;
@@ -214,7 +214,7 @@ public:
     void jump() {
         if (onGround) {
             onGround = false;
-            dy = 0.33;
+            dy = 0.8;
         }
     }
 };
@@ -374,7 +374,7 @@ void Reshape(int w, int h){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    gluPerspective(steve.View, ratio, 0.1f, 360.0f);
+    gluPerspective(steve.View, ratio, 0.1f, 800.0f);
     glMatrixMode(GL_MODELVIEW);
 }
 void timf(int value){
@@ -382,9 +382,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 inline void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 80 ; x < steve.PlayerX / 2 + 80; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2 - 60 ; x < steve.PlayerX / 2 + 60; x++) // drawing cubs
         for (int y = 4; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 80; z < steve.PlayerZ / 2 + 80; z++ )
+            for (int z = steve.PlayerZ / 2 - 60; z < steve.PlayerZ / 2 + 60; z++ )
             {
                 if (x < 0 or x > quantity_cube_x) continue;
                 if (z < 0 or z > quantity_cube_z)  continue;
@@ -503,7 +503,7 @@ int main()
     std::ifstream fout("Text.txt", std::ifstream::binary);
 
 
-    sf::Image im; im.loadFromFile("textures/heightmap.png");
+    sf::Image im; im.loadFromFile("textures/heightmap1.jpg");
     for (int x = 0; x < quantity_cube_x; x++) {
         tick += rand() % 2;
         for (int z = 0; z < quantity_cube_z; z++) {
