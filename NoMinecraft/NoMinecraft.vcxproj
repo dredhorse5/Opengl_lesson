@@ -156,6 +156,7 @@
     <ClInclude Include="src\Help.hpp" />
     <ClInclude Include="src\Load_textures.hpp" />
     <ClInclude Include="src\main_menu.hpp" />
+    <ClInclude Include="src\menu_interface.hpp" />
     <ClInclude Include="src\Mouse_and_keyboard.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

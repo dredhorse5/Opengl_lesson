@@ -35,8 +35,15 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
         break;
 
     case 'q':
-        if (MENU == Menu_types::game) MENU = Menu_types::game_menu;
-        else MENU = Menu_types::game;
+        if (MENU == Menu_types::game) {
+            MENU = Menu_types::game_menu;
+            ReshapeOrtho(width, height);
+        }
+        else {
+            MENU = Menu_types::game;
+            Reshape(width, height);
+            //lx = 0; ly = 0; lz = 1;
+        }
         break;
 
     case 32:
