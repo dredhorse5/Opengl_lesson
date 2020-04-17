@@ -2,9 +2,15 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
     switch (key) {
         if (MENU == Menu_types::game) {
     case 'w':
-    case 'W':
-        KeyFront = 1.0; break;
-        
+    case 'W': {
+        int mode = glutGetModifiers();
+        if (mode == GLUT_ACTIVE_SHIFT) {
+            KeyFront = 1.4;
+        }
+        else KeyFront = 1.0;
+
+        break; 
+    }
     case 's':
     case 'S':
         KeyFront = -1.0;break;
@@ -38,8 +44,7 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
         break;
 
     case 27: 
-        //std::thread th(close_game);
-        //th.detach();    
+        exit(0);
         /*int msg;
         std::ofstream fout("Text.txt", std::fstream::trunc);
         for (int x = 0; x < quantity_cube_x; x++)
@@ -48,7 +53,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
                     fout << cubes[x][y][z];
                 }
         fout.close();*/
-        exit(0);
+    case 'e':
+        std::thread th(close_game);
+        th.detach();
 
     
         }

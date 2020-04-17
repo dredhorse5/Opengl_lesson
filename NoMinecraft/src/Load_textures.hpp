@@ -5,7 +5,7 @@
 #define GL_CLAMP_TO_EDGE 0x812F
 
 
-void dirtTextures(GLuint dirt[1], int W, int H) {
+void dirtTextures() {
     unsigned char* top = SOIL_load_image("textures/dirt.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &dirt[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, dirt[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -19,7 +19,7 @@ void dirtTextures(GLuint dirt[1], int W, int H) {
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void backroundTextures(GLuint backround_tex[1], int W, int H) {
+void backroundTextures() {
     unsigned char* top = SOIL_load_image("textures/background.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &backround_tex[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, backround_tex[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -33,7 +33,7 @@ void backroundTextures(GLuint backround_tex[1], int W, int H) {
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void super_grass_Texturies(GLuint super_grass[1], int W, int H)
+void super_grass_Texturies( )
 {
     unsigned char* top = SOIL_load_image("textures/Super_Grass.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &super_grass[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
@@ -50,7 +50,7 @@ void super_grass_Texturies(GLuint super_grass[1], int W, int H)
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 } 
-void stoneTextures(GLuint stone[1], int W, int H) {
+void stoneTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/stone.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &stone[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, stone[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -64,7 +64,21 @@ void stoneTextures(GLuint stone[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void planksTextures(GLuint planks[1], int W, int H) {
+void cobblestoneTextures() {
+    unsigned char* SOILT = SOIL_load_image("textures/cobblestone.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
+    glGenTextures(1, &cobblestone_tex[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, cobblestone_tex[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+}
+void planksTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/planks.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &planks[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, planks[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -78,7 +92,7 @@ void planksTextures(GLuint planks[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void leavesTextures(GLuint leaves[1], int W, int H) {
+void leavesTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/leaves.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &leaves[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, leaves[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -92,7 +106,7 @@ void leavesTextures(GLuint leaves[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void tree_oakTextures(GLuint tree_oak[1], int W, int H) {
+void tree_oakTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/tree_oak.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
     glGenTextures(1, &tree_oak[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
     glBindTexture(GL_TEXTURE_2D, tree_oak[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -107,11 +121,11 @@ void tree_oakTextures(GLuint tree_oak[1], int W, int H) {
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 
-void cursorTextures(GLuint cursor[1], int W, int H) {
+void cursorTextures() {
 
     unsigned char* SOILT = SOIL_load_image("textures/cursor.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
-    glGenTextures(1, &cursor[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
-    glBindTexture(GL_TEXTURE_2D, cursor[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    glGenTextures(1, &cursor_tex[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, cursor_tex[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -125,7 +139,7 @@ void cursorTextures(GLuint cursor[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void GUITextures(GLuint GUI_tex[1], int W, int H) {
+void GUITextures()  {
 
     unsigned char* SOILT = SOIL_load_image("textures/GUI.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
     glGenTextures(1, &GUI_tex[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
@@ -144,7 +158,7 @@ void GUITextures(GLuint GUI_tex[1], int W, int H) {
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 
-void HeightMap_Load(GLuint HeightMap[1], int W, int H) {
+void HeightMap_Load() {
 
     unsigned char* SOILT = SOIL_load_image("textures/heightmap.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
     glGenTextures(1, &HeightMap[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
@@ -162,7 +176,7 @@ void HeightMap_Load(GLuint HeightMap[1], int W, int H) {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
-void skybox(GLuint skybox_texturies[6], int W, int H)
+void skybox()
 {
     //back
     unsigned char* back = SOIL_load_image("textures/skybox2/skybox_back.bmp", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil

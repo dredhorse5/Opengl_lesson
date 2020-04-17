@@ -7,9 +7,18 @@
 #include "glut.h"
 #include "SOIL.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
+//#include <SFML/OpenGL.hpp>
 #pragma comment(lib, "SOIL.lib")
+#pragma warning(disable:26451)
+#pragma warning(disable:4018)
 #define GL_CLAMP_TO_EDGE 0x812F
+
+
+
+// идентификаторы меню
+int Visibility_Menu, shrinkMenu, mainMenu, BlocksMenu;
+// статус меню
+int menuFlag = 0;
 
 // textures
 GLuint backround_tex[1];
@@ -23,13 +32,15 @@ GLuint dirt[1];
 GLuint GUI_tex[1];
 GLuint leaves[1];
 GLuint tree_oak[1];
+GLuint cobblestone_tex[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
+int W = width, H = height;
 int quantity_cube_x = 540; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
 int quantity_cube_z = 540; // quanity cubes of z
-int cubes[540][50][540];
+char cubes[540][50][540];
 short int IDblocks = 1;
 short int blocks = 7;
 
@@ -42,16 +53,25 @@ float FPS = 60;
 // разное
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = true;
-int tick = 0;
 int MENU = 0;
 time_t oldtime = 1;
 time_t newtime = 1;
+time_t thistime = 1;
+int Visibility_range = 50;
+float r, g, b = 1.0f;
 
 
 
 #include "Load_textures.hpp"
-void draw_lines_cubes(float cube_size, int X, int Y, int Z);
+void draw_lines_cubes(float, int , int , int );
 
+enum visibility_modes {
+    Very_high,
+    High,
+    Medium,
+    Low,
+    Very_low,
+};
 enum Blocks {
     AIR,
     STONE,
@@ -68,6 +88,7 @@ enum Menu_types {
     game_menu
 };
 #include "builders.hpp"
+
 class Player {
 public:
     float PlayerX, PlayerY, PlayerZ;
@@ -98,9 +119,7 @@ public:
     void update(float time) {
 
         if (PlayerY < 0) {
-            PlayerX = quantity_cube_x / 2 + 0.5 * cube_size;
             PlayerY = 20 * cube_size;
-            PlayerZ = quantity_cube_z/ 2 + 0.5 * cube_size;
             dy = 0;
         }
 
@@ -275,9 +294,9 @@ GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,      
 GUI background(0.357, 0.2, 0.357f, 0.2, 0.357f, 0.2, 0.357f, 0.2);
 #include "Draw_textures.hpp"
  
-inline void DrawdebugScreen(float x, float y, float z, void* font, std::string speedX,
+inline void DrawdebugScreen(float x, float y, float z, std::string speedX,
     std::string speedY, std::string speedZ, std::string lX, std::string lY, std::string lZ, std::string Onground,
-    std::string timer, std::string DyCHECK, std::string DzCHECK) {if (Draw_debug_Menu_key) {
+    std::string timer) {if (Draw_debug_Menu_key) {
         glMatrixMode(GL_PROJECTION);
         //Сохраняем предыдущую матрицу, которая содержит параметры перспективной проекции
         glPushMatrix();
@@ -295,53 +314,42 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
             
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
-            
+            // XYZ = PX / PY / PZ
             glRasterPos3f(x, y, z);
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z');
             glRasterPos3f(x + 40, y , z);
-            for (int i = 0; i < std::to_string(steve.PlayerX/2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerX / 2 + 0.5)[i]);
+
+            for (int i = 0; i < std::to_string(steve.PlayerX/2 + 0.5).length() - 3; i++)       glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerX / 2 + 0.5)[i]);
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length()*7 + 40, y , z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z);
+
             for (int i = 0; i < std::to_string(steve.PlayerY / 2).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerY/2 +0.05)[i]);
             glRasterPos3f(x + std::to_string(steve.PlayerY / 2).length() * 7 + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + 40, y, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); //+ PlayerX.length() * 9
             glRasterPos3f(x + std::to_string(steve.PlayerX / 2 + 0.5).length() * 9 + std::to_string(steve.PlayerY / 2 + 0.5).length() * 9 + 40, y, z);
+
             for (int i = 0; i < std::to_string(steve.PlayerZ / 2 + 0.5).length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, std::to_string(steve.PlayerZ / 2 + 0.5)[i]);
 
 
-            /*glRasterPos3f(x+ 50, y + 40, z);
-            for (int i = 0; i < speedX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedX[i]);
 
-            glRasterPos3f(x + 100, y + 40, z);
-            for (int i = 0; i < speedY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedY[i]);
-
-            glRasterPos3f(x + 150, y + 40, z);
-            for (int i = 0; i < speedZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, speedZ[i]);*/
-
+            //L(XYZ) = PX / PY / PZ
             glRasterPos3f(x, y + 30, z);
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'L'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '('); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'X');
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Y'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'Z'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ')');
 
-            glRasterPos3f(x + 60, y + 30, z);
-            for (int i = 0; i < lX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lX[i]);
-            glRasterPos3f(x + lX.length() * 7 + 60, y + 30, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/');
+            glRasterPos3f(x + 60, y + 30, z);     for (int i = 0; i < lX.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lX[i]); // lX
+            glRasterPos3f(x + lX.length() * 7 + 60,          y + 30,    z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); /// '/'
 
-            glRasterPos3f(x + lX.length() * 7 + 60 + 20, y + 30, z);
-            for (int i = 0; i < lY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lY[i]);
+            glRasterPos3f(x + lX.length() * 7 + 60 + 10,     y + 30,    z);  for (int i = 0; i < lY.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lY[i]); // LY
+            glRasterPos3f(x + lX.length() * 7 + lY.length() * 7 + 60 + 10, y + 30, z); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '/'); /// '/'
 
-            glRasterPos3f(x + 200, y + 30, z);
-            for (int i = 0; i < lZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lZ[i]);
+            glRasterPos3f(x + lX.length() * 7 + lY.length() * 7 + 60 + 10 + 10, y + 30, z);  for (int i = 0; i < lZ.length() - 3; i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, lZ[i]); // LZ
 
-            glRasterPos3f(x, y + 340, z);
-            for (int i = 0; i < Onground.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, Onground[i]);
 
-            glRasterPos3f(x, y + 390, z);
-            for (int i = 0; i < timer.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, timer[i]);
-
-            glRasterPos3f(x, y + 420, z);
-            for (int i = 0; i < DyCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DyCHECK[i]);
-
-            glRasterPos3f(x, y + 450, z);
-            for (int i = 0; i < DzCHECK.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, DzCHECK[i]);
+            // FPS: 60
+            glRasterPos3f(x, y + 80, z);
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'F'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'P'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, 'S'); glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ':'); // fps
+            
+            glRasterPos3f(x + 50, y + 80, z);  for (int i = 0; i < timer.length(); i++) glutBitmapCharacter(GLUT_BITMAP_9_BY_15, timer[i]); // 60
         }
 
 
@@ -356,17 +364,106 @@ inline void DrawdebugScreen(float x, float y, float z, void* font, std::string s
         glMatrixMode(GL_MODELVIEW);
         quad.update();
     }
+}// ------------------------------------//
+
+void processMainMenu(int option) {}
+
+void processVisibility_Menu(int option) {
+    switch (option) {
+    case Very_high:
+        Visibility_range = 120;
+        break;
+    case High:
+        Visibility_range = 80;
+            break;
+
+    case Medium:
+        Visibility_range = 50;
+            break;
+
+    case Low:
+        Visibility_range = 35;
+            break;
+
+    case Very_low:
+        Visibility_range = 20;
+            break;
+    }
+
+}
+void processBlocksMenu(int option) {
+    switch (option) {
+    case AIR:
+        IDblocks = AIR;
+        break;
+
+    case STONE:
+        IDblocks = STONE;
+        break;
+
+    case SUPER_GRASS:
+        IDblocks = SUPER_GRASS;
+        break;
+
+    case DIRT:
+        IDblocks = DIRT;
+        break;
+
+    case COBBLESTONE:
+        IDblocks = COBBLESTONE;
+        break;
+
+    case PLANKS:
+        IDblocks = PLANKS;
+        break;
+
+    case TREE_OAK:
+        IDblocks = TREE_OAK;
+        break;
+
+    case LEAVES:
+        IDblocks = LEAVES;
+        break;
+    }
+}
+
+void createPopupMenus() {
+    //====================================================================================
+    Visibility_Menu = glutCreateMenu(processVisibility_Menu);
+    glutAddMenuEntry("Very High", Very_high);
+    glutAddMenuEntry("High", High);
+    glutAddMenuEntry("Medium", Medium);
+    glutAddMenuEntry("Low", Low);
+    glutAddMenuEntry("Very low", Very_low);
+    //====================================================================================
+    BlocksMenu = glutCreateMenu(processBlocksMenu);
+    glutAddMenuEntry("AIR", AIR);
+    glutAddMenuEntry("STONE", STONE);
+    glutAddMenuEntry("GRASS", SUPER_GRASS);
+    glutAddMenuEntry("DIRT", DIRT);
+    glutAddMenuEntry("COBBLESTONE", COBBLESTONE);
+    glutAddMenuEntry("PLANKS", PLANKS);
+    glutAddMenuEntry("TREE OAK", TREE_OAK);
+    glutAddMenuEntry("LEAVES", LEAVES);
+    //====================================================================================
+    mainMenu = glutCreateMenu(processMainMenu);
+    glutAddSubMenu("Visibility ", Visibility_Menu);
+    glutAddSubMenu("Blocks", BlocksMenu);
+    //====================================================================================
+
+    glutAttachMenu(GLUT_MIDDLE_BUTTON);    // прикрепить меню к средней кнопке
+    //glutMenuStatusFunc(processMenuStatus);   //статус активности меню
 }
 
 void close_game() {
-    int msg;
-        std::ofstream fout("Text.txt", std::fstream::trunc);
-        for (int x = 0; x < quantity_cube_x; x++)
-            for(int y = 0; y < quantity_cube_y; y++)
-                for (int z = 0; z < quantity_cube_z; z++) {
-                    fout << cubes[x][y][z];
+    FILE* pFile;
+    fopen_s(&pFile, "World1.txt", "w");
+        for(int x = 0; x < quantity_cube_x; x++)
+            for (int y = 4; y < quantity_cube_y; y++)
+                for (int z = 0; z < quantity_cube_z; z++)  {
+                    fprintf(pFile, "%i", cubes[x][y][z]);
                 }
-        fout.close();
+        fclose(pFile);
     exit(0);
 }
 void Reshape(int w, int h){
@@ -374,7 +471,7 @@ void Reshape(int w, int h){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    gluPerspective(steve.View, ratio, 0.1f, 800.0f);
+    gluPerspective(steve.View, ratio, 0.1f, 693.0f);
     glMatrixMode(GL_MODELVIEW);
 }
 void timf(int value){
@@ -382,9 +479,9 @@ void timf(int value){
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 inline void Draw_cubes() {
-    for (int x = steve.PlayerX / 2 - 60 ; x < steve.PlayerX / 2 + 60; x++) // drawing cubs
+    for (int x = steve.PlayerX / 2 - Visibility_range; x < steve.PlayerX / 2 + Visibility_range; x++) // drawing cubs
         for (int y = 4; y < quantity_cube_y; y++)
-            for (int z = steve.PlayerZ / 2 - 60; z < steve.PlayerZ / 2 + 60; z++ )
+            for (int z = steve.PlayerZ / 2 - Visibility_range; z < steve.PlayerZ / 2 + Visibility_range; z++ )
             {
                 if (x < 0 or x > quantity_cube_x) continue;
                 if (z < 0 or z > quantity_cube_z)  continue;
@@ -397,6 +494,7 @@ inline void Draw_cubes() {
 
                 switch (type) {
                 case Blocks::STONE:       {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::COBBLESTONE: {draw_cobblestone(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 case Blocks::SUPER_GRASS: {draw_super_grass(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 case Blocks::DIRT:        {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 case Blocks::PLANKS:      {draw_planks(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
@@ -408,51 +506,48 @@ inline void Draw_cubes() {
             }
 }
 
-void Draw(){
-    static int a = 0; static int timer = 1; float times;
+void Draw() {
+    static int a = 0; static int timer = 1; double times;
+
     std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glclear_th.join();
 
     glPushMatrix();
-    gluLookAt(steve.PlayerX,        steve.PlayerY + steve.h / 2,          steve.PlayerZ,
-              steve.PlayerX + lx,   steve.PlayerY + ly + steve.h / 2,     steve.PlayerZ + lz,
-              0.0f,                 1.0f,                                 0.0f                 );
-    
-    switch (MENU) {
-    case Menu_types::game:
-        newtime = clock();
-        times = newtime - oldtime;
-        oldtime = clock();
+
+
+    gluLookAt(steve.PlayerX, steve.PlayerY + steve.h / 2, steve.PlayerZ,
+        steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
+        0.0f, 1.0f, 0.0f);
+
+    newtime = clock();
+    times = newtime - oldtime;
+    oldtime = clock();
 
 
 
-        //===============================начало основного цикла================================================================================
-
-
-        
-        Draw_cubes();
-        cursor.update(cursor_tex);
-        hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);
-        
-
-        drawSkybox(skybox_texturies);
+    //===============================начало основного цикла================================================================================
 
 
 
-        a++; if (a == 5) { timer = times; a = 0; }
-
-        DrawdebugScreen(5, 30, 0, GLUT_BITMAP_HELVETICA_18, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-            std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer), std::to_string(IDblocks), std::to_string(ly/*cos(angleY)*/));
-
+    Draw_cubes();
+    cursor.update(cursor_tex);
+    hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);
 
 
+    drawSkybox(skybox_texturies);
 
-        steve.update(times);
-        break;
-    case Menu_types::game_menu:
-        background.update(backround_tex);
-    }
+
+
+    if (newtime - thistime > 150) { timer = times; thistime = newtime; }
+
+    DrawdebugScreen(5, 30, 0, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer));
+
+
+
+
+    steve.update(times);
     //=================================конец основного цикла===================================================================================
     glPopMatrix();
     glutPostRedisplay();
@@ -479,17 +574,18 @@ int main()
     glutReshapeFunc(Reshape); // change window
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
-    skybox(skybox_texturies, width, height);
-    super_grass_Texturies(super_grass, width, height);
-    stoneTextures(stone, width, height);
-    planksTextures(planks, width, height);
-    dirtTextures(dirt, width, height);
-    cursorTextures(cursor_tex, width, height);
-    HeightMap_Load(HeightMap, width, height);
-    GUITextures(GUI_tex, width, height);
-    leavesTextures(leaves, width, height);
-    tree_oakTextures(tree_oak, width, height);
-    backroundTextures(backround_tex, width, height);
+    skybox();
+    super_grass_Texturies();
+    stoneTextures();
+    planksTextures();
+    dirtTextures();
+    cursorTextures();
+    HeightMap_Load();
+    GUITextures();
+    leavesTextures();
+    tree_oakTextures();
+    backroundTextures();
+    cobblestoneTextures();
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
@@ -500,29 +596,41 @@ int main()
     glutKeyboardUpFunc(processNormalKeysUP);// working when keyboard is up
 
 
-    std::ifstream fout("Text.txt", std::ifstream::binary);
+    std::ifstream fout("World1.txt", std::ifstream::binary);
+    char n;
 
-
-    sf::Image im; im.loadFromFile("textures/heightmap1.jpg");
-    for (int x = 0; x < quantity_cube_x; x++) {
-        tick += rand() % 2;
-        for (int z = 0; z < quantity_cube_z; z++) {
-            tick += rand() % 2;
-            int c = im.getPixel(x, z).r / 10 + 10;
-            for (int y = 4; y <= c; y++) {
-
-                if (tick > 50 and x > 5 and x < quantity_cube_x -5 and z > 5 and x < quantity_cube_z - 5) {
-                    trees(x, c, z);
-                    tick = 0;
+    if (fout) {
+        for (int x = 0; x < quantity_cube_x; x++)
+            for (int y = 4; y < quantity_cube_y; y++)
+                for (int z = 0; z < quantity_cube_z; z++) {
+                    fout.get(n);
+                    cubes[x][y][z] = int(n) - 48;
                 }
-                if (y == c) cubes[x][y][z] = Blocks::SUPER_GRASS;
+    }
+    else{
+        sf::Image im; im.loadFromFile("textures/heightmap1.jpg");
+        for (int x = 0; x < quantity_cube_x; x++) {
+            int tick = 0;
+            tick += rand() % 2;
+            for (int z = 0; z < quantity_cube_z; z++) {
+                tick += rand() % 2;
+                int c = im.getPixel(x, z).r / 10 + 10;
+                for (int y = 4; y <= c; y++) {
 
-                else if (y > c - 3)  cubes[x][y][z] = Blocks::DIRT;
-                else if (y == 4) cubes[x][y][z] = 999;
-                else cubes[x][y][z] = Blocks::STONE;
+                    if (tick > 50 and x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) {
+                        trees(x, c, z);
+                        tick = 0;
+                    }
+                    if (y == c)         cubes[x][y][z] = Blocks::SUPER_GRASS;
+                    else if (y > c - 3) cubes[x][y][z] = Blocks::DIRT;
+                    else if (y == 4)    cubes[x][y][z] = 9;
+                    else                cubes[x][y][z] = Blocks::STONE;
+                }
             }
         }
     }
+    fout.close();
+    createPopupMenus();
 
     
 
