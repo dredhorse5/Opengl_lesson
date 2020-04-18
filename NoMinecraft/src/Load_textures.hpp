@@ -18,6 +18,22 @@ void dirtTextures() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, top); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //==============================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/dirt.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &dirt_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, dirt_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 void backroundTextures() {
     unsigned char* top = SOIL_load_image("textures/background.jpg", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
@@ -32,6 +48,8 @@ void backroundTextures() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, top); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+
+
 }
 void super_grass_Texturies( )
 {
@@ -49,6 +67,22 @@ void super_grass_Texturies( )
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, top); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(top); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //==============================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/super_grass.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &super_grass_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, super_grass_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 } 
 void stoneTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/stone.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
@@ -62,6 +96,22 @@ void stoneTextures() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //==============================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/stone.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &stone_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, stone_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 void cobblestoneTextures() {
@@ -77,6 +127,22 @@ void cobblestoneTextures() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //=========================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/cobblestone.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &cobblestone_tex_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, cobblestone_tex_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 void planksTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/planks.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
@@ -90,6 +156,22 @@ void planksTextures() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //=========================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/planks.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &planks_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, planks_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 void leavesTextures() {
@@ -105,6 +187,23 @@ void leavesTextures() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //=========================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/leaves.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &leaves_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, leaves_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+
 }
 void tree_oakTextures() {
     unsigned char* SOILT = SOIL_load_image("textures/tree_oak.png", &W, &H, 0, SOIL_LOAD_RGB); // загружаем текстуру в soil
@@ -118,6 +217,22 @@ void tree_oakTextures() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    //=========================================================================================================================
+    unsigned char* icon = SOIL_load_image("textures/icons/tree_oak.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &tree_oak_icon[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, tree_oak_icon[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, icon); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(icon); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
 
@@ -157,7 +272,23 @@ void GUITextures()  {
     SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 }
+void save_iconTextures() {
+    unsigned char* SOILT = SOIL_load_image("textures/icons/save_icon.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
+    glGenTextures(1, &save_icon_tex[0]); // говорим, что начинаем работать с переменной Dirt, чтобы дальше записать в нее текстуру soil
+    glBindTexture(GL_TEXTURE_2D, save_icon_tex[0]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.8f);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, SOILT); // загружаем текстуру soil в перменную dirt
+    SOIL_free_image_data(SOILT); // освобождаем текстуру из soil
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+}
 void HeightMap_Load() {
 
     unsigned char* SOILT = SOIL_load_image("textures/heightmap.png", &W, &H, 0, SOIL_LOAD_RGBA); // загружаем текстуру в soil
@@ -277,5 +408,22 @@ void skybox()
 
 }
 
+
+
+void load_textures() {
+    skybox();
+    super_grass_Texturies();
+    stoneTextures();
+    planksTextures();
+    dirtTextures();
+    cursorTextures();
+    HeightMap_Load();
+    GUITextures();
+    leavesTextures();
+    tree_oakTextures();
+    backroundTextures();
+    cobblestoneTextures();
+    save_iconTextures();
+}
 
 #endif __LOAD_TEXTURES_H__

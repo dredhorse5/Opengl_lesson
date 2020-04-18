@@ -20,19 +20,22 @@ int Visibility_Menu, shrinkMenu, mainMenu, BlocksMenu;
 // статус меню
 int menuFlag = 0;
 
-// textures
+// textures of blocks
+GLuint super_grass[1], super_grass_icon[1];
+GLuint stone[1], stone_icon[1];
+GLuint planks[1], planks_icon[1];
+GLuint dirt[1], dirt_icon[1];
+GLuint leaves[1], leaves_icon[1];
+GLuint tree_oak[1], tree_oak_icon[1];
+GLuint cobblestone_tex[1], cobblestone_tex_icon[1];
+
+// some textures
 GLuint backround_tex[1];
 GLuint cursor_tex[1];
-GLuint super_grass[1];
 GLuint skybox_texturies[6];
-GLuint stone[1];
-GLuint planks[1];
 GLuint HeightMap[1];
-GLuint dirt[1];
 GLuint GUI_tex[1];
-GLuint leaves[1];
-GLuint tree_oak[1];
-GLuint cobblestone_tex[1];
+GLuint save_icon_tex[1];
 // cubes
 float cube_size = 2.0f; // size of cubes
 const int width = 1280, height = 720; // size of window
@@ -53,12 +56,13 @@ float FPS = 60;
 // разное
 float KeyFront = 0, KeySide = 0; // ключ к изменению перемещения вперед/назад
 bool Draw_debug_Menu_key = true;
-int MENU = 1;
+int MENU = 0;
 time_t oldtime = 1;
 time_t newtime = 1;
 time_t thistime = 1;
 int Visibility_range = 50;
 float r, g, b = 1.0f;
+bool is_saving = 0;
 
 
 #include "Load_textures.hpp"
@@ -237,54 +241,54 @@ public:
 };
 Player steve(quantity_cube_x/2,60, quantity_cube_z/2);
 #include "menu_interface.hpp"
-class GUI {
-public:
-    float x1; float y1;
-    float x2; float y2;
-    float x3; float y3;
-    float x4; float y4;
-    
-    GUI(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
-        this->x1 = x1; this->y1 = y1;
-        this->x2 = x2; this->y2 = y2;
-        this->x3 = x3; this->y3 = y3;
-        this->x4 = x4; this->y4 = y4;
-    }
+//class GUI {
+//public:
+//    float x1; float y1;
+//    float x2; float y2;
+//    float x3; float y3;
+//    float x4; float y4;
+//    
+//    GUI(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+//        this->x1 = x1; this->y1 = y1;
+//        this->x2 = x2; this->y2 = y2;
+//        this->x3 = x3; this->y3 = y3;
+//        this->x4 = x4; this->y4 = y4;
+//    }
+//
+//    
+//    void update(GLuint tex[1],float x1h, float y1h, float x2h, float y2h, float x3h, float y3h, float x4h, float y4h) {
+//        glBindTexture(GL_TEXTURE_2D, tex[0]);
+//        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+//        glBegin(GL_POLYGON);
+//        glTexCoord2d(x1h, y1h); glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
+//        glTexCoord2d(x2h, y2h); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+//        glTexCoord2d(x3h, y3h); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
+//        glTexCoord2d(x4h, y4h); glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
+//        glEnd();
+//        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+//    }
+//    void update() {
+//        glColor3f(1, 0, 0);
+//        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
+//        glBegin(GL_POLYGON);
+//        glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
+//        glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
+//        glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
+//        glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
+//        glEnd();
+//        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
+//        glColor3f(1, 1, 1);
+//    }
+//    void update(GLuint tex[1]) {
+//        update(tex, 1.0f,1.0f,    0.0f,1.0f,    0.0f,0.0f,     1.0f, 0.0f);
+//
+//    }
+//};
 
-    
-    void update(GLuint tex[1],float x1h, float y1h, float x2h, float y2h, float x3h, float y3h, float x4h, float y4h) {
-        glBindTexture(GL_TEXTURE_2D, tex[0]);
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
-        glBegin(GL_POLYGON);
-        glTexCoord2d(x1h, y1h); glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
-        glTexCoord2d(x2h, y2h); glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
-        glTexCoord2d(x3h, y3h); glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
-        glTexCoord2d(x4h, y4h); glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
-        glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
-    }
-    void update() {
-        glColor3f(1, 0, 0);
-        glTranslatef(0.2 * lx * cos(angleY) + steve.PlayerX, -0.2 * sin(angleY) + steve.PlayerY + steve.h / 2, 0.2 * lz * cos(angleY) + steve.PlayerZ); // двойки задают удаленность от игрока
-        glBegin(GL_POLYGON);
-        glVertex3f(x1 * lz + y1 * sin(angleY) * lx, y1 * cos(angleY), -x1 * lx + y1 * sin(angleY) * lz); // .: // двойка позволяет двигать вверх/вниз 0.356
-        glVertex3f(-x2 * lz + y2 * sin(angleY) * lx, y2 * cos(angleY), x2 * lx + y2 * sin(angleY) * lz); // :. // тройка позволяет двигать влево/право
-        glVertex3f(-x3 * lz - y3 * sin(angleY) * lx, -y3 * cos(angleY), x3 * lx - y3 * sin(angleY) * lz); // :'
-        glVertex3f(x4 * lz - y4 * sin(angleY) * lx, -y4 * cos(angleY), -x4 * lx - y4 * sin(angleY) * lz); // ':
-        glEnd();
-        glTranslatef(-0.2 * lx * cos(angleY) - steve.PlayerX, 0.2 * sin(angleY) - steve.PlayerY - steve.h / 2, -0.2 * lz * cos(angleY) - steve.PlayerZ); // двойки задают удаленность от игрока  
-        glColor3f(1, 1, 1);
-    }
-    void update(GLuint tex[1]) {
-        update(tex, 1.0f,1.0f,    0.0f,1.0f,    0.0f,0.0f,     1.0f, 0.0f);
-
-    }
-};
-
-GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
-GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
-GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
-GUI background(0.357, 0.2, 0.357f, 0.2, 0.357f, 0.2, 0.357f, 0.2);
+//GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
+//GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
+//GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
+//GUI background(0.357, 0.2, 0.357f, 0.2, 0.357f, 0.2, 0.357f, 0.2);
 #include "Draw_textures.hpp"
  
 inline void DrawdebugScreen(float x, float y, float z, std::string speedX,
@@ -356,12 +360,59 @@ inline void DrawdebugScreen(float x, float y, float z, std::string speedX,
         glPopMatrix();
         //вернуться в режим модели
         glMatrixMode(GL_MODELVIEW);
-        quad.update();
+        //quad.update();
     }
 }// ------------------------------------//
 
-void processMainMenu(int option) {}
+void GUI() {
+    // по оси x край 0.36
+    // по оси y край 0.2
+    // идет по часовой стрелки
 
+    if (Draw_debug_Menu_key) {
+        // фон отладчика
+        glBegin(GL_QUADS);
+        glColor3d(0.3, 0.3, 0.3);
+        glVertex3f(-0.2, 0.2, -0.2);
+        glVertex3f(-0.2, 0.13, -0.2);
+        glVertex3f(-0.36, 0.13, -0.2);
+        glVertex3f(-0.36, 0.2, -0.2);
+        glEnd();
+        glColor3d(1, 1, 1);
+    }
+
+    // ============================ курсор =========================
+    glBindTexture(GL_TEXTURE_2D, cursor_tex[0]);
+    glBegin(GL_QUADS);
+    glTexCoord2d(1.0f, 1.0f); glVertex3f(0.01, 0.01, -0.2);
+    glTexCoord2d(0.0f, 1.0f); glVertex3f(0.01, -0.01, -0.2);
+    glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.01, -0.01, -0.2);
+    glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.01, 0.01, -0.2);
+    glEnd();
+    // ============================ хотбар =========================
+    glBindTexture(GL_TEXTURE_2D, GUI_tex[0]);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0.09f, 1);         glVertex3f(0.17, -0.16, -0.2);
+    glTexCoord2d(0.09f, 0.89f);     glVertex3f(0.17, -0.2, -0.2);
+    glTexCoord2d(1, 0.89f);         glVertex3f(-0.17, -0.2, -0.2);
+    glTexCoord2d(1, 1);             glVertex3f(-0.17, -0.16, -0.2);
+    glEnd();
+
+    //значок сохранения 
+    if (is_saving) {
+        glBindTexture(GL_TEXTURE_2D, save_icon_tex[0]);
+        glBegin(GL_QUADS);
+        glTexCoord2d(0, 0);     glVertex3f(0.36, 0.2, -0.2);
+        glTexCoord2d(0, 1);     glVertex3f(0.36, 0.16, -0.2);
+        glTexCoord2d(1, 1);    glVertex3f(0.32, 0.16, -0.2);
+        glTexCoord2d(1, 0);     glVertex3f(0.32, 0.2, -0.2);
+        glEnd();
+    }
+    glColor3d(1, 1, 1);
+}
+
+
+void processMainMenu(int option) {}
 void processVisibility_Menu(int option) {
     switch (option) {
     case Very_high:
@@ -420,7 +471,6 @@ void processBlocksMenu(int option) {
         break;
     }
 }
-
 void createPopupMenus() {
     //====================================================================================
     Visibility_Menu = glutCreateMenu(processVisibility_Menu);
@@ -449,7 +499,9 @@ void createPopupMenus() {
     //glutMenuStatusFunc(processMenuStatus);   //статус активности меню
 }
 
+
 void close_game() {
+    is_saving = 1;
     FILE* pFile;
     fopen_s(&pFile, "World1.txt", "w");
         for(int x = 0; x < quantity_cube_x; x++)
@@ -458,6 +510,7 @@ void close_game() {
                     fprintf(pFile, "%i", cubes[x][y][z]);
                 }
         fclose(pFile);
+    is_saving = 0;
     exit(0);
 }
 void Reshape(int w, int h){
@@ -510,19 +563,12 @@ inline void Draw_cubes() {
 void Draw() {
     static int a = 0; static int timer = 1; double times;
 
-    std::thread glclear_th(glClear, GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
-    glclear_th.join();
-    /*glBegin(GL_QUADS);
-    glColor3d(1, 1, 0);
-    glVertex3f(1, 1, -0.1);
-    glVertex3f(1, -1, -1);
-    glVertex3f(-1, -1, -1);
-    glVertex3f(-1, 1, -1);
-    glEnd();
-    glColor3d(1, 1, 1);*/
+    
+    GUI();
+
     glPushMatrix();
-    if (!MENU) {
+    //if (!MENU) {
 
         gluLookAt(steve.PlayerX, steve.PlayerY + steve.h / 2, steve.PlayerZ,
             steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
@@ -537,8 +583,8 @@ void Draw() {
 
 
         Draw_cubes();
-        cursor.update(cursor_tex);
-        hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);
+        /*cursor.update(cursor_tex);
+        hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);*/
 
 
         drawSkybox(skybox_texturies);
@@ -549,13 +595,12 @@ void Draw() {
 
         DrawdebugScreen(5, 30, 0, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
             std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer));
-
-
+        
 
 
         steve.update(times);
-    }
-    else menu_interface();
+    //}
+    //else menu_interface();
 
 
     
@@ -590,18 +635,7 @@ int main()
     }
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
-    skybox();
-    super_grass_Texturies();
-    stoneTextures();
-    planksTextures();
-    dirtTextures();
-    cursorTextures();
-    HeightMap_Load();
-    GUITextures();
-    leavesTextures();
-    tree_oakTextures();
-    backroundTextures();
-    cobblestoneTextures();
+    load_textures();
     //====================================================================================
     glutPassiveMotionFunc(mouseMove);
     glutMotionFunc(mouseMove);
