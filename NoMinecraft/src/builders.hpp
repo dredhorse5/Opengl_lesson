@@ -1,25 +1,27 @@
 
-void trees(int x, int y, int z) {
+bool trees(int x, int y, int z) {
 	
-	cubes[x+2][y + 4][z-2] = cubes[x + 2][y + 4][z - 1] = cubes[x + 2][y + 4][z] = cubes[x + 2][y + 4][z + 1] = cubes[x + 2][y + 4][z + 2] = Blocks::LEAVES;
-	cubes[x+1][y + 4][z-2] = cubes[x + 1][y + 4][z - 1] = cubes[x + 1][y + 4][z] = cubes[x + 1][y + 4][z + 1] = cubes[x + 1][y + 4][z + 2] = Blocks::LEAVES;
-	cubes[x  ][y + 4][z-2] = cubes[x    ][y + 4][z - 1] =                          cubes[x    ][y + 4][z + 1] = cubes[x    ][y + 4][z + 2] = Blocks::LEAVES;
-	cubes[x-1][y + 4][z-2] = cubes[x - 1][y + 4][z - 1] = cubes[x - 1][y + 4][z] = cubes[x - 1][y + 4][z + 1] = cubes[x - 1][y + 4][z + 2] = Blocks::LEAVES;
-	cubes[x-2][y + 4][z-2] = cubes[x - 2][y + 4][z - 1] = cubes[x - 2][y + 4][z] = cubes[x - 2][y + 4][z + 1] = cubes[x - 2][y + 4][z + 2] = Blocks::LEAVES;
+	for (int X = (x - 3); X < (x + 3); X++)
+		for (int Y = y; Y < (y + 3); Y++)
+			for (int Z = (z - 3); Z < (z + 3); Z++)
+				if (cubes[X][Y][Z] == TREE_OAK)
+					return 0;
 
-	cubes[x+2][y + 5][z-2] = cubes[x + 2][y + 5][z - 1] = cubes[x + 2][y + 5][z] = cubes[x + 2][y + 5][z + 1] = cubes[x + 2][y + 5][z + 2] = Blocks::LEAVES;
-	cubes[x+1][y + 5][z-2] = cubes[x + 1][y + 5][z - 1] = cubes[x + 1][y + 5][z] = cubes[x + 1][y + 5][z + 1] = cubes[x + 1][y + 5][z + 2] = Blocks::LEAVES;
-	cubes[x  ][y + 5][z-2] = cubes[x    ][y + 5][z - 1] =                          cubes[x    ][y + 5][z + 1] = cubes[x    ][y + 5][z + 2] = Blocks::LEAVES;
-	cubes[x-1][y + 5][z-2] = cubes[x - 1][y + 5][z - 1] = cubes[x - 1][y + 5][z] = cubes[x - 1][y + 5][z + 1] = cubes[x - 1][y + 5][z + 2] = Blocks::LEAVES;
-	cubes[x-2][y + 5][z-2] = cubes[x - 2][y + 5][z - 1] = cubes[x - 2][y + 5][z] = cubes[x - 2][y + 5][z + 1] = cubes[x - 2][y + 5][z + 2] = Blocks::LEAVES;
+	for (int X = 0; X < 5; X++)
+		for (int Y = 0; Y < 7; Y++)
+			for (int Z = 0; Z < 5; Z++) {
+				if (tree_mass[Y][X][Z] != 0)
+					cubes[x+X-2][y+Y + 1][z+Z-2] = tree_mass[Y][X][Z];
+			}
+	return 1;
 	
-	cubes[x-1][y + 6][z-1] = cubes[x - 1][y + 6][z] = cubes[x - 1][y + 6][z + 1] = Blocks::LEAVES;
-	cubes[x  ][y + 6][z-1] =                          cubes[x    ][y + 6][z + 1] = Blocks::LEAVES;
-	cubes[x+1][y + 6][z-1] = cubes[x + 1][y + 6][z] = cubes[x + 1][y + 6][z + 1] = Blocks::LEAVES;
-	
-	                         cubes[x - 1][y + 7][z] = 
-	cubes[x  ][y + 7][z-1] = cubes[x    ][y + 7][z] = cubes[x    ][y + 7][z + 1] =
-	                         cubes[x + 1][y + 7][z] =  Blocks::LEAVES;
-	cubes[x][y + 1][z] = 6; cubes[x][y + 2][z] = 6; cubes[x][y + 3][z] = 6; cubes[x][y + 4][z] = 6; cubes[x][y + 5][z] = 6; cubes[x][y + 6][z] = TREE_OAK;
-
+}
+bool head_monument(int x, int y, int z) {
+	for (int X = 0; X < 5; X++)
+		for (int Y = 0; Y < 12; Y++)
+			for (int Z = 0; Z < 6; Z++) {
+				if (house_mass[Y][X][Z] != 0)
+					cubes[x + X - 2][y + Y][z + Z - 3] = house_mass[Y][X][Z];
+			}
+	return 1;
 }

@@ -43,7 +43,8 @@ int W = width, H = height;
 int quantity_cube_x = 540; // quanity cubes of x
 int quantity_cube_y = 50; // quanity cubes of y
 int quantity_cube_z = 540; // quanity cubes of z
-char cubes[540][50][540];
+int cubes[540][50][540];
+
 short int IDblocks = 1;
 short int blocks = 7;
 
@@ -63,9 +64,126 @@ time_t thistime = 1;
 int Visibility_range = 50;
 float r, g, b = 1.0f;
 bool is_saving = 0;
-
-
+bool keytime = 1;
+// постройки
+char tree_mass[7][5][5] = { {
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 6, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0} },
+{
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 6, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0} },
+{
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 6, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0} },
+{
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 6, 7, 7 },
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 7, 7, 7 } },
+{
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 6, 7, 7 },
+{ 7, 7, 7, 7, 7 },
+{ 7, 7, 7, 7, 7 } },
+{
+{ 0, 0, 0, 0, 0 },
+{ 0, 7, 7, 7, 0 },
+{ 0, 7, 6, 7, 0 },
+{ 0, 7, 7, 7, 0 },
+{ 0, 0, 0, 0, 0 } },
+{
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 7, 0, 0 },
+{ 0, 7, 7, 7, 0 },
+{ 0, 0, 7, 0, 0 },
+{ 0, 0, 0, 0, 0 } }, };
+char house_mass[12][5][6] = { {
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 6, 0, 0},
+{0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0} },
+{
+{1, 1, 4, 4, 1, 0},
+{1, 1, 1, 1, 4, 0},
+{4, 1, 1, 1, 1, 0},
+{4, 1, 1, 1, 4, 0},
+{1, 4, 1, 4, 4, 0}},
+{
+{1, 1, 4, 4, 1, 0},
+{1, 1, 1, 1, 4, 1},
+{4, 1, 1, 1, 1, 1},
+{4, 1, 1, 1, 4, 1},
+{1, 4, 1, 4, 4, 0}},
+{
+{1, 1, 4, 4, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 1, 1},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 4, 4, 0}},
+{
+{4, 4, 1, 4, 4, 0},
+{4, 1, 1, 1, 4, 0},
+{1, 1, 1, 1, 1, 4},
+{1, 1, 1, 1, 1, 0},
+{4, 1, 1, 1, 1, 0}},
+{
+{1, 1, 1, 1, 0, 0},
+{1, 1, 1, 1, 0, 0},
+{1, 1, 1, 1, 4, 1},
+{4, 1, 1, 1, 0, 0},
+{1, 1, 1, 4, 0, 0}},
+{
+{1, 4, 1, 1, 1, 1},
+{4, 1, 1, 1, 1, 1},
+{1, 1, 1, 1, 1, 1},
+{1, 1, 1, 1, 1, 4},
+{4, 1, 1, 4, 1, 1}},
+{
+{1, 4, 1, 1, 1, 0},
+{4, 1, 1, 1, 4, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 4, 1, 1, 4, 0}},
+{
+{1, 1, 4, 4, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 4, 0},
+{1, 4, 1, 4, 1, 0}},
+{
+{1, 4, 4, 1, 1, 0},
+{4, 1, 1, 1, 1, 0},
+{4, 1, 1, 1, 4, 0},
+{4, 1, 1, 1, 1, 0},
+{1, 1, 4, 1, 1, 0}},
+{
+{1, 4, 1, 1, 1, 0},
+{4, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{1, 1, 1, 1, 1, 0},
+{4, 1, 1, 4, 1, 0}},
+{
+{0, 0, 0, 0, 0, 0},
+{0, 1, 1, 1, 0, 0},
+{0, 1, 1, 1, 0, 0},
+{0, 4, 4, 1, 0, 0},
+{0, 0, 0, 0, 0, 0}},
+ };
 #include "Load_textures.hpp"
+
+
 void draw_lines_cubes(float, int , int , int );
 
 enum visibility_modes {
@@ -91,7 +209,6 @@ enum Menu_types {
     game_menu
 };
 #include "builders.hpp"
-
 class Player {
 public:
     float PlayerX, PlayerY, PlayerZ;
@@ -371,8 +488,8 @@ void GUI() {
 
     if (Draw_debug_Menu_key) {
         // фон отладчика
-        glBegin(GL_QUADS);
         glColor3d(0.3, 0.3, 0.3);
+        glBegin(GL_QUADS);
         glVertex3f(-0.2, 0.2, -0.2);
         glVertex3f(-0.2, 0.13, -0.2);
         glVertex3f(-0.36, 0.13, -0.2);
@@ -411,8 +528,13 @@ void GUI() {
     glColor3d(1, 1, 1);
 }
 
-
-void processMainMenu(int option) {}
+void processMenuStatus(int status, int x, int y) {
+        KeyFront = 0;
+        KeySide = 0;
+        keytime = 0;
+    
+}
+void processMainMenu(int option) { std::cout << "s"; }
 void processVisibility_Menu(int option) {
     switch (option) {
     case Very_high:
@@ -496,7 +618,7 @@ void createPopupMenus() {
     //====================================================================================
 
     glutAttachMenu(GLUT_MIDDLE_BUTTON);    // прикрепить меню к средней кнопке
-    //glutMenuStatusFunc(processMenuStatus);   //статус активности меню
+    glutMenuStatusFunc(processMenuStatus);   //статус активности меню
 }
 
 
@@ -530,6 +652,7 @@ void ReshapeOrtho(int w, int h) {
 }
 void timf(int value){
     glutPostRedisplay();  // Redraw windows
+
     glutTimerFunc(1000 / FPS, timf, 0); // Setup next timer
 }
 inline void Draw_cubes() {
@@ -574,7 +697,7 @@ void Draw() {
             steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
             0.0f, 1.0f, 0.0f);
 
-        newtime = clock();   times = newtime - oldtime;   oldtime = clock();
+        newtime = clock();   times = newtime - oldtime*keytime;   oldtime = clock(); 
 
 
 
@@ -598,7 +721,7 @@ void Draw() {
         
 
 
-        steve.update(times);
+        steve.update(times * keytime); keytime = 1;
     //}
     //else menu_interface();
 
@@ -614,8 +737,7 @@ void Draw() {
 
 #include "Mouse_and_keyboard.hpp"
 
-int main()
-{
+int main(){
     //===========================INITIALIZATION===========================================
     //glutInit();
     glutInitWindowSize(width, height);
@@ -624,7 +746,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    //glutTimerFunc(1000 / FPS, timf, 0); // limit fps
+    glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
     if (MENU == 0) {
@@ -659,25 +781,24 @@ int main()
     }
     else{
         sf::Image im; im.loadFromFile("textures/heightmap1.jpg");
-        for (int x = 0; x < quantity_cube_x; x++) {
-            int tick = 0;
-            tick += rand() % 2;
+        for (int x = 0; x < quantity_cube_x; x++) 
             for (int z = 0; z < quantity_cube_z; z++) {
-                tick += rand() % 2;
                 int c = im.getPixel(x, z).r / 10 + 10;
                 for (int y = 4; y <= c; y++) {
+                    if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) {
 
-                    if (tick > 50 and x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) {
-                        trees(x, c, z);
-                        tick = 0;
+                        if (rand()%500 == 1)   trees(x, c, z);
+                        if ((rand()*rand()) % 80000 == 1) head_monument(x, c, z);
+                        
                     }
+
                     if (y == c)         cubes[x][y][z] = Blocks::SUPER_GRASS;
                     else if (y > c - 3) cubes[x][y][z] = Blocks::DIRT;
                     else if (y == 4)    cubes[x][y][z] = 9;
                     else                cubes[x][y][z] = Blocks::STONE;
                 }
             }
-        }
+        
     }
     fout.close();
     createPopupMenus();
