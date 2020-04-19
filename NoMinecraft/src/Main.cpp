@@ -28,6 +28,7 @@ GLuint dirt[1], dirt_icon[1];
 GLuint leaves[1], leaves_icon[1];
 GLuint tree_oak[1], tree_oak_icon[1];
 GLuint cobblestone_tex[1], cobblestone_tex_icon[1];
+GLuint bricks[1], bricks_icon[1];
 
 // some textures
 GLuint backround_tex[1];
@@ -46,7 +47,7 @@ int quantity_cube_z = 540; // quanity cubes of z
 int cubes[540][50][540];
 
 short int IDblocks = 1;
-short int blocks = 7;
+short int blocks = 8;
 
 // камера
 float lx = 1.0f, lz = 0.0f, ly = 0.0f; // координаты вектора направления движения камеры
@@ -109,11 +110,11 @@ char tree_mass[7][5][5] = { {
 { 0, 0, 7, 0, 0 },
 { 0, 0, 0, 0, 0 } }, };
 char house_mass[12][5][6] = { {
-{0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0},
-{0, 0, 6, 0, 0},
-{0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0} },
+{1, 1, 4, 4, 1, 0},
+{1, 1, 1, 1, 4, 0},
+{4, 1, 1, 1, 1, 0},
+{4, 1, 1, 1, 4, 0},
+{1, 4, 1, 4, 4, 0}},
 {
 {1, 1, 4, 4, 1, 0},
 {1, 1, 1, 1, 4, 0},
@@ -201,7 +202,8 @@ enum Blocks {
     COBBLESTONE,
     PLANKS,
     TREE_OAK,
-    LEAVES
+    LEAVES,
+    BRICKS
 
 };
 enum Menu_types {
@@ -219,7 +221,6 @@ public:
     bool onGround;
     float speed;
     float View; // угол обзора
-
     Player(float x0, float y0, float z0) {
         PlayerX = x0; PlayerY= y0; PlayerZ= z0;
         dx = 0; dy = 0; dz = 0;
@@ -234,6 +235,7 @@ public:
             (y < 0) or (y > quantity_cube_y) or
             (z < 0) or (z > quantity_cube_z)) return false;
         return cubes[x][y][z];
+
 
     }
     void update(float time) {
@@ -506,10 +508,12 @@ void GUI() {
     glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.01, -0.01, -0.2);
     glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.01, 0.01, -0.2);
     glEnd();
+    //==============================================================
+    hotbar_icons();
     // ============================ хотбар =========================
     glBindTexture(GL_TEXTURE_2D, GUI_tex[0]);
     glBegin(GL_QUADS);
-    glTexCoord2d(0.09f, 1);         glVertex3f(0.17, -0.16, -0.2);
+    glTexCoord2d(0.09f, 1);         glVertex3f(0.17, -0.16, -0.2);  // идем с верхнего левого угла
     glTexCoord2d(0.09f, 0.89f);     glVertex3f(0.17, -0.2, -0.2);
     glTexCoord2d(1, 0.89f);         glVertex3f(-0.17, -0.2, -0.2);
     glTexCoord2d(1, 1);             glVertex3f(-0.17, -0.16, -0.2);
@@ -670,21 +674,23 @@ inline void Draw_cubes() {
                 glTranslatef(x * cube_size + cube_size / 2, y * cube_size + cube_size / 2, z * cube_size + cube_size / 2);
 
                 switch (type) {
-                case Blocks::STONE:       {draw_stone(              x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::COBBLESTONE: {draw_cobblestone(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::SUPER_GRASS: {draw_super_grass(        x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::DIRT:        {draw_dirt(               x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::PLANKS:      {draw_planks(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::LEAVES:      {draw_leaves(             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
-                case Blocks::TREE_OAK:    {draw_tree_oak(           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::STONE:       {one_texture_blocks(stone,            x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::COBBLESTONE: {one_texture_blocks(cobblestone_tex,  x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::SUPER_GRASS: {draw_super_grass(                    x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::DIRT:        {one_texture_blocks(dirt,             x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::PLANKS:      {one_texture_blocks(planks,           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::LEAVES:      {one_texture_blocks(leaves,           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::TREE_OAK:    {draw_tree_oak(                       x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
+                case Blocks::BRICKS:      {one_texture_blocks(bricks,           x, y, z, steve.PlayerX, steve.PlayerY, steve.PlayerZ); break; }
                 }
 
                 glPopMatrix();
             }
 }
-
 void Draw() {
-    static int a = 0; static int timer = 1; double times;
+    static int a = 0; 
+    static int timer = 1; 
+    double times;
 
     glClear(GL_DEPTH_BUFFER_BIT);
     
@@ -697,7 +703,9 @@ void Draw() {
             steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
             0.0f, 1.0f, 0.0f);
 
-        newtime = clock();   times = newtime - oldtime*keytime;   oldtime = clock(); 
+        newtime = clock();   
+        times = newtime - oldtime*keytime;   
+        oldtime = clock(); 
 
 
 
@@ -706,22 +714,22 @@ void Draw() {
 
 
         Draw_cubes();
-        /*cursor.update(cursor_tex);
-        hotbar_down.update(GUI_tex, 1, 1, 0.09f, 1, 0.09f, 0.89f, 1, 0.89f);*/
-
-
-        drawSkybox(skybox_texturies);
+        drawSkybox();
 
 
 
-        if (newtime - thistime > 150) { timer = times; thistime = newtime; }
+        if (newtime - thistime > 150) { 
+            timer = times; 
+            thistime = newtime; 
+        }
 
         DrawdebugScreen(5, 30, 0, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
             std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer));
         
 
 
-        steve.update(times * keytime); keytime = 1;
+        steve.update(times * keytime);
+        keytime = 1;
     //}
     //else menu_interface();
 
@@ -737,9 +745,9 @@ void Draw() {
 
 #include "Mouse_and_keyboard.hpp"
 
-int main(){
+int main(int argc, char** argv){
     //===========================INITIALIZATION===========================================
-    //glutInit();
+    glutInit(&argc, argv);
     glutInitWindowSize(width, height);
     glutInitDisplayMode(GLUT_RGBA /*| GL_DOUBLE*/);
     glutCreateWindow("cubes");
@@ -785,20 +793,29 @@ int main(){
             for (int z = 0; z < quantity_cube_z; z++) {
                 int c = im.getPixel(x, z).r / 10 + 10;
                 for (int y = 4; y <= c; y++) {
-                    if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) {
-
-                        if (rand()%500 == 1)   trees(x, c, z);
-                        if ((rand()*rand()) % 80000 == 1) head_monument(x, c, z);
-                        
-                    }
 
                     if (y == c)         cubes[x][y][z] = Blocks::SUPER_GRASS;
                     else if (y > c - 3) cubes[x][y][z] = Blocks::DIRT;
-                    else if (y == 4)    cubes[x][y][z] = 9;
                     else                cubes[x][y][z] = Blocks::STONE;
                 }
             }
-        
+        for (int x = 0; x < quantity_cube_x; x++)
+            for (int z = 0; z < quantity_cube_z; z++) {
+                int c = im.getPixel(x, z).r / 10 + 10;
+                for (int y = 4; y <= c; y++)
+                    if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5)
+                        if ((rand() * rand()) % 70000 == 1) head_monument(x, c, z);
+            }
+
+        for (int x = 0; x < quantity_cube_x; x++)
+            for (int z = 0; z < quantity_cube_z; z++) {
+                int c = im.getPixel(x, z).r / 10 + 10;
+                for (int y = 4; y <= c; y++) 
+                    if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) 
+                        if (rand() % 500 == 1)   trees(x, c, z);
+                    
+                
+            }
     }
     fout.close();
     createPopupMenus();

@@ -1,79 +1,85 @@
 void processNormalKeysDOWN(unsigned char key, int x, int y){
     switch (key) {
-        if (MENU == Menu_types::game) {
-    case 'w':
-    case 'W': {
-        int mode = glutGetModifiers();
-        if (mode == GLUT_ACTIVE_SHIFT) {
-            KeyFront = 1.4;
+        //if (MENU == Menu_types::game) {
+        case 'w':
+        case 'W': {
+            int mode = glutGetModifiers();
+            if (mode == GLUT_ACTIVE_SHIFT) {
+                KeyFront = 1.4;
+            }
+            else KeyFront = 1.0;
+
+            break;
         }
-        else KeyFront = 1.0;
+        case 's':
+        case 'S':
+            KeyFront = -1.0; break;
 
-        break; 
-    }
-    case 's':
-    case 'S':
-        KeyFront = -1.0;break;
-    case 'a':
-    case 'A':
-        KeySide = -1.0;
-        break;
-    case 'd':
-    case 'D':
-        KeySide = 1.0; break;
-    case 'b':
-        steve.PlayerX = 1 / 2 + 0.5 * cube_size;
-        steve.PlayerY = (20) * cube_size;
-        steve.PlayerZ = 1 / 2 + 0.5 * cube_size;
-        steve.dy = 0;
-        break;
+        case 'a':
+        case 'A':
+            KeySide = -1.0;
+            break;
 
-    case 'f':
-    case 'F':
-        IDblocks++;
-        if (IDblocks > blocks) IDblocks = 0;
-        break;
+        case 'd':
+        case 'D':
+            KeySide = 1.0;
+            break;
 
-    case 'q':
-        if (MENU == Menu_types::game) {
-            MENU = Menu_types::game_menu;
-            ReshapeOrtho(width, height);
-        }
-        else {
-            MENU = Menu_types::game;
-            Reshape(width, height);
-            //lx = 0; ly = 0; lz = 1;
-        }
-        break;
+        case 'B':
+        case 'b':
+            steve.PlayerX = 1 / 2 + 0.5 * cube_size;
+            steve.PlayerY = (20) * cube_size;
+            steve.PlayerZ = 1 / 2 + 0.5 * cube_size;
+            steve.dy = 0;
+            break;
 
-    case 32:
-        steve.jump();
-        break;
-
-    case 27: 
-        exit(0);
-        /*int msg;
-        std::ofstream fout("Text.txt", std::fstream::trunc);
-        for (int x = 0; x < quantity_cube_x; x++)
-            for(int y = 0; y < quantity_cube_y; y++)
-                for (int z = 0; z < quantity_cube_z; z++) {
-                    fout << cubes[x][y][z];
-                }
-        fout.close();*/
-    case 'e':
-        std::thread th(close_game);
-        th.detach();
-
-    
-        }
         
-    }
-    if (key == 9) {
-        if (!Draw_debug_Menu_key) {
-            Draw_debug_Menu_key = 1;
+
+        case 'Q':
+        case 'q':
+            if (MENU == Menu_types::game) {
+                MENU = Menu_types::game_menu;
+                ReshapeOrtho(width, height);
+            }
+            else {
+                MENU = Menu_types::game;
+                Reshape(width, height);
+            }
+            break;
+
+        case 32:
+            steve.jump();
+            break;
+
+        case 27:
+            exit(0);
+
+        case 'E':
+        case 'e': {
+            std::thread th(close_game);
+            th.detach();
+            break;
         }
-        else Draw_debug_Menu_key = 0;
+
+        case 9:
+            if (!Draw_debug_Menu_key) {
+                Draw_debug_Menu_key = 1;
+            }
+            else Draw_debug_Menu_key = 0;
+
+        case 'R':
+        case 'r':
+            IDblocks++;
+            if (IDblocks > blocks) IDblocks = 0;
+            break;
+        
+        case 'f':
+        case 'F':
+            IDblocks--;
+            if (IDblocks < 0) IDblocks = blocks;
+            break;
     }
+    //}
 }
 void processNormalKeysUP(unsigned char key, int x, int y) {
     switch (key) {
@@ -140,4 +146,5 @@ void mouseButton(int button, int state, int x, int y) {
             break;
         }
     }
+    //if (button == GLUT_WHEEL_DOWN)
 }
