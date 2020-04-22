@@ -2,18 +2,14 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
     switch (key) {
         //if (MENU == Menu_types::game) {
         case 'w':
-        case 'W': {
-            int mode = glutGetModifiers();
-            if (mode == GLUT_ACTIVE_SHIFT) {
-                KeyFront = 1.4;
-            }
-            else KeyFront = 1.0;
-
+        case 'W': 
+            KeyFront = 1.4;
             break;
-        }
+
         case 's':
         case 'S':
-            KeyFront = -1.0; break;
+            KeyFront = -1.0;
+            break;
 
         case 'a':
         case 'A':
@@ -27,9 +23,9 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
 
         case 'B':
         case 'b':
-            steve.PlayerX = 1 / 2 + 0.5 * cube_size;
+            steve.PlayerX = 0 + 0.5 * cube_size;
             steve.PlayerY = (20) * cube_size;
-            steve.PlayerZ = 1 / 2 + 0.5 * cube_size;
+            steve.PlayerZ = 0 + 0.5 * cube_size;
             steve.dy = 0;
             break;
 
@@ -39,11 +35,11 @@ void processNormalKeysDOWN(unsigned char key, int x, int y){
         case 'q':
             if (MENU == Menu_types::game) {
                 MENU = Menu_types::game_menu;
-                ReshapeOrtho(width, height);
+                glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
             }
             else {
                 MENU = Menu_types::game;
-                Reshape(width, height);
+                glutSetCursor(GLUT_CURSOR_NONE);
             }
             break;
 
@@ -99,52 +95,57 @@ void processNormalKeysUP(unsigned char key, int x, int y) {
     }
 }
 void mouseMove(int x, int y) {
-    if (mouseXOld != 0 or mouseYOld != 0) {
-        angleX -= mouseXOld * 0.001f;
-        angleY -= mouseYOld * 0.001f;
+    if (MENU == game) {
+        if (mouseXOld != 0 or mouseYOld != 0) {
+            angleX -= mouseXOld * 0.001f;
+            angleY -= mouseYOld * 0.001f;
 
-        if (angleY > 3.14 / 2) angleY = 3.14 / 2;
-        if (angleY < -3.14 / 2) angleY = -3.14 / 2;
+            if (angleY > 3.14 / 2) angleY = 3.14 / 2;
+            if (angleY < -3.14 / 2) angleY = -3.14 / 2;
 
-        mouseXOld = 0; mouseYOld = 0;
+            mouseXOld = 0; mouseYOld = 0;
 
-        // update camera's direction
-        lx = float(sin(angleX));
-        lz = float(-cos(angleX));
-        ly = float(-tan(angleY));          
+            // update camera's direction
+            lx = float(sin(angleX));
+            lz = float(-cos(angleX));
+            ly = float(-tan(angleY));
 
+        }
+        else {
+
+            mouseXOld = (width / 2) - x;
+            mouseYOld = (height / 2) - y;
+            glutWarpPointer((width / 2), (height / 2));
+        }
     }
-    else {
-
-        mouseXOld = (width / 2) - x;
-        mouseYOld = (height / 2) - y;
-        glutWarpPointer((width / 2), (height / 2));
+    if (MENU == game_menu) {
+        gy.mouse(x, y);
     }
-
-    //glutPostRedisplay();
-
 }
 void mouseButton(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON) {
-        switch (state) {
-        case GLUT_DOWN:		//Если нажата
-            mLeft = true;
-            break;
-        case GLUT_UP:
-            mLeft = false;
-            break;
+    if (MENU == game) {
+        if (button == GLUT_LEFT_BUTTON) {
+            switch (state) {
+            case GLUT_DOWN:		//Если нажата
+                mLeft = true;
+                break;
+            case GLUT_UP:
+                mLeft = false;
+                break;
+            }
         }
-    }
 
-    if (button == GLUT_RIGHT_BUTTON) {
-        switch (state) {
-        case GLUT_DOWN:		//Если нажата
-            mRight = true;
-            break;
-        case GLUT_UP:
-            mRight = false;
-            break;
+        if (button == GLUT_RIGHT_BUTTON) {
+            switch (state) {
+            case GLUT_DOWN:		//Если нажата
+                mRight = true;
+                break;
+            case GLUT_UP:
+                mRight = false;
+                break;
+            }
         }
     }
-    //if (button == GLUT_WHEEL_DOWN)
+    if (MENU == game_menu) {
+    }
 }

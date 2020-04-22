@@ -20,8 +20,8 @@ bool head_monument(int x, int y, int z) {
 	for (int X = 0; X < 5; X++)
 		for (int Y = 0; Y < 12; Y++)
 			for (int Z = 0; Z < 6; Z++) {
-				if (house_mass[Y][X][Z] != 0)
-					cubes[x + X - 2][y + Y][z + Z - 3] = house_mass[Y][X][Z];
+				if (monument_mass[Y][X][Z] != 0)
+					cubes[x + X - 2][y + Y][z + Z - 3] = monument_mass[Y][X][Z];
 			}
 	return 1;
 }

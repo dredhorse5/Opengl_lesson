@@ -4,6 +4,7 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "glut.h"
 #include "SOIL.h"
 #include <SFML/Graphics.hpp>
@@ -21,24 +22,24 @@ int Visibility_Menu, shrinkMenu, mainMenu, BlocksMenu;
 int menuFlag = 0;
 
 // textures of blocks
-GLuint super_grass[1], super_grass_icon[1];
-GLuint stone[1], stone_icon[1];
-GLuint planks[1], planks_icon[1];
-GLuint dirt[1], dirt_icon[1];
-GLuint leaves[1], leaves_icon[1];
-GLuint tree_oak[1], tree_oak_icon[1];
-GLuint cobblestone_tex[1], cobblestone_tex_icon[1];
-GLuint bricks[1], bricks_icon[1];
+GLuint super_grass, super_grass_icon;
+GLuint stone, stone_icon;
+GLuint planks, planks_icon;
+GLuint dirt, dirt_icon;
+GLuint leaves, leaves_icon;
+GLuint tree_oak, tree_oak_icon;
+GLuint cobblestone_tex, cobblestone_tex_icon;
+GLuint bricks, bricks_icon;
 
 // some textures
-GLuint backround_tex[1];
-GLuint cursor_tex[1];
-GLuint skybox_texturies[6];
-GLuint HeightMap[1];
-GLuint GUI_tex[1];
-GLuint save_icon_tex[1];
+GLuint backround_tex;
+GLuint cursor_tex;
+GLuint skybox_texturies;
+GLuint HeightMap;
+GLuint GUI_tex;
+GLuint save_icon_tex;
 // cubes
-float cube_size = 2.0f; // size of cubes
+float cube_size = 2; // size of cubes
 const int width = 1280, height = 720; // size of window
 int W = width, H = height;
 int quantity_cube_x = 540; // quanity cubes of x
@@ -109,7 +110,7 @@ char tree_mass[7][5][5] = { {
 { 0, 7, 7, 7, 0 },
 { 0, 0, 7, 0, 0 },
 { 0, 0, 0, 0, 0 } }, };
-char house_mass[12][5][6] = { {
+char monument_mass[12][5][6] = { {
 {1, 1, 4, 4, 1, 0},
 {1, 1, 1, 1, 4, 0},
 {4, 1, 1, 1, 1, 0},
@@ -358,6 +359,51 @@ public:
         }
     }
 };
+class GUI_Menu {
+public:
+                    /* .: */ float X11; float Y11;
+     float x11, y11;/* :. */ float X21; float Y21;
+                    /* :' */ float X22; float Y22;
+     float x22, y22;/* ': */ float X12; float Y12;
+    GLuint* tex;
+    bool G = 0;
+    GUI_Menu(GLuint* tex,float x11, float y11,float x22, float y22,
+             float X11, float Y11f, float X21 , float Y21 ,float X22 ,float Y22,float X12 , float Y12 ) {
+        this->x11 = x11; this->y11 = y11;
+        this->x22 = x22; this->y22 = y22;
+        this->tex = tex;
+    }
+    void mouse(float x, float y) {
+        x /= width/2; y /= height/2;
+        x -= 1; y -= 1;
+        x *= 0.36; y *= -1 * 0.2;
+        //std::cout << "x this is: " << x << "    y this is: " << y << std::endl;
+        if (x > x22 and x < x11 and y > y22 and y < y11) {
+            G = 1;
+        }
+        else G = 0;
+
+    }
+    void update() {
+        glBindTexture(GL_TEXTURE_2D, *tex);
+        glBegin(GL_QUADS);
+        glTexCoord2d(X11, Y11); glVertex3f(x11, y11, -0.2);
+        glTexCoord2d(X21, Y21); glVertex3f(x11, y22, -0.2);
+        glTexCoord2d(X22, Y22); glVertex3f(x22, y22, -0.2);
+        glTexCoord2d(X12, Y12); glVertex3f(x22, y11, -0.2);
+        glEnd();
+        if (G) {
+            glBindTexture(GL_TEXTURE_2D, *tex);
+            glBegin(GL_QUADS);
+            glTexCoord2d(X11, Y11); glVertex3f(x11, y11, -0.2);
+            glTexCoord2d(X21, Y21); glVertex3f(x11, y22, -0.2);
+            glTexCoord2d(X22, Y22); glVertex3f(x22, y22, -0.2);
+            glTexCoord2d(X12, Y12); glVertex3f(x22, y11, -0.2);
+            glEnd();
+        }
+    }
+};
+GUI_Menu gy(&dirt, 0.05f, 0.05f, -0.05f, -0.05f, /**/ 0, 0.47f, 1, 0.47f, );
 Player steve(quantity_cube_x/2,60, quantity_cube_z/2);
 #include "menu_interface.hpp"
 //class GUI {
@@ -403,7 +449,6 @@ Player steve(quantity_cube_x/2,60, quantity_cube_z/2);
 //
 //    }
 //};
-
 //GUI cursor(0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f, 0.01f);
 //GUI quad(0.357f, 0.2f, -0.2f, 0.2f, -0.2f, 0.01f, 0.357f, 0.01f);
 //GUI hotbar_down(0.15f, -0.165f,        0.15f, -0.165f,        0.15f, 0.2f,        0.15f, 0.2f);
@@ -483,10 +528,15 @@ inline void DrawdebugScreen(float x, float y, float z, std::string speedX,
     }
 }// ------------------------------------//
 
+void GUI_Menu_draw() {
+    gy.update();
+    keytime = 0;
+}
 void GUI() {
     // по оси x край 0.36
     // по оси y край 0.2
     // идет по часовой стрелки
+    glColor3d(1, 1, 1);
 
     if (Draw_debug_Menu_key) {
         // фон отладчика
@@ -499,9 +549,8 @@ void GUI() {
         glEnd();
         glColor3d(1, 1, 1);
     }
-
     // ============================ курсор =========================
-    glBindTexture(GL_TEXTURE_2D, cursor_tex[0]);
+    glBindTexture(GL_TEXTURE_2D, cursor_tex);
     glBegin(GL_QUADS);
     glTexCoord2d(1.0f, 1.0f); glVertex3f(0.01, 0.01, -0.2);
     glTexCoord2d(0.0f, 1.0f); glVertex3f(0.01, -0.01, -0.2);
@@ -511,7 +560,7 @@ void GUI() {
     //==============================================================
     hotbar_icons();
     // ============================ хотбар =========================
-    glBindTexture(GL_TEXTURE_2D, GUI_tex[0]);
+    glBindTexture(GL_TEXTURE_2D, GUI_tex);
     glBegin(GL_QUADS);
     glTexCoord2d(0.09f, 1);         glVertex3f(0.17, -0.16, -0.2);  // идем с верхнего левого угла
     glTexCoord2d(0.09f, 0.89f);     glVertex3f(0.17, -0.2, -0.2);
@@ -521,7 +570,7 @@ void GUI() {
 
     //значок сохранения 
     if (is_saving) {
-        glBindTexture(GL_TEXTURE_2D, save_icon_tex[0]);
+        glBindTexture(GL_TEXTURE_2D, save_icon_tex);
         glBegin(GL_QUADS);
         glTexCoord2d(0, 0);     glVertex3f(0.36, 0.2, -0.2);
         glTexCoord2d(0, 1);     glVertex3f(0.36, 0.16, -0.2);
@@ -529,7 +578,6 @@ void GUI() {
         glTexCoord2d(1, 0);     glVertex3f(0.32, 0.2, -0.2);
         glEnd();
     }
-    glColor3d(1, 1, 1);
 }
 
 void processMenuStatus(int status, int x, int y) {
@@ -538,7 +586,7 @@ void processMenuStatus(int status, int x, int y) {
         keytime = 0;
     
 }
-void processMainMenu(int option) { std::cout << "s"; }
+void processMainMenu(int option) {  }
 void processVisibility_Menu(int option) {
     switch (option) {
     case Very_high:
@@ -647,13 +695,6 @@ void Reshape(int w, int h){
     gluPerspective(steve.View, ratio, 0.1f, 693.0f);
     glMatrixMode(GL_MODELVIEW);
 }
-void ReshapeOrtho(int w, int h) {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glViewport(0, 0, w, h);
-    gluPerspective(steve.View, 1, 0.1f, 693.0f);
-    glMatrixMode(GL_MODELVIEW);
-}
 void timf(int value){
     glutPostRedisplay();  // Redraw windows
 
@@ -688,53 +729,54 @@ inline void Draw_cubes() {
             }
 }
 void Draw() {
-    static int a = 0; 
-    static int timer = 1; 
+    static int a = 0;
+    static int timer = 1;
     double times;
 
     glClear(GL_DEPTH_BUFFER_BIT);
-    
-    GUI();
+
+    switch (MENU){
+    case game: GUI(); break;
+    case game_menu: GUI_Menu_draw(); break;
+    }
+
 
     glPushMatrix();
-    //if (!MENU) {
 
-        gluLookAt(steve.PlayerX, steve.PlayerY + steve.h / 2, steve.PlayerZ,
-            steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
-            0.0f, 1.0f, 0.0f);
+    gluLookAt(steve.PlayerX, steve.PlayerY + steve.h / 2, steve.PlayerZ,
+        steve.PlayerX + lx, steve.PlayerY + ly + steve.h / 2, steve.PlayerZ + lz,
+        0.0f, 1.0f, 0.0f);
 
-        newtime = clock();   
-        times = newtime - oldtime*keytime;   
-        oldtime = clock(); 
-
-
-
-        //===============================начало основного цикла================================================================================
+    newtime = clock();
+    times = newtime - oldtime * keytime;
+    oldtime = clock();
 
 
 
-        Draw_cubes();
-        drawSkybox();
+    //===============================начало основного цикла================================================================================
+
+
+    Draw_cubes();
+    drawSkybox();
 
 
 
-        if (newtime - thistime > 150) { 
-            timer = times; 
-            thistime = newtime; 
-        }
+    if (newtime - thistime > 150) {
+        timer = times;
+        thistime = newtime;
+    }
 
+    if (MENU == game)
         DrawdebugScreen(5, 30, 0, std::to_string(steve.dx), std::to_string(steve.dy), std::to_string(steve.dz), std::to_string(lx), std::to_string(ly),
-            std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer));
-        
+        std::to_string(lz), std::to_string(steve.onGround), std::to_string(1000 / timer));
 
 
-        steve.update(times * keytime);
-        keytime = 1;
-    //}
-    //else menu_interface();
+
+    steve.update(times * keytime);
+    keytime = 1;
 
 
-    
+
     //=================================конец основного цикла===================================================================================
     glPopMatrix();
     glutPostRedisplay();
@@ -757,12 +799,8 @@ int main(int argc, char** argv){
     glutTimerFunc(1000 / FPS, timf, 0); // limit fps
     glEnable(GL_TEXTURE_2D);
     glutDisplayFunc(Draw);    // Main draw function
-    if (MENU == 0) {
-        glutReshapeFunc(Reshape); // change window
-    }
-    else {
-        glutReshapeFunc(ReshapeOrtho);
-    }
+    glutReshapeFunc(Reshape); // change window
+    
     glutSetCursor(GLUT_CURSOR_NONE);
     //=====================================TEXTURES=======================================
     load_textures();
@@ -778,7 +816,7 @@ int main(int argc, char** argv){
 
     std::ifstream fout("World1.txt", std::ifstream::binary);
     char n;
-
+    
     if (fout) {
         for (int x = 0; x < quantity_cube_x; x++)
             for (int y = 4; y < quantity_cube_y; y++)
@@ -788,11 +826,13 @@ int main(int argc, char** argv){
                 }
     }
     else{
+        time_t seed;
+        seed = time(NULL);
         sf::Image im; im.loadFromFile("textures/heightmap1.jpg");
         for (int x = 0; x < quantity_cube_x; x++) 
             for (int z = 0; z < quantity_cube_z; z++) {
                 int c = im.getPixel(x, z).r / 10 + 10;
-                for (int y = 4; y <= c; y++) {
+                for (int y = 0; y <= c; y++) {
 
                     if (y == c)         cubes[x][y][z] = Blocks::SUPER_GRASS;
                     else if (y > c - 3) cubes[x][y][z] = Blocks::DIRT;
@@ -804,7 +844,7 @@ int main(int argc, char** argv){
                 int c = im.getPixel(x, z).r / 10 + 10;
                 for (int y = 4; y <= c; y++)
                     if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5)
-                        if ((rand() * rand()) % 70000 == 1) head_monument(x, c, z);
+                        if ((rand() * rand() + seed) % 100000 == 1) head_monument(x, c, z);
             }
 
         for (int x = 0; x < quantity_cube_x; x++)
@@ -812,7 +852,7 @@ int main(int argc, char** argv){
                 int c = im.getPixel(x, z).r / 10 + 10;
                 for (int y = 4; y <= c; y++) 
                     if (x > 5 and x < quantity_cube_x - 5 and z > 5 and x < quantity_cube_z - 5) 
-                        if (rand() % 500 == 1)   trees(x, c, z);
+                        if ((rand() + seed) % 500 == 1)   trees(x, c, z);
                     
                 
             }

@@ -4,28 +4,28 @@ void hotbar_icons() {
         glTranslatef(-0.1491 + i*0.0373, -0.18, 0);
         switch (i) {
         case STONE:
-            glBindTexture(GL_TEXTURE_2D, stone_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, stone_icon);
             break;
         case SUPER_GRASS:
-            glBindTexture(GL_TEXTURE_2D, super_grass_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, super_grass_icon);
             break;
         case DIRT:
-            glBindTexture(GL_TEXTURE_2D, dirt_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, dirt_icon);
             break;
         case COBBLESTONE:
-            glBindTexture(GL_TEXTURE_2D, cobblestone_tex_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, cobblestone_tex_icon);
             break;
         case PLANKS:
-            glBindTexture(GL_TEXTURE_2D, planks_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, planks_icon);
             break;
         case TREE_OAK:
-            glBindTexture(GL_TEXTURE_2D, tree_oak_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, tree_oak_icon);
             break;
         case LEAVES:
-            glBindTexture(GL_TEXTURE_2D, leaves_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, leaves_icon);
             break;
         case BRICKS:
-            glBindTexture(GL_TEXTURE_2D, bricks_icon[0]);
+            glBindTexture(GL_TEXTURE_2D, bricks_icon);
             break;
         }
 
@@ -39,14 +39,13 @@ void hotbar_icons() {
     }
 
     glTranslatef(-0.1491 + IDblocks * 0.0373, -0.18, 0);
-    glBindTexture(GL_TEXTURE_2D, GUI_tex[0]);
+    glBindTexture(GL_TEXTURE_2D, GUI_tex);
     glBegin(GL_QUADS);
     glTexCoord2d(0.995f, 0.775f);     glVertex3f(0.02, 0.02, -0.2); // :. 
     glTexCoord2d(0.995f, 0.885f);     glVertex3f(0.02, -0.02, -0.2); // :' 
     glTexCoord2d(0.885f, 0.885f);      glVertex3f(-0.02, -0.02, -0.2); // ':
     glTexCoord2d(0.885f, 0.775f);      glVertex3f(-0.02, 0.02, -0.2); //.:
     glEnd();
-    glTranslatef(0.1491 - IDblocks * 0.0373, 0.18, 0);
 
     glPopMatrix();
 }

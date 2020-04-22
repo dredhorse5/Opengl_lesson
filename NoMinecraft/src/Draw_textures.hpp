@@ -314,7 +314,7 @@
 void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
 { 
 
-    glBindTexture(GL_TEXTURE_2D, super_grass[0]);
+    glBindTexture(GL_TEXTURE_2D, super_grass);
     glBegin(GL_QUADS);
     ///задняя 
     glColor3f(0.8, 0.8, 0.8); // cool glColor3f(1.8, 0.8, 0.8);
@@ -384,7 +384,7 @@ void draw_super_grass( int X, int Y, int Z, int PX, int PY, int PZ)
 }
 void draw_tree_oak( int X, int Y, int Z,  int PX, int PY, int PZ) {
     //bool cubes = cubes;
-    glBindTexture(GL_TEXTURE_2D, tree_oak[0]);
+    glBindTexture(GL_TEXTURE_2D, tree_oak);
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
@@ -482,8 +482,8 @@ void draw_lines_cubes(float cube_size,int X, int Y,int Z) {
 
 }
 
-void one_texture_blocks(GLuint textures[1], int X, int Y, int Z, int PX, int PY, int PZ) {
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
+void one_texture_blocks(GLuint textures, int X, int Y, int Z, int PX, int PY, int PZ) {
+    glBindTexture(GL_TEXTURE_2D, textures);
     glBegin(GL_QUADS);
     ///задняя
     glColor3f(0.8, 0.8, 0.8);
@@ -538,58 +538,46 @@ void drawSkybox()
 {
     glTranslatef(steve.PlayerX, steve.PlayerY, steve.PlayerZ);
     //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[0]);
+    glBindTexture(GL_TEXTURE_2D, skybox_texturies);
+    glBegin(GL_QUADS);
     //задняя
-    glBegin(GL_POLYGON);
-    glTexCoord2d(1, 1); glVertex3f(-400, -400, 400);
-    glTexCoord2d(0, 1); glVertex3f(400, -400, 400);
-    glTexCoord2d(0, 0); glVertex3f(400, 400, 400);
-    glTexCoord2d(1, 0); glVertex3f(-400, 400, 400);
-    glEnd();
+    glTexCoord2d(0.001f, 0.665f); glVertex3f(-400, -400, 400);
+    glTexCoord2d(0.25f, 0.665f); glVertex3f(400, -400, 400);
+    glTexCoord2d(0.25f, 0.334f); glVertex3f(400, 400, 400);
+    glTexCoord2d(0.001f, 0.334f); glVertex3f(-400, 400, 400);
     //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[1]);
-    //нижняя
-    glBegin(GL_POLYGON);
-    glTexCoord2d(0, 0); glVertex3f(-400, -400, -400);
-    glTexCoord2d(1, 0); glVertex3f(400, -400, -400);
-    glTexCoord2d(1, 1); glVertex3f(400, -400, 400);
-    glTexCoord2d(0, 1); glVertex3f(-400, -400, 400);
-    glEnd();
-    //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[2]);
-    //передняя
-    glBegin(GL_POLYGON);
-    glTexCoord2d(1, 0); glVertex3f(400, 400, -400);
-    glTexCoord2d(1, 1); glVertex3f(400, -400, -400);
-    glTexCoord2d(0, 1); glVertex3f(-400, -400, -400);
-    glTexCoord2d(0, 0); glVertex3f(-400, 400, -400);
-    glEnd();
-    //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[3]);
-    //левая
-    glBegin(GL_POLYGON);
-    glTexCoord2d(1, 1); glVertex3f(-400, -400, -400);
-    glTexCoord2d(0, 1); glVertex3f(-400, -400, 400);
-    glTexCoord2d(0, 0); glVertex3f(-400, 400, 400);
-    glTexCoord2d(1, 0); glVertex3f(-400, 400, -400);
-    glEnd();
-    //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[4]);
     //правая
-    glBegin(GL_POLYGON);
-    glTexCoord2d(1, 1); glVertex3f(400, -400, 400);
-    glTexCoord2d(0, 1); glVertex3f(400, -400, -400);
-    glTexCoord2d(0, 0); glVertex3f(400, 400, -400);
-    glTexCoord2d(1, 0); glVertex3f(400, 400, 400);
-    glEnd();
+    glTexCoord2d(0.25f, 0.666666f); glVertex3f(400, -400, 400);
+    glTexCoord2d(0.5f, 0.666666f); glVertex3f(400, -400, -400);
+    glTexCoord2d(0.5f, 0.334f); glVertex3f(400, 400, -400);
+    glTexCoord2d(0.25f, 0.334f); glVertex3f(400, 400, 400);
+
+    //передняя
+    glTexCoord2d(0.5f, 0.334f); glVertex3f(400, 400, -400);
+    glTexCoord2d(0.5f, 0.666666f); glVertex3f(400, -400, -400);
+    glTexCoord2d(0.75f, 0.666666f); glVertex3f(-400, -400, -400);
+    glTexCoord2d(0.75f, 0.334f); glVertex3f(-400, 400, -400);
+
+    //левая
+    glTexCoord2d(0.75, 0.666666f); glVertex3f(-400, -400, -400);
+    glTexCoord2d(0.9999f, 0.666666f); glVertex3f(-400, -400, 400);
+    glTexCoord2d(0.9999f, 0.334f); glVertex3f(-400, 400, 400);
+    glTexCoord2d(0.75f, 0.334f); glVertex3f(-400, 400, -400);
+
+    //нижняя
+    glTexCoord2d(0.5f, 0.999f); glVertex3f(-400, -400, -400);
+    glTexCoord2d(0.5f, 0.6666f);  glVertex3f(400, -400, -400);
+    glTexCoord2d(0.25f, 0.6666f); glVertex3f(400, -400, 400);
+    glTexCoord2d(0.25f, 0.999f);  glVertex3f(-400, -400, 400);
     //==================================================================
-    glBindTexture(GL_TEXTURE_2D, skybox_texturies[5]);
+    
     //верхняя
     glBegin(GL_POLYGON);
-    glTexCoord2d(0, 0); glVertex3f(-400, 400, 400);
-    glTexCoord2d(1, 0); glVertex3f(400, 400, 400);
-    glTexCoord2d(1, 1); glVertex3f(400, 400, -400);
-    glTexCoord2d(0, 1); glVertex3f(-400, 400, -400);
+    glTexCoord2d(0.2501f, 0.001f); glVertex3f(-400, 400, 400);
+    glTexCoord2d(0.2501f, 0.33333f); glVertex3f(400, 400, 400);
+    glTexCoord2d(0.4999f, 0.33333f); glVertex3f(400, 400, -400);
+    glTexCoord2d(0.4999f, 0.001f);  glVertex3f(-400, 400, -400);
+    
     glEnd();
     glTranslatef(-steve.PlayerX, -steve.PlayerY, -steve.PlayerZ);
 }
